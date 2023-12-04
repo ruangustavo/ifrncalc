@@ -7,17 +7,17 @@ import { SessionProvider } from "next-auth/react";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
-	children,
+  children,
 }: {
-	children: React.ReactNode;
+  children: React.ReactNode;
 }) {
-	return (
-		<>
-			<html lang="pt-BR">
-				<body className={`${inter.className} h-screen flex flex-col`}>
-					<SessionProvider>{children}</SessionProvider>
-				</body>
-			</html>
-		</>
-	);
+  return (
+    <>
+      <html lang="pt-BR">
+        <body className={`${inter.className} h-screen flex flex-col`}>
+          <SessionProvider>{children}</SessionProvider>
+        </body>
+      </html>
+    </>
+  );
 }

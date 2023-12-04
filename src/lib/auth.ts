@@ -1,4 +1,4 @@
-import type { NextAuthOptions } from 'next-auth';
+import type { NextAuthOptions } from "next-auth";
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -11,7 +11,7 @@ export const authOptions: NextAuthOptions = {
       session.user.id = token.sub;
       session.accessToken = token.accessToken;
 
-      return session
+      return session;
     },
     async jwt({ token, user, account, profile, isNewUser }) {
       if (account) {
@@ -38,7 +38,7 @@ export const authOptions: NextAuthOptions = {
         return {
           id: profile.identificacao,
           email: profile.email,
-        }
+        };
       },
     },
   ],
