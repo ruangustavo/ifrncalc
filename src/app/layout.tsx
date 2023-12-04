@@ -13,10 +13,8 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang="pt-BR">
-			<body className={inter.className}>
-				<SessionProvider>
-					<main className="h-screen grid place-content-center">{children}</main>
-				</SessionProvider>
+			<body className={`${inter.className} h-screen flex flex-col`}>
+				<SessionProvider>{children}</SessionProvider>
 			</body>
 		</html>
 	);

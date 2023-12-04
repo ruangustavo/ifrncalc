@@ -16,50 +16,58 @@ export default function Dashboard() {
 	const { data: grades, error, isLoading } = useSWR("/api/grades", fetcher);
 
 	if (isLoading) {
-		return <Icons.spinner className="w-12 h-12 animate-spin" />;
+		return (
+			<main className="h-screen grid place-content-center">
+				<Icons.spinner className="w-12 h-12 animate-spin" />
+			</main>
+		);
 	}
 
 	if (error) {
 		return (
-			<h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-				Erro ao carregar suas notas 😢
-			</h1>
+			<main className="h-screen grid place-content-center">
+				<h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+					Erro ao carregar suas notas 😢
+				</h1>
+			</main>
 		);
 	}
 
 	return (
-		<div className="rounded-md border">
-			<Table>
-				<TableHeader>
-					<TableHead>Disciplina</TableHead>
-					<TableHead>E1</TableHead>
-					<TableHead>E2</TableHead>
-					<TableHead>E3</TableHead>
-					<TableHead>E4</TableHead>
-				</TableHeader>
-				<TableBody>
-					{grades.map((grade: any) => (
-						<TableRow key={grade.codigo_diario}>
-							<TableCell>{grade.disciplina}</TableCell>
-							{[1, 2, 3, 4].map((etapa) => (
-								<TableCell key={etapa}>
-									<span
-										className={
-											grade[`nota_etapa_${etapa}`].nota === null
-												? "text-green-600 font-medium"
-												: ""
-										}
-									>
-										{grade[`nota_etapa_${etapa}`].nota === null
-											? grade.nota_para_passar
-											: grade[`nota_etapa_${etapa}`].nota}
-									</span>
-								</TableCell>
-							))}
-						</TableRow>
-					))}
-				</TableBody>
-			</Table>
-		</div>
+		<main className="h-screen grid place-content-center bg-slate-100">
+			<div className="rounded-md border bg-white shadow-sm">
+				<Table>
+					<TableHeader>
+						<TableHead>Disciplina</TableHead>
+						<TableHead>E1</TableHead>
+						<TableHead>E2</TableHead>
+						<TableHead>E3</TableHead>
+						<TableHead>E4</TableHead>
+					</TableHeader>
+					<TableBody>
+						{grades.map((grade: any) => (
+							<TableRow key={grade.codigo_diario}>
+								<TableCell>{grade.disciplina}</TableCell>
+								{[1, 2, 3, 4].map((etapa) => (
+									<TableCell key={etapa}>
+										<span
+											className={
+												grade[`nota_etapa_${etapa}`].nota === null
+													? "text-green-600 font-medium"
+													: ""
+											}
+										>
+											{grade[`nota_etapa_${etapa}`].nota === null
+												? grade.nota_para_passar
+												: grade[`nota_etapa_${etapa}`].nota}
+										</span>
+									</TableCell>
+								))}
+							</TableRow>
+						))}
+					</TableBody>
+				</Table>
+			</div>
+		</main>
 	);
 }
