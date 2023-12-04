@@ -10,10 +10,17 @@ import {
 } from "@/components/ui/table";
 import { Icons } from "@/components/icons";
 import useSWR from "swr";
+import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function Dashboard() {
+	const { status } = useSession();
 	const { data: grades, error, isLoading } = useSWR("/api/grades", fetcher);
+
+	if (status === "unauthenticated") {
+		redirect("/");
+	}
 
 	if (isLoading) {
 		return (

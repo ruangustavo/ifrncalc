@@ -31,7 +31,7 @@ export default function Home() {
 					</Button>
 				</div>
 			</main>
-			<footer className="p-4 bg-slate-100 flex items-center justify-center">
+			<footer className="p-4 bg-slate-50 flex items-center justify-center">
 				<Image
 					src={"https://github.com/ruangustavo.png"}
 					width={32}
