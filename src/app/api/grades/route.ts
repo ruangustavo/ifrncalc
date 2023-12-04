@@ -61,7 +61,7 @@ export async function GET() {
 
     response[i] = {
       ...discipline,
-      nome: parseDisciplineName(discipline.nome),
+      disciplina: parseDisciplineName(discipline.disciplina),
       nota_para_passar: gradeToPass,
     };
   }
