@@ -9,7 +9,7 @@ export default function Home() {
 	if (status === "authenticated") {
 		return (
 			<h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-				Você está logado com sucesso!!
+				Você está logado com sucesso! {data?.accessToken}
 			</h1>
 		);
 	}
@@ -17,7 +17,7 @@ export default function Home() {
 	return (
 		<>
 			<h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-				Faltômetro
+				IFRN Calc
 			</h1>
 			<Button className="mt-2" onClick={() => signIn("suap")}>
 				Entrar com SUAP
