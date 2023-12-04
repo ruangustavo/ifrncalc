@@ -27,9 +27,12 @@ function calculatePassingGrade(grades: Grade[]) {
   }
 
   const gradeNeededToPass = Math.round(
-    (60 * 10 - sumOfGradesNotNull) / totalWeightNull,
+    (60 * 10 - sumOfGradesNotNull) / totalWeightNull
   );
   return gradeNeededToPass < 0 ? 0 : gradeNeededToPass;
+}
+function parseDisciplineName(discipline: string) {
+  return discipline.substring(11, discipline.length).replace(/\(.*\)/, "");
 }
 
 export async function GET() {
@@ -42,7 +45,7 @@ export async function GET() {
         headers: {
           Authorization: `Bearer ${session?.accessToken}`,
         },
-      },
+      }
     )
     .then((response) => response.data);
 
@@ -58,6 +61,7 @@ export async function GET() {
 
     response[i] = {
       ...discipline,
+      nome: parseDisciplineName(discipline.nome),
       nota_para_passar: gradeToPass,
     };
   }
