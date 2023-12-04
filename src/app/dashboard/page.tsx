@@ -57,17 +57,23 @@ export default function Dashboard() {
                 <TableCell>{grade.disciplina}</TableCell>
                 {[1, 2, 3, 4].map((etapa) => (
                   <TableCell key={etapa}>
-                    <span
-                      className={
-                        grade[`nota_etapa_${etapa}`].nota === null
-                          ? "text-green-600 font-medium"
-                          : ""
-                      }
-                    >
-                      {grade[`nota_etapa_${etapa}`].nota === null
-                        ? grade.nota_para_passar
-                        : grade[`nota_etapa_${etapa}`].nota}
-                    </span>
+                    {etapa <= grade.quantidade_avaliacoes ? (
+                      <span
+                        className={
+                          grade[`nota_etapa_${etapa}`].nota === null
+                            ? "text-green-600 font-medium"
+                            : ""
+                        }
+                      >
+                        {/* Se a nota da etapa atual for nula, significa que não teve aula ainda */}
+                        {/* Portanto, exiba a nota necessária para passar de ano  */}
+                        {grade[`nota_etapa_${etapa}`].nota === null
+                          ? grade.nota_para_passar
+                          : grade[`nota_etapa_${etapa}`].nota}
+                      </span>
+                    ) : (
+                      <span>-</span>
+                    )}
                   </TableCell>
                 ))}
               </TableRow>

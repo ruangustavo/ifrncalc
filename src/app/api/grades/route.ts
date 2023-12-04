@@ -11,11 +11,11 @@ interface Grade {
   faltas: number;
 }
 
-function calculatePassingGrade(grades: Grade[]) {
+function calculatePassingGrade(grades: Grade[], numberOfAssessments: number) {
   let totalWeightNull = 0;
   let sumOfGradesNotNull = 0;
 
-  for (let i = 0; i < grades.length; i++) {
+  for (let i = 0; i < grades.length && i < numberOfAssessments; i++) {
     const currentStageGrade = grades[i];
     const weight = STAGE_TO_WEIGHT[i + 1];
 
@@ -26,11 +26,18 @@ function calculatePassingGrade(grades: Grade[]) {
     }
   }
 
+  let weightAccordingToNumberOfAssessments = 0;
+  for (let i = 1; i <= numberOfAssessments; i++) {
+    weightAccordingToNumberOfAssessments += STAGE_TO_WEIGHT[i];
+  }
+
   const gradeNeededToPass = Math.round(
-    (60 * 10 - sumOfGradesNotNull) / totalWeightNull
+    (60 * weightAccordingToNumberOfAssessments - sumOfGradesNotNull) /
+      totalWeightNull
   );
-  return gradeNeededToPass < 0 ? 0 : gradeNeededToPass;
+  return gradeNeededToPass < 0 ? 0 : Math.round(gradeNeededToPass);
 }
+
 function parseDisciplineName(discipline: string) {
   return discipline.substring(11, discipline.length).replace(/\(.*\)/, "");
 }
@@ -52,12 +59,15 @@ export async function GET() {
   for (let i = 0; i < response.length; i++) {
     const discipline = response[i];
 
-    const gradeToPass = calculatePassingGrade([
-      discipline.nota_etapa_1,
-      discipline.nota_etapa_2,
-      discipline.nota_etapa_3,
-      discipline.nota_etapa_4,
-    ]);
+    const gradeToPass = calculatePassingGrade(
+      [
+        discipline.nota_etapa_1,
+        discipline.nota_etapa_2,
+        discipline.nota_etapa_3,
+        discipline.nota_etapa_4,
+      ],
+      discipline.quantidade_avaliacoes
+    );
 
     response[i] = {
       ...discipline,
