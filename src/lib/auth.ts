@@ -3,7 +3,7 @@ import type { NextAuthOptions } from "next-auth";
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
-    maxAge: 2 * 60 * 60,
+    maxAge: 2 * 60 * 60, // 2 hours
     updateAge: 0,
   },
   callbacks: {
@@ -29,11 +29,11 @@ export const authOptions: NextAuthOptions = {
       name: "SUAP",
       type: "oauth",
       authorization: {
-        url: "https://suap.ifrn.edu.br/o/authorize",
+        url: `https://${process.env.SUAP_URL}/o/authorize`,
         params: { scope: "email identificacao" },
       },
-      token: "https://suap.ifrn.edu.br/o/token/",
-      userinfo: "https://suap.ifrn.edu.br/api/eu/",
+      token: `https://${process.env.SUAP_URL}/o/token/`,
+      userinfo: `https://${process.env.SUAP_URL}/api/eu/`,
       profile(profile) {
         return {
           id: profile.identificacao,
