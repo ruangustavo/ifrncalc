@@ -31,7 +31,7 @@ export const Icons = {
       <path
         className="octo-arm"
         d="M128 109c-15-9-9-19-9-19 3-7 2-11 2-11-1-7 3-2 3-2 4 5 2 11 2 11-3 10 5 15 9 16"
-        styles="-webkit-transform-origin: 130px 106px; transform-origin: 130px 106px"
+        // style="-webkit-transform-origin: 130px 106px; transform-origin: 130px 106px"
       />
       <path
         className="octo-body"
