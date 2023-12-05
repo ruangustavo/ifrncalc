@@ -1,5 +1,6 @@
 "use client";
 
+import { GithubCorner } from "@/components/github-corner";
 import { Button } from "@/components/ui/button";
 import { ExternalLink } from "lucide-react";
 
@@ -16,6 +17,9 @@ export default function Home() {
 
   return (
     <>
+      <aside>
+        <GithubCorner />
+      </aside>
       <main className="flex-1 flex flex-col items-center justify-center">
         <div className="flex flex-col max-w-xl mx-4">
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center">
