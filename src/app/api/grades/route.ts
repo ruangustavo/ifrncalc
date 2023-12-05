@@ -52,7 +52,7 @@ export async function GET() {
 
   const response = await axios
     .get(
-      `https://suap.ifrn.edu.br/api/v2/minhas-informacoes/boletim/${currentYear}/1/`,
+      `https://${process.env.SUAP_URL}/api/v2/minhas-informacoes/boletim/${currentYear}/1/`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
