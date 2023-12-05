@@ -48,3 +48,8 @@
     --ring: 240 4.9% 83.9%;
   }
 }
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+}

@@ -45,12 +45,17 @@ function parseDisciplineName(discipline: string) {
 export async function GET() {
   const session = await getServerSession(authOptions);
 
+  const token = session?.accessToken;
+  if (!token) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
   const response = await axios
     .get(
       `https://suap.ifrn.edu.br/api/v2/minhas-informacoes/boletim/${currentYear}/1/`,
       {
         headers: {
-          Authorization: `Bearer ${session?.accessToken}`,
+          Authorization: `Bearer ${token}`,
         },
       }
     )
