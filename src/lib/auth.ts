@@ -29,11 +29,11 @@ export const authOptions: NextAuthOptions = {
       name: "SUAP",
       type: "oauth",
       authorization: {
-        url: `https://${process.env.SUAP_URL}/o/authorize`,
+        url: `${process.env.SUAP_URL}/o/authorize`,
         params: { scope: "email identificacao" },
       },
-      token: `https://${process.env.SUAP_URL}/o/token/`,
-      userinfo: `https://${process.env.SUAP_URL}/api/eu/`,
+      token: `${process.env.SUAP_URL}/o/token/`,
+      userinfo: `${process.env.SUAP_URL}/api/eu/`,
       profile(profile) {
         return {
           id: profile.identificacao,
