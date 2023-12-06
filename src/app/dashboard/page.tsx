@@ -55,7 +55,7 @@ export default function Dashboard() {
   }
 
   return (
-    <main className="h-screen grid place-content-center bg-slate-100">
+    <main className="flex-1 grid place-content-center bg-slate-100">
       <div className="rounded-md border bg-white shadow-sm">
         <Table>
           <TableHeader>
