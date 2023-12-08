@@ -85,28 +85,36 @@ export async function GET() {
         isAvailable: isAvailable(discipline.nota_etapa_1.nota, 1),
         passingGrade: isAvailable(discipline.nota_etapa_1.nota, 1)
           ? gradeToPass
-          : 0,
+          : 1 <= discipline.quantidade_avaliacoes
+          ? 0
+          : -1,
       },
       E2: {
         grade: discipline.nota_etapa_2.nota,
         isAvailable: isAvailable(discipline.nota_etapa_2.nota, 2),
         passingGrade: isAvailable(discipline.nota_etapa_2.nota, 2)
           ? gradeToPass
-          : 0,
+          : 2 <= discipline.quantidade_avaliacoes
+          ? 0
+          : -1,
       },
       E3: {
         grade: discipline.nota_etapa_3.nota,
         isAvailable: isAvailable(discipline.nota_etapa_3.nota, 3),
         passingGrade: isAvailable(discipline.nota_etapa_3.nota, 3)
           ? gradeToPass
-          : 0,
+          : 3 <= discipline.quantidade_avaliacoes
+          ? 0
+          : -1,
       },
       E4: {
         grade: discipline.nota_etapa_4.nota,
         isAvailable: isAvailable(discipline.nota_etapa_4.nota, 4),
         passingGrade: isAvailable(discipline.nota_etapa_4.nota, 4)
           ? gradeToPass
-          : 0,
+          : 4 <= discipline.quantidade_avaliacoes
+          ? 0
+          : -1,
       },
     });
   }
