@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Discipline } from "./columns";
+import { Filter } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -50,12 +51,12 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="flex flex-col">
-      <div className="self-end mb-2">
+    <div className="flex flex-col p-2">
+      <div className="self-end my-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
-              Selecionar bimestres
+              <Filter size={16} />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
