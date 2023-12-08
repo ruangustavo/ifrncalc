@@ -1,9 +1,8 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
 import { twJoin } from "tailwind-merge";
+import { HeaderTable } from "./header-table";
 
 interface Stage {
   grade: number | null;
@@ -39,18 +38,7 @@ export const columns: ColumnDef<Discipline>[] = [
   },
   {
     id: "1° Bimestre",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="p-0"
-        >
-          E1
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: ({ column }) => <HeaderTable column={column} name="E1" />,
     accessorKey: "E1.passingGrade",
     cell: ({ row }) => {
       const { grade, isAvailable, passingGrade } = row.original.E1;
@@ -76,18 +64,7 @@ export const columns: ColumnDef<Discipline>[] = [
   },
   {
     id: "2° Bimestre",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="p-0"
-        >
-          E2
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: ({ column }) => <HeaderTable column={column} name="E2" />,
     accessorKey: "E2.passingGrade",
     cell: ({ row }) => {
       const { grade, isAvailable, passingGrade } = row.original.E2;
@@ -114,18 +91,7 @@ export const columns: ColumnDef<Discipline>[] = [
   },
   {
     id: "3° Bimestre",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="p-0"
-        >
-          E3
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: ({ column }) => <HeaderTable column={column} name="E3" />,
     accessorKey: "E3.passingGrade",
     cell: ({ row }) => {
       const { grade, isAvailable, passingGrade } = row.original.E3;
@@ -151,18 +117,7 @@ export const columns: ColumnDef<Discipline>[] = [
   },
   {
     id: "4° Bimestre",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="p-0"
-        >
-          E4
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: ({ column }) => <HeaderTable column={column} name="E4" />,
     accessorKey: "E4.passingGrade",
     cell: ({ row }) => {
       const { grade, isAvailable, passingGrade } = row.original.E4;
