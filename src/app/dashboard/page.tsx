@@ -1,17 +1,15 @@
 "use client";
 
 import { Icons } from "@/components/icons";
-import useSWR from "swr";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { DataTable } from "./_components/data-table";
 import { columns } from "./_components/columns";
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+import { useGrades } from "../hooks";
 
 export default function Dashboard() {
   const { status } = useSession();
-  const { data: grades, error, isLoading } = useSWR("/api/grades", fetcher);
+  const { grades, error, isLoading } = useGrades();
 
   if (status === "unauthenticated") {
     redirect("/");

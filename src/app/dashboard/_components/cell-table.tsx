@@ -3,14 +3,14 @@ import { twJoin } from "tailwind-merge";
 
 function getGradeClassname(grade: number) {
   if (grade <= 40) {
-    return "text-green-600";
+    return "text-green-500";
   }
 
   if (grade <= 90) {
-    return "text-yellow-600";
+    return "text-yellow-500";
   }
 
-  return "text-red-600";
+  return "text-red-500";
 }
 
 export function CellTable({

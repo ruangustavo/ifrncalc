@@ -18,8 +18,8 @@ export default function RootLayout({
 }) {
   return (
     <>
-      <html lang="pt-BR">
-        <body className={`${inter.className} flex flex-col`}>
+      <html lang="pt-BR" suppressHydrationWarning>
+        <body className={`${inter.className} flex flex-col antialiased`}>
           <Providers>{children}</Providers>
         </body>
       </html>

@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
-import axios from "axios";
+import { LRUCache } from "lru-cache";
 
+const cache = new LRUCache({
+  max: 20,
+  ttl: 1000 * 60 * 60 * 2, // 2 hours
+});
 const currentYear = new Date().getFullYear();
 const STAGE_TO_WEIGHT: Record<number, number> = { 1: 2, 2: 2, 3: 3, 4: 3 };
 
@@ -50,16 +54,20 @@ export async function GET() {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  const response = await axios
-    .get(
-      `${process.env.SUAP_URL}/api/v2/minhas-informacoes/boletim/${currentYear}/1/`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    )
-    .then((response) => response.data);
+  const cachedGrades = cache.get(session.user.email as string);
+  if (cachedGrades) {
+    return NextResponse.json(cachedGrades);
+  }
+
+  const response = await fetch(
+    `${process.env.SUAP_URL}/api/v2/minhas-informacoes/boletim/${currentYear}/1/`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  ).then((res) => res.json());
 
   const grades = [];
   for (let i = 0; i < response.length; i++) {
@@ -119,5 +127,6 @@ export async function GET() {
     });
   }
 
+  cache.set(session.user.email as string, grades);
   return NextResponse.json(grades);
 }
