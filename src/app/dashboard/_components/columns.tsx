@@ -33,10 +33,12 @@ function getColorAccordingToGrade(grade: number) {
 
 export const columns: ColumnDef<Discipline>[] = [
   {
+    id: "Disciplina",
     header: "Disciplina",
     accessorKey: "name",
   },
   {
+    id: "1° Bimestre",
     header: ({ column }) => {
       return (
         <Button
@@ -73,6 +75,7 @@ export const columns: ColumnDef<Discipline>[] = [
     },
   },
   {
+    id: "2° Bimestre",
     header: ({ column }) => {
       return (
         <Button
@@ -110,6 +113,7 @@ export const columns: ColumnDef<Discipline>[] = [
     },
   },
   {
+    id: "3° Bimestre",
     header: ({ column }) => {
       return (
         <Button
@@ -146,6 +150,7 @@ export const columns: ColumnDef<Discipline>[] = [
     },
   },
   {
+    id: "4° Bimestre",
     header: ({ column }) => {
       return (
         <Button

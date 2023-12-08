@@ -37,9 +37,7 @@ export default function Dashboard() {
 
   return (
     <main className="flex-1 grid place-content-center bg-slate-100">
-      <div className="rounded-md border bg-white shadow-sm">
-        <DataTable columns={columns} data={grades} />
-      </div>
+      <DataTable columns={columns} data={grades} />
     </main>
   );
 }

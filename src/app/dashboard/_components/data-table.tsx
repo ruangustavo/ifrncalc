@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Column,
   ColumnDef,
   SortingState,
   flexRender,
@@ -18,6 +19,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import React from "react";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Discipline } from "./columns";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -41,8 +50,38 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="rounded-md border">
-      <Table>
+    <div className="flex flex-col">
+      <div className="self-end mb-2">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="ml-auto">
+              Selecionar bimestres
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {table
+              .getAllColumns()
+              .filter(
+                (column) => column.getCanHide() && column.id !== "Disciplina"
+              )
+              .map((column) => {
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                );
+              })}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+      <Table className="rounded-md border bg-white shadow-sm">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
