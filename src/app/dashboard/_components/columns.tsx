@@ -1,22 +1,23 @@
 "use client";
 
-import { ColumnDef, Row } from "@tanstack/react-table";
+import { Button } from "@/components/ui/button";
+import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown } from "lucide-react";
 import { twJoin } from "tailwind-merge";
 
-type Grade = {
-  nota: number | null;
-  faltas: number;
-};
+interface Stage {
+  grade: number | null;
+  isAvailable: boolean;
+  passingGrade: number;
+}
 
-export type DisciplineGrade = {
-  disciplina: string;
-  nota_etapa_1: Grade;
-  nota_etapa_2: Grade;
-  nota_etapa_3: Grade;
-  nota_etapa_4: Grade;
-  nota_para_passar: number;
-  quantidade_avaliacoes: number;
-};
+export interface Discipline {
+  name: string;
+  E1: Stage;
+  E2: Stage;
+  E3: Stage;
+  E4: Stage;
+}
 
 function getColorAccordingToGrade(grade: number) {
   if (grade <= 40) {
@@ -30,36 +31,41 @@ function getColorAccordingToGrade(grade: number) {
   return "text-red-600";
 }
 
-export const columns: ColumnDef<DisciplineGrade>[] = [
+export const columns: ColumnDef<Discipline>[] = [
   {
-    id: "disciplina",
     header: "Disciplina",
-    accessorKey: "disciplina",
+    accessorKey: "name",
   },
   {
-    id: "1",
-    header: "E1",
-    accessorKey: "nota_etapa_1.nota",
-    cell: ({ row, cell }) => {
-      const [, disciplineId] = cell.id.split("_");
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="p-0"
+        >
+          E1
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    accessorKey: "E1.passingGrade",
+    cell: ({ row }) => {
+      const { grade, isAvailable, passingGrade } = row.original.E1;
 
-      const grade = row.original.nota_etapa_1.nota;
-
-      if (Number(disciplineId) > row.original.quantidade_avaliacoes) {
+      if (!isAvailable && grade === null) {
         return <span>-</span>;
       }
 
       if (grade === null) {
-        const gradeNeededToPass = row.original.nota_para_passar;
-
         return (
           <span
             className={twJoin(
               "font-medium",
-              getColorAccordingToGrade(gradeNeededToPass)
+              getColorAccordingToGrade(passingGrade)
             )}
           >
-            {gradeNeededToPass}
+            {passingGrade}
           </span>
         );
       }
@@ -67,59 +73,35 @@ export const columns: ColumnDef<DisciplineGrade>[] = [
     },
   },
   {
-    id: "2",
-    header: "E2",
-    accessorKey: "nota_etapa_2.nota",
-    cell: ({ row, cell }) => {
-      const [, disciplineId] = cell.id.split("_");
-
-      const grade = row.original.nota_etapa_2.nota;
-
-      if (Number(disciplineId) > row.original.quantidade_avaliacoes) {
-        return <span>-</span>;
-      }
-
-      if (grade === null) {
-        const gradeNeededToPass = row.original.nota_para_passar;
-
-        return (
-          <span
-            className={twJoin(
-              "font-medium",
-              getColorAccordingToGrade(gradeNeededToPass)
-            )}
-          >
-            {gradeNeededToPass}
-          </span>
-        );
-      }
-      return <span>{grade}</span>;
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="p-0"
+        >
+          E2
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
     },
-  },
-  {
-    id: "3",
-    header: "E3",
-    accessorKey: "nota_etapa_3.nota",
-    cell: ({ row, cell }) => {
-      const [, disciplineId] = cell.id.split("_");
+    accessorKey: "E2.passingGrade",
+    cell: ({ row }) => {
+      const { grade, isAvailable, passingGrade } = row.original.E2;
 
-      const grade = row.original.nota_etapa_3.nota;
-
-      if (Number(disciplineId) > row.original.quantidade_avaliacoes) {
+      if (!isAvailable && grade === null) {
         return <span>-</span>;
       }
 
       if (grade === null) {
-        const gradeNeededToPass = row.original.nota_para_passar;
-
         return (
           <span
             className={twJoin(
               "font-medium",
-              getColorAccordingToGrade(gradeNeededToPass)
+              getColorAccordingToGrade(passingGrade)
             )}
           >
-            {gradeNeededToPass}
+            {passingGrade}
           </span>
         );
       }
@@ -128,32 +110,74 @@ export const columns: ColumnDef<DisciplineGrade>[] = [
     },
   },
   {
-    id: "4",
-    header: "E4",
-    accessorKey: "nota_etapa_4.nota",
-    cell: ({ row, cell }) => {
-      const [, disciplineId] = cell.id.split("_");
-      const grade = row.original.nota_etapa_4.nota;
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="p-0"
+        >
+          E3
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    accessorKey: "E3.passingGrade",
+    cell: ({ row }) => {
+      const { grade, isAvailable, passingGrade } = row.original.E3;
 
-      if (Number(disciplineId) > row.original.quantidade_avaliacoes) {
+      if (!isAvailable && grade === null) {
         return <span>-</span>;
       }
 
       if (grade === null) {
-        const gradeNeededToPass = row.original.nota_para_passar;
-
         return (
           <span
             className={twJoin(
               "font-medium",
-              getColorAccordingToGrade(gradeNeededToPass)
+              getColorAccordingToGrade(passingGrade)
             )}
           >
-            {gradeNeededToPass}
+            {passingGrade}
           </span>
         );
       }
+      return <span>{grade}</span>;
+    },
+  },
+  {
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="p-0"
+        >
+          E4
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    accessorKey: "E4.passingGrade",
+    cell: ({ row }) => {
+      const { grade, isAvailable, passingGrade } = row.original.E4;
 
+      if (!isAvailable && grade === null) {
+        return <span>-</span>;
+      }
+
+      if (grade === null) {
+        return (
+          <span
+            className={twJoin(
+              "font-medium",
+              getColorAccordingToGrade(passingGrade)
+            )}
+          >
+            {passingGrade}
+          </span>
+        );
+      }
       return <span>{grade}</span>;
     },
   },
