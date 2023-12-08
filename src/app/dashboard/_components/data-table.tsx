@@ -26,7 +26,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Discipline } from "./columns";
 import { Filter } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
@@ -57,6 +56,7 @@ export function DataTable<TData, TValue>({
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
               <Filter size={16} />
+              <span className="sr-only">Filtrar bimestres</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
