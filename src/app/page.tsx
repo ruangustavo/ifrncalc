@@ -26,8 +26,7 @@ export default function Home() {
             IFRN Calc
           </h1>
           <small className="text-muted-foreground">
-            O projeto foi feito para calcular a média necessária para aprovação
-            nas disciplinas do IFRN. Inicie sessão com sua conta no SUAP.
+            Calcule a média necessária para aprovação nas disciplinas do IFRN automaticamente. Inicie sessão com sua conta no SUAP.
           </small>
           <Button className="mt-4" onClick={() => signIn("suap")}>
             Entrar com SUAP
