@@ -34,7 +34,7 @@ export default function Dashboard() {
   }
 
   return (
-    <main className="flex-1 grid place-content-center bg-slate-100">
+    <main className="flex-1 container md:grid md:place-content-center">
       <DataTable columns={columns} data={grades} />
     </main>
   );
