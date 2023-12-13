@@ -2,6 +2,7 @@
 
 import { GithubCorner } from "@/components/github-corner";
 import { Button } from "@/components/ui/button";
+import { siteConfig } from "@/config/site";
 import { ExternalLink } from "lucide-react";
 
 import { signIn, useSession } from "next-auth/react";
@@ -25,9 +26,7 @@ export default function Home() {
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center">
             IFRN Calc
           </h1>
-          <small className="text-muted-foreground">
-            Calcule a média necessária para aprovação nas disciplinas do IFRN automaticamente. Inicie sessão com sua conta no SUAP.
-          </small>
+          <small className="text-muted-foreground">{siteConfig.description}</small>
           <Button className="mt-4" onClick={() => signIn("suap")}>
             Entrar com SUAP
             <ExternalLink size={20} className="ml-2" />
