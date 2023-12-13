@@ -23,9 +23,7 @@ export default function Home() {
       </aside>
       <main className="flex-1 flex flex-col items-center justify-center">
         <div className="flex flex-col max-w-xl mx-4">
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center">
-            IFRN Calc
-          </h1>
+          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center">{siteConfig.name}</h1>
           <small className="text-muted-foreground">{siteConfig.description}</small>
           <Button className="mt-4" onClick={() => signIn("suap")}>
             Entrar com SUAP
