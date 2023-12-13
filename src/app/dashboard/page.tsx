@@ -6,6 +6,11 @@ import { redirect } from "next/navigation";
 import { DataTable } from "./_components/data-table";
 import { columns } from "./_components/columns";
 import { useGrades } from "../hooks";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: 'Dashboard',
+}
 
 export default function Dashboard() {
   const { status } = useSession();
