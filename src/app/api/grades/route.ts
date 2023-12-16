@@ -86,7 +86,8 @@ export async function GET() {
     const isAvailable = (grade: number | null, index: number) =>
       grade == null && index <= discipline.quantidade_avaliacoes
 
-    const disciplineObj: Discipline = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const disciplineObj: any = {
       name: parseDisciplineName(discipline.disciplina),
     }
 
