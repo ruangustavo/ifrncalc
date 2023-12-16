@@ -2,6 +2,7 @@
 
 import { GithubCorner } from '@/components/github-corner'
 import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
 import { siteConfig } from '@/config/site'
 import { ExternalLink } from 'lucide-react'
 
@@ -35,7 +36,8 @@ export default function Home() {
           </Button>
         </div>
       </main>
-      <footer className="p-4 bg-slate-50 flex items-center justify-center">
+      <Separator />
+      <footer className="p-4 flex items-center justify-center">
         <Image
           src={'https://github.com/ruangustavo.png'}
           width={32}
