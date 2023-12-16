@@ -1,14 +1,13 @@
-"use client";
+'use client'
 
 import {
-  Column,
   ColumnDef,
   SortingState,
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table";
+} from '@tanstack/react-table'
 
 import {
   Table,
@@ -17,27 +16,27 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import React from "react";
+} from '@/components/ui/table'
+import React from 'react'
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { Filter } from "lucide-react";
+} from '@/components/ui/dropdown-menu'
+import { Button } from '@/components/ui/button'
+import { Filter } from 'lucide-react'
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+  columns: ColumnDef<TData, TValue>[]
+  data: TData[]
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [sorting, setSorting] = React.useState<SortingState>([])
   const table = useReactTable({
     data,
     columns,
@@ -47,7 +46,7 @@ export function DataTable<TData, TValue>({
     state: {
       sorting,
     },
-  });
+  })
 
   return (
     <div className="flex flex-col">
@@ -63,7 +62,7 @@ export function DataTable<TData, TValue>({
             {table
               .getAllColumns()
               .filter(
-                (column) => column.getCanHide() && column.id !== "Disciplina"
+                (column) => column.getCanHide() && column.id !== 'Disciplina',
               )
               .map((column) => {
                 return (
@@ -77,7 +76,7 @@ export function DataTable<TData, TValue>({
                   >
                     {column.id}
                   </DropdownMenuCheckboxItem>
-                );
+                )
               })}
           </DropdownMenuContent>
         </DropdownMenu>
@@ -92,11 +91,11 @@ export function DataTable<TData, TValue>({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
                   </TableHead>
-                );
+                )
               })}
             </TableRow>
           ))}
@@ -106,7 +105,7 @@ export function DataTable<TData, TValue>({
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
-                data-state={row.getIsSelected() && "selected"}
+                data-state={row.getIsSelected() && 'selected'}
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
@@ -125,5 +124,5 @@ export function DataTable<TData, TValue>({
         </TableBody>
       </Table>
     </div>
-  );
+  )
 }

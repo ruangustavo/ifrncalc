@@ -1,18 +1,18 @@
-"use client";
+'use client'
 
-import { Icons } from "@/components/icons";
-import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
-import { DataTable } from "./_components/data-table";
-import { columns } from "./_components/columns";
-import { useGrades } from "../hooks";
+import { Icons } from '@/components/icons'
+import { useSession } from 'next-auth/react'
+import { redirect } from 'next/navigation'
+import { DataTable } from './_components/data-table'
+import { columns } from './_components/columns'
+import { useGrades } from '../hooks'
 
 export default function Dashboard() {
-  const { status } = useSession();
-  const { grades, error, isLoading } = useGrades();
+  const { status } = useSession()
+  const { grades, error, isLoading } = useGrades()
 
-  if (status === "unauthenticated") {
-    redirect("/");
+  if (status === 'unauthenticated') {
+    redirect('/')
   }
 
   if (isLoading) {
@@ -20,7 +20,7 @@ export default function Dashboard() {
       <main className="h-screen grid place-content-center">
         <Icons.spinner className="w-12 h-12 animate-spin" />
       </main>
-    );
+    )
   }
 
   if (error) {
@@ -30,12 +30,12 @@ export default function Dashboard() {
           Erro ao carregar suas notas 😢
         </h1>
       </main>
-    );
+    )
   }
 
   return (
     <main className="flex-1 container md:grid md:place-content-center">
       <DataTable columns={columns} data={grades} />
     </main>
-  );
+  )
 }

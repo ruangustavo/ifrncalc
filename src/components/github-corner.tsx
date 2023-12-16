@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { Icons } from "./icons";
+import Link from 'next/link'
+import { Icons } from './icons'
 
 export const GithubCorner = () => {
   return (
@@ -9,5 +9,5 @@ export const GithubCorner = () => {
     >
       <Icons.octocat className="w-16 h-16" />
     </Link>
-  );
-};
+  )
+}
