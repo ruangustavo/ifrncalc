@@ -2,6 +2,7 @@
 
 import { GithubCorner } from '@/components/github-corner'
 import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
 import { siteConfig } from '@/config/site'
 import { ExternalLink } from 'lucide-react'
 
@@ -26,7 +27,7 @@ export default function Home() {
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center">
             {siteConfig.name}
           </h1>
-          <small className="text-muted-foreground">
+          <small className="text-muted-foreground text-center">
             {siteConfig.description}
           </small>
           <Button className="mt-4" onClick={() => signIn('suap')}>
@@ -35,7 +36,8 @@ export default function Home() {
           </Button>
         </div>
       </main>
-      <footer className="p-4 bg-slate-50 flex items-center justify-center">
+      <Separator />
+      <footer className="p-4 flex items-center justify-center">
         <Image
           src={'https://github.com/ruangustavo.png'}
           width={32}

@@ -2,6 +2,7 @@
 
 import { SessionProvider } from 'next-auth/react'
 import { SWRConfig } from 'swr'
+import { ThemeProvider } from '@/components/theme-provider'
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -11,7 +12,14 @@ export function Providers({ children }: { children: React.ReactNode }) {
           fetcher: (url: string) => fetch(url).then((res) => res.json()),
         }}
       >
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
       </SWRConfig>
     </SessionProvider>
   )

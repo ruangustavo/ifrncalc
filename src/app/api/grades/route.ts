@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { authOptions } from '@/lib/auth'
 import { getServerSession } from 'next-auth'
 import { LRUCache } from 'lru-cache'
+import { Discipline } from '@/app/dashboard/_components/columns'
 
 const cache = new LRUCache({
   max: 20,
@@ -68,7 +69,7 @@ export async function GET() {
     },
   ).then((res) => res.json())
 
-  const grades = []
+  const grades: Discipline[] = []
   for (let i = 0; i < response.length; i++) {
     const discipline = response[i]
 
@@ -85,45 +86,26 @@ export async function GET() {
     const isAvailable = (grade: number | null, index: number) =>
       grade == null && index <= discipline.quantidade_avaliacoes
 
-    grades.push({
+    const disciplineObj: Discipline = {
       name: parseDisciplineName(discipline.disciplina),
-      E1: {
-        grade: discipline.nota_etapa_1.nota,
-        isAvailable: isAvailable(discipline.nota_etapa_1.nota, 1),
-        passingGrade: isAvailable(discipline.nota_etapa_1.nota, 1)
+    }
+
+    for (let j = 1; j <= 4; j++) {
+      const grade = discipline[`nota_etapa_${j}`].nota
+      const isCurrentStageAvailable = isAvailable(grade, j)
+
+      disciplineObj[`E${j}`] = {
+        grade,
+        isAvailable: isCurrentStageAvailable,
+        passingGrade: isCurrentStageAvailable
           ? gradeToPass
-          : discipline.quantidade_avaliacoes >= 1
+          : discipline.quantidade_avaliacoes >= j
             ? 0
             : -1,
-      },
-      E2: {
-        grade: discipline.nota_etapa_2.nota,
-        isAvailable: isAvailable(discipline.nota_etapa_2.nota, 2),
-        passingGrade: isAvailable(discipline.nota_etapa_2.nota, 2)
-          ? gradeToPass
-          : discipline.quantidade_avaliacoes >= 2
-            ? 0
-            : -1,
-      },
-      E3: {
-        grade: discipline.nota_etapa_3.nota,
-        isAvailable: isAvailable(discipline.nota_etapa_3.nota, 3),
-        passingGrade: isAvailable(discipline.nota_etapa_3.nota, 3)
-          ? gradeToPass
-          : discipline.quantidade_avaliacoes >= 3
-            ? 0
-            : -1,
-      },
-      E4: {
-        grade: discipline.nota_etapa_4.nota,
-        isAvailable: isAvailable(discipline.nota_etapa_4.nota, 4),
-        passingGrade: isAvailable(discipline.nota_etapa_4.nota, 4)
-          ? gradeToPass
-          : discipline.quantidade_avaliacoes >= 4
-            ? 0
-            : -1,
-      },
-    })
+      }
+    }
+
+    grades.push(disciplineObj)
   }
 
   cache.set(session.user.email as string, grades)
