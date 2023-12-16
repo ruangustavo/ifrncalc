@@ -6,6 +6,7 @@ import { redirect } from 'next/navigation'
 import { DataTable } from './_components/data-table'
 import { columns } from './_components/columns'
 import { useGrades } from '../hooks'
+import { Header } from './_components/header'
 
 export default function Dashboard() {
   const { status } = useSession()
@@ -34,8 +35,11 @@ export default function Dashboard() {
   }
 
   return (
-    <main className="flex-1 container md:grid md:place-content-center">
-      <DataTable columns={columns} data={grades} />
-    </main>
+    <>
+      <Header />
+      <main className="flex-1 container md:grid md:place-content-center">
+        <DataTable columns={columns} data={grades} />
+      </main>
+    </>
   )
 }
