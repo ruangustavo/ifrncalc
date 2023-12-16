@@ -26,7 +26,7 @@ export default function Home() {
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center">
             {siteConfig.name}
           </h1>
-          <small className="text-muted-foreground">
+          <small className="text-muted-foreground text-center">
             {siteConfig.description}
           </small>
           <Button className="mt-4" onClick={() => signIn('suap')}>
