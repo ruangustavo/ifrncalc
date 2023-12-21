@@ -9,7 +9,7 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center">
         <h1 className="font-bold uppercase">IFRN Calc</h1>
-        <nav className="flex-1 flex justify-end space-x-1">
+        <nav className="flex flex-1 justify-end space-x-1">
           <Link href={siteConfig.links.github} target="_blank" rel="noreferrer">
             <Button variant="ghost">
               <Github className="h-[1.2rem] w-[1.2rem]" />
