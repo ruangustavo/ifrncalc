@@ -1,6 +1,5 @@
 'use client'
 
-import { Icons } from '@/components/icons'
 import { useSession } from 'next-auth/react'
 import { redirect } from 'next/navigation'
 import { DataTable } from './_components/data-table'
@@ -28,7 +27,7 @@ export default function Dashboard() {
 
   if (error) {
     return (
-      <main className="h-screen grid place-content-center">
+      <main className="grid h-screen place-content-center">
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
           Erro ao carregar suas notas 😢
         </h1>
@@ -52,7 +51,7 @@ function DataTableSkeleton() {
   const NUMBER_OF_COLUMNS = 5
 
   return (
-    <div className="w-full md:w-[40vw] border shadow-sm mt-12">
+    <div className="mt-12 w-full border shadow-sm md:w-[40vw]">
       <Table>
         <TableHeader>
           <TableRow>
@@ -89,9 +88,9 @@ function DataTableSkeleton() {
               {Array.from({ length: NUMBER_OF_COLUMNS }).map((_, i) => (
                 <TableCell key={i}>
                   {i === 0 ? (
-                    <Skeleton className="w-[150px] h-4" />
+                    <Skeleton className="h-4 w-[150px]" />
                   ) : (
-                    <Skeleton className="w-[25px] h-4" />
+                    <Skeleton className="h-4 w-[25px]" />
                   )}
                 </TableCell>
               ))}

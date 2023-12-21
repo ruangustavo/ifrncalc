@@ -50,7 +50,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="flex flex-col">
-      <div className="self-end my-2">
+      <div className="my-2 self-end">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
