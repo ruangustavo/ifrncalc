@@ -22,12 +22,12 @@ export default function Home() {
       <aside>
         <GithubCorner />
       </aside>
-      <main className="flex-1 flex flex-col items-center justify-center">
-        <div className="flex flex-col max-w-xl mx-4">
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center">
+      <main className="flex flex-1 flex-col items-center justify-center">
+        <div className="mx-4 flex max-w-xl flex-col">
+          <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight lg:text-5xl">
             {siteConfig.name}
           </h1>
-          <small className="text-muted-foreground text-center">
+          <small className="text-center text-muted-foreground">
             {siteConfig.description}
           </small>
           <Button className="mt-4" onClick={() => signIn('suap')}>
@@ -37,15 +37,15 @@ export default function Home() {
         </div>
       </main>
       <Separator />
-      <footer className="p-4 flex items-center justify-center">
+      <footer className="flex items-center justify-center p-4">
         <Image
           src={'https://github.com/ruangustavo.png'}
-          width={32}
-          height={32}
+          width={38}
+          height={38}
           className="rounded-full"
           alt="Imagem de perfil do GitHub de @ruangustavo"
         />
-        <p className="text-sm text-muted-foreground ml-2">
+        <p className="ml-2 text-sm text-muted-foreground">
           Desenvolvido por{' '}
           <a
             href="https://github.com/ruangustavo"
