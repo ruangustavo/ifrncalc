@@ -24,11 +24,13 @@ export function CellTable({
     return <span>-</span>
   }
 
+  const hasPassingGrade = passingGrade >= 0 && !grade
+
   return (
     <span
       className={twJoin(
-        passingGrade && 'font-medium',
-        passingGrade && getGradeClassname(passingGrade),
+        hasPassingGrade && 'font-medium',
+        hasPassingGrade && getGradeClassname(passingGrade),
       )}
     >
       {grade ?? passingGrade}
