@@ -7,6 +7,16 @@ import { DataTable } from './_components/data-table'
 import { columns } from './_components/columns'
 import { useGrades } from '../hooks'
 import { Header } from './_components/header'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { Skeleton } from '@/components/ui/skeleton'
+import { ArrowUpDown } from 'lucide-react'
 
 export default function Dashboard() {
   const { status } = useSession()
@@ -14,14 +24,6 @@ export default function Dashboard() {
 
   if (status === 'unauthenticated') {
     redirect('/')
-  }
-
-  if (isLoading) {
-    return (
-      <main className="h-screen grid place-content-center">
-        <Icons.spinner className="w-12 h-12 animate-spin" />
-      </main>
-    )
   }
 
   if (error) {
@@ -38,8 +40,65 @@ export default function Dashboard() {
     <>
       <Header />
       <main className="flex-1 bg-secondary px-4 md:grid md:place-content-center">
-        <DataTable columns={columns} data={grades} />
+        {isLoading && <DataTableSkeleton />}
+        {grades && <DataTable columns={columns} data={grades} />}
       </main>
     </>
+  )
+}
+
+function DataTableSkeleton() {
+  const NUMBER_OF_ROWS = 12
+  const NUMBER_OF_COLUMNS = 5
+
+  return (
+    <div className="w-full md:w-[40vw] border shadow-sm mt-12">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Disciplina</TableHead>
+            <TableHead>
+              <span className="inline-flex items-center justify-center">
+                E1
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+              </span>
+            </TableHead>
+            <TableHead>
+              <span className="inline-flex items-center justify-center">
+                E2
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+              </span>
+            </TableHead>
+            <TableHead>
+              <span className="inline-flex items-center justify-center">
+                E3
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+              </span>
+            </TableHead>
+            <TableHead>
+              <span className="inline-flex items-center justify-center">
+                E4
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+              </span>
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {Array.from({ length: NUMBER_OF_ROWS }).map((_, i) => (
+            <TableRow key={i}>
+              {Array.from({ length: NUMBER_OF_COLUMNS }).map((_, i) => (
+                <TableCell key={i}>
+                  {i === 0 ? (
+                    <Skeleton className="w-[150px] h-4" />
+                  ) : (
+                    <Skeleton className="w-[25px] h-4" />
+                  )}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   )
 }
