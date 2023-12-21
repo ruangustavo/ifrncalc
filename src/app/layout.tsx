@@ -19,6 +19,10 @@ export const metadata: Metadata = {
       url: 'https://www.linkedin.com/in/ruan-gustavo',
     },
   ],
+  verification: {
+    google:
+      'google-site-verification=nw6ORfHvFq5R12GVz2HbqTcs7sIZDFkW0_zhquDExR4',
+  },
   creator: 'Ruan Gustavo',
   openGraph: {
     type: 'website',
