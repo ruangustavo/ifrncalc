@@ -3,8 +3,6 @@ import type { NextAuthOptions } from 'next-auth'
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',
-    maxAge: 2 * 60 * 60, // 2 hours
-    updateAge: 0,
   },
   callbacks: {
     async session({ session, token }) {
