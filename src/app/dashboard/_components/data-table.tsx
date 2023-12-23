@@ -50,7 +50,7 @@ export function DataTable<TData, TValue>({
   })
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="mt-2 flex flex-col gap-2">
       <div className="self-end">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -137,11 +137,11 @@ export function DataTable<TData, TValue>({
 }
 
 export function DataTableSkeleton() {
-  const NUMBER_OF_ROWS = 12
+  const NUMBER_OF_ROWS = 16
   const NUMBER_OF_COLUMNS = 5
 
   return (
-    <div className="mt-12 w-full border shadow-sm md:w-[40vw]">
+    <div className="mt-12 w-full rounded-md border bg-card shadow-sm md:w-[50vw]">
       <Table>
         <TableHeader>
           <TableRow>
