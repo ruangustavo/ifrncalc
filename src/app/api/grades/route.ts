@@ -1,9 +1,15 @@
-import { NextResponse } from 'next/server'
+import { Discipline } from '@/app/dashboard/_components/columns'
 import { authOptions } from '@/lib/auth'
 import { getServerSession } from 'next-auth'
-import { Discipline } from '@/app/dashboard/_components/columns'
+import { NextResponse } from 'next/server'
 
-const currentYear = new Date().getFullYear()
+const isFebruary = new Date().getMonth() >= 1
+
+// isso é importante para lidar com ano letivo que extende para o próximo ano
+const currentYear = isFebruary
+  ? new Date().getFullYear()
+  : new Date().getFullYear() - 1
+
 const STAGE_TO_WEIGHT: Record<number, number> = { 1: 2, 2: 2, 3: 3, 4: 3 }
 
 interface Grade {
