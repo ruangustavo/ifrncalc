@@ -7,7 +7,6 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Skeleton } from '@/components/ui/skeleton'
 import {
   Table,
   TableBody,
@@ -16,7 +15,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { cn } from '@/lib/utils'
 import {
   ColumnDef,
   SortingState,
@@ -25,7 +23,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { ArrowUpDown, Filter } from 'lucide-react'
+import { Filter } from 'lucide-react'
 import React from 'react'
 
 interface DataTableProps<TData, TValue> {
@@ -83,7 +81,7 @@ export function DataTable<TData, TValue>({
         </DropdownMenu>
       </div>
       <div className="rounded-md border bg-card">
-        <Table>
+        <Table className="min-h-max">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -132,60 +130,6 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-    </div>
-  )
-}
-
-export function DataTableSkeleton() {
-  const NUMBER_OF_ROWS = 16
-  const NUMBER_OF_COLUMNS = 5
-
-  return (
-    <div className="mt-12 w-full rounded-md border bg-card shadow-sm md:w-[50vw]">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Disciplina</TableHead>
-            <TableHead>
-              <span className="inline-flex items-center justify-center">
-                E1
-                <ArrowUpDown className="ml-2 h-4 w-4" />
-              </span>
-            </TableHead>
-            <TableHead>
-              <span className="inline-flex items-center justify-center">
-                E2
-                <ArrowUpDown className="ml-2 h-4 w-4" />
-              </span>
-            </TableHead>
-            <TableHead>
-              <span className="inline-flex items-center justify-center">
-                E3
-                <ArrowUpDown className="ml-2 h-4 w-4" />
-              </span>
-            </TableHead>
-            <TableHead>
-              <span className="inline-flex items-center justify-center">
-                E4
-                <ArrowUpDown className="ml-2 h-4 w-4" />
-              </span>
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {Array.from({ length: NUMBER_OF_ROWS }).map((_, i) => (
-            <TableRow key={i}>
-              {Array.from({ length: NUMBER_OF_COLUMNS }).map((_, i) => (
-                <TableCell key={i}>
-                  <Skeleton
-                    className={cn('h-4', i === 0 ? 'w-[150px]' : 'w-[25px]')}
-                  />
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
     </div>
   )
 }

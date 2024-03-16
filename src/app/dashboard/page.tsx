@@ -14,9 +14,5 @@ export default async function Dashboard() {
 
   const grades = await getGrades()
 
-  return (
-    <main className="flex-1 bg-secondary px-4 md:grid md:place-content-center">
-      <DataTable columns={columns} data={grades} />
-    </main>
-  )
+  return <DataTable columns={columns} data={grades} />
 }
