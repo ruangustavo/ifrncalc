@@ -1,11 +1,11 @@
+'use server'
+
 import { Discipline } from '@/app/dashboard/_components/columns'
 import { authOptions } from '@/lib/auth'
 import { getServerSession } from 'next-auth'
-import { NextResponse } from 'next/server'
 
 const isFebruary = new Date().getMonth() >= 1
 
-// isso é importante para lidar com ano letivo que extende para o próximo ano
 const currentYear = isFebruary
   ? new Date().getFullYear()
   : new Date().getFullYear() - 1
@@ -47,12 +47,12 @@ function parseDisciplineName(discipline: string) {
   return discipline.substring(11, discipline.length).replace(/\(.*\)/, '')
 }
 
-export async function GET() {
+export async function getGrades() {
   const session = await getServerSession(authOptions)
+  const { accessToken } = session
 
-  const token = session?.accessToken
-  if (!token) {
-    return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
+  if (!accessToken) {
+    return { error: 'Not authenticated' }
   }
 
   const response = await fetch(
@@ -60,7 +60,7 @@ export async function GET() {
     {
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${accessToken}`,
       },
       next: {
         revalidate: 60 * 60 * 6, // 6 hours
@@ -108,5 +108,5 @@ export async function GET() {
     grades.push(disciplineObj)
   }
 
-  return NextResponse.json(grades)
+  return grades
 }
