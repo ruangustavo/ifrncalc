@@ -20,8 +20,7 @@ export const metadata: Metadata = {
     },
   ],
   verification: {
-    google:
-      'google-site-verification=nw6ORfHvFq5R12GVz2HbqTcs7sIZDFkW0_zhquDExR4',
+    google: 'HUrkawyDWIzcybFim8wRjb4XEt8LKZT5fxBzGhJihpw',
   },
   creator: 'Ruan Gustavo',
   openGraph: {
@@ -45,12 +44,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <>
-      <html lang="pt-BR" suppressHydrationWarning>
-        <body className={`${inter.className} flex flex-col antialiased`}>
-          <Providers>{children}</Providers>
-        </body>
-      </html>
-    </>
+    <html lang="pt-BR" suppressHydrationWarning>
+      <body className={`${inter.className} flex flex-col antialiased`}>
+        <Providers>{children}</Providers>
+      </body>
+    </html>
   )
 }
