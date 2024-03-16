@@ -1,19 +1,16 @@
-'use client'
-
 import { GithubCorner } from '@/components/github-corner'
-import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { siteConfig } from '@/config/site'
-import { ExternalLink } from 'lucide-react'
-
-import { signIn, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
+import { SignInButton } from './_components/sign-in-button'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
-export default function Home() {
-  const { status } = useSession()
+export default async function Home() {
+  const session = await getServerSession(authOptions)
 
-  if (status === 'authenticated') {
+  if (session) {
     redirect('/dashboard')
   }
 
@@ -30,18 +27,16 @@ export default function Home() {
           <small className="text-center text-muted-foreground">
             {siteConfig.description}
           </small>
-          <Button className="mt-4" onClick={() => signIn('suap')}>
-            Entrar com SUAP
-            <ExternalLink size={20} className="ml-2" />
-          </Button>
+          <SignInButton />
         </div>
       </main>
       <Separator />
       <footer className="flex items-center justify-center p-4">
         <Image
           src={'https://github.com/ruangustavo.png'}
-          width={38}
-          height={38}
+          width={36}
+          height={36}
+          quality={25}
           className="rounded-full"
           alt="Imagem de perfil do GitHub de @ruangustavo"
         />
