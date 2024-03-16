@@ -38,7 +38,7 @@ export default function DashboardLoading() {
           <span className="sr-only">Filtrar bimestres</span>
         </Button>
       </div>
-      <div className="rounded-md border bg-card">
+      <div className="rounded-md border border-foreground/5 bg-card">
         <Table className="min-h-max">
           <TableHeader>
             <TableRow>

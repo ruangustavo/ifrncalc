@@ -80,7 +80,7 @@ export function DataTable<TData, TValue>({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="rounded-md border bg-card">
+      <div className="rounded-md border border-foreground/5 bg-card">
         <Table className="min-h-max">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
