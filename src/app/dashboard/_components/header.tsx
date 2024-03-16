@@ -12,7 +12,7 @@ export function Header() {
         <nav className="flex flex-1 justify-end space-x-1">
           <Link href={siteConfig.links.github} target="_blank" rel="noreferrer">
             <Button variant="ghost">
-              <Github className="h-[1.2rem] w-[1.2rem]" />
+              <Github className="size-[1.2rem]" />
               <span className="sr-only">GitHub</span>
             </Button>
           </Link>

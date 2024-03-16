@@ -8,7 +8,7 @@ export const GithubCorner = () => {
       href={siteConfig.links.github}
       className="absolute right-0 top-0 z-20 cursor-pointer xl:fixed"
     >
-      <Icons.octocat className="h-16 w-16" />
+      <Icons.octocat className="size-16" />
     </Link>
   )
 }

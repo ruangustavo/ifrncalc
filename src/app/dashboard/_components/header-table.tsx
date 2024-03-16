@@ -17,7 +17,7 @@ export function HeaderTable({
       className="p-0"
     >
       {name}
-      <ArrowUpDown className="ml-2 h-4 w-4" />
+      <ArrowUpDown className="ml-2 size-4" />
     </Button>
   )
 }
