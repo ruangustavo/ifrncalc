@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { siteConfig } from '@/config/site'
 import { Github } from 'lucide-react'
 import Link from 'next/link'
+import { SignOutButton } from './sign-out-button'
 
 export function Header() {
   return (
@@ -17,6 +18,7 @@ export function Header() {
             </Button>
           </Link>
           <ModeToggle />
+          <SignOutButton />
         </nav>
       </div>
     </header>
