@@ -7,8 +7,7 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async session({ session, token }) {
       session.user.id = token.sub
-      session.accessToken = token.accessToken
-
+      session.accessToken = token.accessToken as string
       return session
     },
     async jwt({ token, account }) {

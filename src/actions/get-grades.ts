@@ -47,12 +47,18 @@ function parseDisciplineName(discipline: string) {
   return discipline.substring(11, discipline.length).replace(/\(.*\)/, '')
 }
 
-export async function getGrades() {
+type GetGradesResponse = {
+  success: boolean
+  grades?: Discipline[]
+  message?: string
+}
+
+export async function getGrades(): Promise<GetGradesResponse> {
   const session = await getServerSession(authOptions)
-  const { accessToken } = session
+  const accessToken = session?.accessToken
 
   if (!accessToken) {
-    return { error: 'Not authenticated' }
+    return { success: false, message: 'Not authenticated' }
   }
 
   const response = await fetch(
@@ -108,5 +114,8 @@ export async function getGrades() {
     grades.push(disciplineObj)
   }
 
-  return grades
+  return {
+    success: true,
+    grades,
+  }
 }

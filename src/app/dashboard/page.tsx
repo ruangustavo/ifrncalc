@@ -12,7 +12,13 @@ export default async function Dashboard() {
     redirect('/')
   }
 
-  const grades = await getGrades()
+  const { success, grades } = await getGrades()
 
-  return <DataTable columns={columns} data={grades} />
+  return success ? (
+    <DataTable columns={columns} data={grades ?? []} />
+  ) : (
+    <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight lg:text-5xl">
+      Aconteceu um erro inesperado! 😢
+    </h1>
+  )
 }

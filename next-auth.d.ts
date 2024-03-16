@@ -1,4 +1,4 @@
-import NextAuth, { DefaultSession } from 'next-auth'
+import { DefaultSession } from 'next-auth'
 
 declare module 'next-auth' {
   interface Profile {
@@ -8,8 +8,6 @@ declare module 'next-auth' {
 
   interface Session {
     accessToken: string
-    user: {
-      id: string | undefined
-    } & DefaultSession['user']
+    user: { id: string | undefined } & DefaultSession['user']
   }
 }
