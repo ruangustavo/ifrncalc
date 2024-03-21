@@ -1,3 +1,8 @@
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { Stage } from './columns'
 import { twJoin } from 'tailwind-merge'
 
@@ -27,13 +32,20 @@ export function CellTable({
   const hasPassingGrade = passingGrade >= 0 && !grade
 
   return (
-    <span
-      className={twJoin(
-        hasPassingGrade && 'font-medium',
-        hasPassingGrade && getGradeClassname(passingGrade),
-      )}
-    >
-      {grade ?? passingGrade}
-    </span>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <span
+          className={twJoin(
+            hasPassingGrade && 'font-medium',
+            hasPassingGrade && getGradeClassname(passingGrade),
+          )}
+        >
+          {grade ?? passingGrade}
+        </span>
+      </TooltipTrigger>
+      <TooltipContent className="border-foreground/5">
+        Você precisa de {grade ?? passingGrade} para passar
+      </TooltipContent>
+    </Tooltip>
   )
 }
