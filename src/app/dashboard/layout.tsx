@@ -12,7 +12,7 @@ export default function DashboardLayout({
   return (
     <>
       <Header />
-      <main className="flex-1 bg-secondary px-4 md:grid md:place-content-center">
+      <main className="container flex-1">
         <Suspense>{children}</Suspense>
       </main>
     </>

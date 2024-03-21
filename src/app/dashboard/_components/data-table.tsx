@@ -48,16 +48,24 @@ export function DataTable<TData, TValue>({
   })
 
   return (
-    <div className="mt-2 flex flex-col gap-2">
-      <div className="self-end">
+    <div className="size-full space-y-2 pt-2.5">
+      <div className="flex items-center justify-between gap-4">
+        <span className="text-xs text-muted-foreground">
+          As notas coloridas exibidas são as médias necessárias para ser
+          aprovado
+        </span>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              <Filter size={16} />
-              <span className="sr-only">Filtrar bimestres</span>
+            <Button
+              variant="outline"
+              size="xs"
+              className="flex items-center gap-2"
+            >
+              <Filter size={12} />
+              <span className="sr-only md:not-sr-only">Filtrar bimestres</span>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="start">
             {table
               .getAllColumns()
               .filter(
