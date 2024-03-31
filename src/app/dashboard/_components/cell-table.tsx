@@ -4,7 +4,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { Stage } from './columns'
-import { twJoin } from 'tailwind-merge'
+import { cn } from '@/lib/utils'
 
 function getGradeClassname(grade: number) {
   if (grade <= 40) {
@@ -35,7 +35,7 @@ export function CellTable({
     <Tooltip>
       <TooltipTrigger asChild>
         <span
-          className={twJoin(
+          className={cn(
             hasPassingGrade && 'font-medium',
             hasPassingGrade && getGradeClassname(passingGrade),
           )}
