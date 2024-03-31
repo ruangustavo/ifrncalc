@@ -4,8 +4,9 @@ import { Providers } from './providers'
 import { Metadata } from 'next'
 import { siteConfig } from '@/config/site'
 import { Analytics } from '@vercel/analytics/react'
+import { cn } from '@/lib/utils'
 
-const inter = Nunito({ subsets: ['latin'] })
+const nunito = Nunito({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: {
@@ -46,7 +47,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
-      <body className={`${inter.className} flex flex-col antialiased`}>
+      <body
+        className={cn(
+          nunito.className,
+          'flex flex-col antialiased bg-muted/40',
+        )}
+      >
         <Providers>{children}</Providers>
         <Analytics />
       </body>
