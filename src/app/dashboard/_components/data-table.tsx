@@ -15,6 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { useToast } from '@/components/ui/use-toast'
 import {
   ColumnDef,
   SortingState,
@@ -35,6 +36,8 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const { toast } = useToast()
+
   const [sorting, setSorting] = React.useState<SortingState>([])
   const table = useReactTable({
     data,
@@ -77,9 +80,25 @@ export function DataTable<TData, TValue>({
                     key={column.id}
                     className="capitalize"
                     checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
+                    onCheckedChange={(newVisibility) => {
+                      const visibleColumns = table
+                        .getAllColumns()
+                        .filter((column) => column.getIsVisible())
+
+                      // Decrementing "Disciplina" column
+                      const totalVisibleColumns = visibleColumns.length - 1
+
+                      if (!newVisibility && totalVisibleColumns - 1 > 0) {
+                        column.toggleVisibility(newVisibility)
+                        return
+                      }
+
+                      toast({
+                        title: 'Erro',
+                        description: 'É necessário exibir ao menos uma etapa',
+                        variant: 'destructive',
+                      })
+                    }}
                   >
                     {column.id}
                   </DropdownMenuCheckboxItem>

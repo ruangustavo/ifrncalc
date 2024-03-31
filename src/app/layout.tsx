@@ -5,6 +5,7 @@ import { Metadata } from 'next'
 import { siteConfig } from '@/config/site'
 import { Analytics } from '@vercel/analytics/react'
 import { cn } from '@/lib/utils'
+import { Toaster } from '@/components/ui/toaster'
 
 const nunito = Nunito({ subsets: ['latin'] })
 
@@ -55,6 +56,7 @@ export default function RootLayout({
       >
         <Providers>{children}</Providers>
         <Analytics />
+        <Toaster />
       </body>
     </html>
   )
