@@ -88,16 +88,16 @@ export function DataTable<TData, TValue>({
                       // Decrementing "Disciplina" column
                       const totalVisibleColumns = visibleColumns.length - 1
 
-                      if (!newVisibility && totalVisibleColumns - 1 > 0) {
-                        column.toggleVisibility(newVisibility)
+                      if (!newVisibility && totalVisibleColumns - 1 === 0) {
+                        toast({
+                          title: 'Erro',
+                          description: 'É necessário exibir ao menos uma etapa',
+                          variant: 'destructive',
+                        })
                         return
                       }
 
-                      toast({
-                        title: 'Erro',
-                        description: 'É necessário exibir ao menos uma etapa',
-                        variant: 'destructive',
-                      })
+                      column.toggleVisibility(newVisibility)
                     }}
                   >
                     {column.id}
