@@ -17,13 +17,25 @@ interface Grade {
   faltas: number
 }
 
+const getWeight = (
+  currentIndex: number,
+  numberOfAssessments: number,
+): number => {
+  const isSemester = numberOfAssessments === 2
+  return isSemester
+    ? currentIndex === 0
+      ? 2
+      : 3
+    : STAGE_TO_WEIGHT[currentIndex + 1]
+}
+
 function calculatePassingGrade(grades: Grade[], numberOfAssessments: number) {
   let totalWeightNull = 0
   let sumOfGradesNotNull = 0
 
   for (let i = 0; i < grades.length && i < numberOfAssessments; i++) {
     const currentStageGrade = grades[i]
-    const weight = STAGE_TO_WEIGHT[i + 1]
+    const weight = getWeight(i, numberOfAssessments)
 
     if (currentStageGrade.nota === null) {
       totalWeightNull += weight
@@ -34,7 +46,7 @@ function calculatePassingGrade(grades: Grade[], numberOfAssessments: number) {
 
   const weightAccordingToNumberOfAssessments = Array.from(
     { length: numberOfAssessments },
-    (_, i) => STAGE_TO_WEIGHT[i + 1] || 0,
+    (_, i) => getWeight(i, numberOfAssessments) || 0,
   ).reduce((sum, weight) => sum + weight, 0)
 
   const gradeNeededToPass =
