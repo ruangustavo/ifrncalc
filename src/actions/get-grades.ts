@@ -1,11 +1,9 @@
 'use server'
 
-import { Discipline } from '@/app/dashboard/_components/columns'
-import { authOptions } from '@/lib/auth'
 import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 const isFebruary = new Date().getMonth() >= 1
-
 const currentYear = isFebruary
   ? new Date().getFullYear()
   : new Date().getFullYear() - 1
@@ -15,6 +13,35 @@ const STAGE_TO_WEIGHT: Record<number, number> = { 1: 2, 2: 2, 3: 3, 4: 3 }
 interface Grade {
   nota: number | null
   faltas: number
+}
+
+interface StageGrade {
+  grade: number | null
+  isAvailable: boolean
+  passingGrade: number
+}
+
+interface Discipline {
+  name: string
+  E1: StageGrade
+  E2: StageGrade
+  E3: StageGrade
+  E4: StageGrade
+}
+
+interface SUAPResponse {
+  disciplina: string
+  nota_etapa_1: Grade
+  nota_etapa_2: Grade
+  nota_etapa_3: Grade
+  nota_etapa_4: Grade
+  quantidade_avaliacoes: number
+}
+
+interface GetGradesResponse {
+  success: boolean
+  grades?: Discipline[]
+  message?: string
 }
 
 const getWeight = (
@@ -29,7 +56,10 @@ const getWeight = (
     : STAGE_TO_WEIGHT[currentIndex + 1]
 }
 
-function calculatePassingGrade(grades: Grade[], numberOfAssessments: number) {
+function calculatePassingGrade(
+  grades: Grade[],
+  numberOfAssessments: number,
+): number {
   let totalWeightNull = 0
   let sumOfGradesNotNull = 0
 
@@ -55,14 +85,8 @@ function calculatePassingGrade(grades: Grade[], numberOfAssessments: number) {
   return gradeNeededToPass < 0 ? 0 : Math.round(gradeNeededToPass)
 }
 
-function parseDisciplineName(discipline: string) {
-  return discipline.substring(11, discipline.length).replace(/\(.*\)/, '')
-}
-
-type GetGradesResponse = {
-  success: boolean
-  grades?: Discipline[]
-  message?: string
+function parseDisciplineName(discipline: string): string {
+  return discipline.substring(11).replace(/\(.*\)/, '')
 }
 
 export async function getGrades(): Promise<GetGradesResponse> {
@@ -73,7 +97,7 @@ export async function getGrades(): Promise<GetGradesResponse> {
     return { success: false, message: 'Not authenticated' }
   }
 
-  const response = await fetch(
+  const response: SUAPResponse[] = await fetch(
     `${process.env.SUAP_URL}/api/v2/minhas-informacoes/boletim/${currentYear}/1/`,
     {
       method: 'GET',
@@ -86,10 +110,7 @@ export async function getGrades(): Promise<GetGradesResponse> {
     },
   ).then((res) => res.json())
 
-  const grades: Discipline[] = []
-  for (let i = 0; i < response.length; i++) {
-    const discipline = response[i]
-
+  const grades: Discipline[] = response.map((discipline) => {
     const gradeToPass = calculatePassingGrade(
       [
         discipline.nota_etapa_1,
@@ -103,28 +124,24 @@ export async function getGrades(): Promise<GetGradesResponse> {
     const isAvailable = (grade: number | null, index: number) =>
       grade == null && index <= discipline.quantidade_avaliacoes
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const disciplineObj: any = {
+    const createStageGrade = (grade: Grade, index: number): StageGrade => ({
+      grade: grade.nota,
+      isAvailable: isAvailable(grade.nota, index),
+      passingGrade: isAvailable(grade.nota, index)
+        ? gradeToPass
+        : discipline.quantidade_avaliacoes >= index
+          ? 0
+          : -1,
+    })
+
+    return {
       name: parseDisciplineName(discipline.disciplina),
+      E1: createStageGrade(discipline.nota_etapa_1, 1),
+      E2: createStageGrade(discipline.nota_etapa_2, 2),
+      E3: createStageGrade(discipline.nota_etapa_3, 3),
+      E4: createStageGrade(discipline.nota_etapa_4, 4),
     }
-
-    for (let j = 1; j <= 4; j++) {
-      const grade = discipline[`nota_etapa_${j}`].nota
-      const isCurrentStageAvailable = isAvailable(grade, j)
-
-      disciplineObj[`E${j}`] = {
-        grade,
-        isAvailable: isCurrentStageAvailable,
-        passingGrade: isCurrentStageAvailable
-          ? gradeToPass
-          : discipline.quantidade_avaliacoes >= j
-            ? 0
-            : -1,
-      }
-    }
-
-    grades.push(disciplineObj)
-  }
+  })
 
   return {
     success: true,
