@@ -18,6 +18,36 @@ function getGradeClassname(grade: number) {
   return 'text-red-500'
 }
 
+function checkIfHasPassingGrade({
+  grade,
+  passingGrade,
+}: Omit<Stage, 'isAvailable'>) {
+  return !grade && passingGrade >= 0
+}
+
+export function getGradeOrPassingGrade({
+  grade,
+  passingGrade,
+  isAvailable,
+}: Stage) {
+  if (!isAvailable && grade === null) {
+    return '-'
+  }
+
+  const hasPassingGrade = checkIfHasPassingGrade({ grade, passingGrade })
+
+  return (
+    <span
+      className={cn(
+        'font-mono tabular-nums',
+        hasPassingGrade && getGradeClassname(passingGrade),
+      )}
+    >
+      {hasPassingGrade ? passingGrade : grade}
+    </span>
+  )
+}
+
 export function CellTable({
   stage: { grade, isAvailable, passingGrade },
 }: {
@@ -29,14 +59,14 @@ export function CellTable({
     return <span>-</span>
   }
 
-  const hasPassingGrade = passingGrade >= 0 && !grade
+  const hasPassingGrade = checkIfHasPassingGrade({ grade, passingGrade })
 
-  return (
+  return hasPassingGrade ? (
     <Tooltip>
       <TooltipTrigger asChild>
         <span
           className={cn(
-            hasPassingGrade && 'font-medium',
+            'font-mono tabular-nums',
             hasPassingGrade && getGradeClassname(passingGrade),
           )}
         >
@@ -47,5 +77,7 @@ export function CellTable({
         Você precisa de {grade ?? passingGrade} para passar
       </TooltipContent>
     </Tooltip>
+  ) : (
+    <span className="font-mono tabular-nums">{grade}</span>
   )
 }

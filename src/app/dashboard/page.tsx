@@ -1,9 +1,9 @@
 import { redirect } from 'next/navigation'
-import { columns } from './_components/columns'
-import { DataTable } from './_components/data-table'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { getGrades } from '@/actions/get-grades'
+import { Suspense } from 'react'
+import { TableGrades } from './_components/table-grades'
+import { Loader2 } from 'lucide-react'
 
 export default async function Dashboard() {
   const session = await getServerSession(authOptions)
@@ -12,13 +12,16 @@ export default async function Dashboard() {
     redirect('/')
   }
 
-  const { success, grades } = await getGrades()
-
-  return success ? (
-    <DataTable columns={columns} data={grades ?? []} />
-  ) : (
-    <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight lg:text-5xl">
-      Aconteceu um erro inesperado! 😢
-    </h1>
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center gap-1.5">
+          <Loader2 className="size-4 animate-spin" />
+          <span>Carregando...</span>
+        </div>
+      }
+    >
+      <TableGrades />
+    </Suspense>
   )
 }

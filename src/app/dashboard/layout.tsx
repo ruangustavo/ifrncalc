@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import React, { Suspense } from 'react'
+import React from 'react'
 import { Header } from './_components/header'
 
 export const metadata: Metadata = { title: 'Boletim' }
@@ -12,9 +12,7 @@ export default function DashboardLayout({
   return (
     <>
       <Header />
-      <main className="container flex-1">
-        <Suspense>{children}</Suspense>
-      </main>
+      <main className="container flex-1">{children}</main>
     </>
   )
 }
