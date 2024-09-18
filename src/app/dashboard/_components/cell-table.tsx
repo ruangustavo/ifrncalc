@@ -3,8 +3,13 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { Stage } from './columns'
 import { cn } from '@/lib/utils'
+
+interface Stage {
+  grade: number | null
+  isAvailable: boolean
+  passingGrade: number
+}
 
 function getGradeClassname(grade: number) {
   if (grade <= 40) {
