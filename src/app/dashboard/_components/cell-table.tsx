@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { useGradesStore } from '@/store/grades'
 import { recalculateGrades } from '@/utils/grade-calculation'
+import { mockDisciplineGrades } from '@/utils/mock-utils'
 import { Pencil } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { EditGradeModal } from './edit-grade-modal'
@@ -48,11 +49,19 @@ export function CellTable({ stageKey, discipline }: CellTableProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const { setGrade, editedGrades } = useGradesStore()
 
+  const mockedDiscipline = useMemo(
+    () =>
+      process.env.NEXT_PUBLIC_SHOULD_MOCK === 'true'
+        ? mockDisciplineGrades(discipline)
+        : discipline,
+    [discipline]
+  )
+
   const editedDisciplineGrades = editedGrades[discipline.name] ?? {}
 
   const recalculatedStages = useMemo(
-    () => recalculateGrades(discipline, editedDisciplineGrades),
-    [discipline, editedDisciplineGrades]
+    () => recalculateGrades(mockedDiscipline, editedDisciplineGrades),
+    [mockedDiscipline, editedDisciplineGrades]
   )
 
   const currentStage =
@@ -73,10 +82,7 @@ export function CellTable({ stageKey, discipline }: CellTableProps) {
 
   return (
     <div className="flex items-center gap-2">
-      {GradeLabel({
-        ...currentStage,
-        grade: displayGrade,
-      })}
+      <GradeLabel {...currentStage} grade={displayGrade} />
 
       {currentStage.isAvailable && hasMultipleAvailableStages && (
         <Button
