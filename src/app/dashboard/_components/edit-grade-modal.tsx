@@ -2,12 +2,12 @@
 
 import { Button } from '@/components/ui/button'
 import {
-  Credenza,
-  CredenzaContent,
-  CredenzaFooter,
-  CredenzaHeader,
-  CredenzaTitle,
-} from '@/components/ui/credenza'
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useState } from 'react'
@@ -40,13 +40,13 @@ export function EditGradeModal({
   }
 
   return (
-    <Credenza open={isOpen} onOpenChange={onClose}>
-      <CredenzaContent className="sm:max-w-[425px]">
-        <CredenzaHeader>
-          <CredenzaTitle>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>
             Editar nota - {disciplineName} ({stage})
-          </CredenzaTitle>
-        </CredenzaHeader>
+          </DialogTitle>
+        </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 p-4 md:px-0 md:py-4">
             <div className="grid gap-2">
@@ -63,14 +63,14 @@ export function EditGradeModal({
               />
             </div>
           </div>
-          <CredenzaFooter>
+          <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose}>
               Cancelar
             </Button>
             <Button type="submit">Salvar</Button>
-          </CredenzaFooter>
+          </DialogFooter>
         </form>
-      </CredenzaContent>
-    </Credenza>
+      </DialogContent>
+    </Dialog>
   )
 }
