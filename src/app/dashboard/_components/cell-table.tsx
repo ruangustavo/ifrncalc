@@ -1,6 +1,7 @@
 'use client'
 
 import type { Discipline } from '@/actions/get-grades'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { useGradesStore } from '@/store/grades'
@@ -75,6 +76,7 @@ export function CellTable({ stageKey, discipline }: CellTableProps) {
 
   const currentStage =
     recalculatedStages[['E1', 'E2', 'E3', 'E4'].indexOf(stageKey)]
+
   const displayGrade = editedDisciplineGrades[stageKey] ?? currentStage.grade
 
   const handleEdit = (newGrade: number) => {
@@ -85,6 +87,9 @@ export function CellTable({ stageKey, discipline }: CellTableProps) {
     return <span>-</span>
   }
 
+  const hasMultipleAvailableStages =
+    recalculatedStages.filter(stage => stage.isAvailable).length > 1
+
   return (
     <div className="flex items-center gap-2">
       {getGradeOrPassingGrade({
@@ -92,7 +97,7 @@ export function CellTable({ stageKey, discipline }: CellTableProps) {
         grade: displayGrade,
       })}
 
-      {currentStage.isAvailable && (
+      {currentStage.isAvailable && hasMultipleAvailableStages && (
         <Button
           variant="ghost"
           className="size-6 p-0 md:size-8 md:p-1"
@@ -100,6 +105,10 @@ export function CellTable({ stageKey, discipline }: CellTableProps) {
         >
           <Pencil className="size-4" />
         </Button>
+      )}
+
+      {editedDisciplineGrades[stageKey] && (
+        <Badge variant="secondary">Editada</Badge>
       )}
 
       <EditGradeModal
