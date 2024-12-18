@@ -1,7 +1,6 @@
 'use client'
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Button } from '@/components/ui/button'
 import {
   Table,
   TableBody,
@@ -11,12 +10,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { useToast } from '@/components/ui/use-toast'
 import { useGrades } from '@/hooks/use-grades'
-import { useGradesStore } from '@/store/grades'
-import { CheckCircle, Info, Trash2 } from 'lucide-react'
+import { Info } from 'lucide-react'
 import { Fragment } from 'react'
 import { CellTable } from './cell-table'
+import { ClearEditedGradesButton } from './clear-edited-grades-button'
 import { TableSkeleton } from './table-skeleton'
 
 type StageKey = 'E1' | 'E2' | 'E3' | 'E4'
@@ -32,9 +30,7 @@ export const STAGES: {
 ] as const
 
 export function TableGrades() {
-  const { clearEditedGrades } = useGradesStore()
   const { grades, isLoading, error } = useGrades()
-  const { toast } = useToast()
 
   if (error) {
     return (
@@ -48,34 +44,9 @@ export function TableGrades() {
     )
   }
 
-  const handleClearEditedGrades = () => {
-    clearEditedGrades()
-
-    toast({
-      description: (
-        <div className="flex items-center gap-2">
-          <CheckCircle className="size-4 text-green-500" />
-          <span className="font-medium">
-            As notas editadas foram limpas com sucesso!
-          </span>
-        </div>
-      ),
-    })
-  }
-
   return (
     <div className="mb-16 md:my-2 md:m-0 space-y-2">
-      <Button
-        size="xs"
-        variant="outline"
-        onClick={handleClearEditedGrades}
-        className="md:flex md:items-center md:gap-1.5 md:ml-auto
-        fixed bottom-4 left-1/2 -translate-x-1/2 z-10 md:static md:translate-x-0
-        flex items-center gap-1.5 w-[calc(100%-2rem)] md:w-auto"
-      >
-        <Trash2 className="size-4" />
-        Limpar notas editadas
-      </Button>
+      <ClearEditedGradesButton />
 
       {isLoading ? (
         <TableSkeleton />
