@@ -1,8 +1,6 @@
 import { authOptions } from '@/lib/auth'
-import { Loader2 } from 'lucide-react'
 import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
-import { Suspense } from 'react'
 import { TableGrades } from './_components/table-grades'
 
 export default async function Dashboard() {
@@ -12,16 +10,5 @@ export default async function Dashboard() {
     redirect('/')
   }
 
-  return (
-    <Suspense
-      fallback={
-        <div className="flex items-center gap-1.5">
-          <Loader2 className="size-4 animate-spin" />
-          <span>Carregando...</span>
-        </div>
-      }
-    >
-      <TableGrades />
-    </Suspense>
-  )
+  return <TableGrades />
 }

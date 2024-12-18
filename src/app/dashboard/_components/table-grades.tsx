@@ -1,7 +1,8 @@
 'use client'
 
-import { type Discipline, getGrades } from '@/actions/get-grades'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import {
   Table,
   TableBody,
@@ -11,14 +12,16 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { useGrades } from '@/hooks/use-grades'
 import { useGradesStore } from '@/store/grades'
-import { Trash2 } from 'lucide-react'
-import { Fragment, useEffect, useState } from 'react'
+import { Info, Trash2 } from 'lucide-react'
+import { Fragment } from 'react'
 import { CellTable } from './cell-table'
+import { TableSkeleton } from './table-skeleton'
 
 type StageKey = 'E1' | 'E2' | 'E3' | 'E4'
 
-const STAGES: {
+export const STAGES: {
   key: StageKey
   label: string
 }[] = [
@@ -30,19 +33,19 @@ const STAGES: {
 
 export function TableGrades() {
   const { clearEditedGrades } = useGradesStore()
+  const { grades, isLoading, error } = useGrades()
 
-  const [grades, setGrades] = useState<Discipline[] | null>(null)
-
-  useEffect(() => {
-    async function fetchGrades() {
-      const { grades } = await getGrades()
-      if (grades) {
-        setGrades(grades)
-      }
-    }
-
-    fetchGrades()
-  }, [])
+  if (error) {
+    return (
+      <Alert variant="destructive" className="my-4">
+        <Info className="size-4" />
+        <AlertTitle>Houve um erro ao carregar as notas</AlertTitle>
+        <AlertDescription>
+          Erro ao carregar as notas. Por favor, tente novamente mais tarde.
+        </AlertDescription>
+      </Alert>
+    )
+  }
 
   return (
     <div className="mt-4 space-y-2">
@@ -55,48 +58,58 @@ export function TableGrades() {
         <Trash2 className="size-4" />
         Limpar notas editadas
       </Button>
-      <div className="rounded-md border border-foreground/5 bg-card">
-        <Table>
-          <TableCaption className="block caption-top text-xs md:hidden md:text-sm">
-            As notas coloridas são as médias necessárias para ser aprovado
-          </TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-full md:w-[300px]">Disciplina</TableHead>
-              <TableHead className="hidden md:table-cell">E1</TableHead>
-              <TableHead className="hidden md:table-cell">E2</TableHead>
-              <TableHead className="hidden md:table-cell">E3</TableHead>
-              <TableHead className="hidden md:table-cell">E4</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {grades?.map(grade => (
-              <TableRow key={grade.name}>
-                <TableCell className="font-medium">
-                  <span className="font-semibold">{grade.name}</span>
 
-                  <dl className="font-normal md:hidden">
-                    {STAGES.map(({ key, label }) => (
-                      <Fragment key={key}>
-                        <dt className="sr-only">{key}</dt>
-                        <dd className="flex items-center gap-1.5 py-2">
-                          {label}:
-                          <CellTable discipline={grade} stageKey={key} />
-                        </dd>
-                      </Fragment>
-                    ))}
-                  </dl>
-                </TableCell>
-                {[grade.E1, grade.E2, grade.E3, grade.E4].map((_, index) => (
-                  <TableCell key={index} className="hidden md:table-cell">
-                    <CellTable discipline={grade} stageKey={`E${index + 1}`} />
-                  </TableCell>
-                ))}
+      {isLoading ? (
+        <TableSkeleton />
+      ) : (
+        <div className="rounded-md border border-foreground/5 bg-card">
+          <Table>
+            <TableCaption className="block caption-top text-xs md:hidden md:text-sm">
+              As notas coloridas são as médias necessárias para ser aprovado
+            </TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-full md:w-[300px]">
+                  Disciplina
+                </TableHead>
+                <TableHead className="hidden md:table-cell">E1</TableHead>
+                <TableHead className="hidden md:table-cell">E2</TableHead>
+                <TableHead className="hidden md:table-cell">E3</TableHead>
+                <TableHead className="hidden md:table-cell">E4</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+            </TableHeader>
+            <TableBody>
+              {grades?.map(grade => (
+                <TableRow key={grade.name}>
+                  <TableCell className="font-medium">
+                    <span className="font-semibold">{grade.name}</span>
+
+                    <dl className="font-normal md:hidden">
+                      {STAGES.map(({ key, label }) => (
+                        <Fragment key={key}>
+                          <dt className="sr-only">{key}</dt>
+                          <dd className="flex items-center gap-1.5 py-2">
+                            {label}:
+                            <CellTable discipline={grade} stageKey={key} />
+                          </dd>
+                        </Fragment>
+                      ))}
+                    </dl>
+                  </TableCell>
+                  {[grade.E1, grade.E2, grade.E3, grade.E4].map((_, index) => (
+                    <TableCell key={index} className="hidden md:table-cell">
+                      <CellTable
+                        discipline={grade}
+                        stageKey={`E${index + 1}`}
+                      />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      )}
     </div>
   )
 }
