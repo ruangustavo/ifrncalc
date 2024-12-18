@@ -1,7 +1,7 @@
 'use client'
 
-import { ExternalLink } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { ExternalLink } from 'lucide-react'
 import { signIn } from 'next-auth/react'
 
 export function SignInButton() {

@@ -29,7 +29,7 @@ export async function TableGrades() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {grades?.map((grade) => (
+          {grades?.map(grade => (
             <TableRow key={grade.name}>
               <TableCell className="font-medium">
                 <span className="font-semibold">{grade.name}</span>

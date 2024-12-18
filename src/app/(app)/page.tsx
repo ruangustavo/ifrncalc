@@ -1,11 +1,11 @@
 import { GithubCorner } from '@/components/github-corner'
 import { Separator } from '@/components/ui/separator'
 import { siteConfig } from '@/config/site'
+import { authOptions } from '@/lib/auth'
+import { getServerSession } from 'next-auth'
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
 import { SignInButton } from './_components/sign-in-button'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
 
 export default async function Home() {
   const session = await getServerSession(authOptions)
@@ -33,7 +33,7 @@ export default async function Home() {
       <Separator />
       <footer className="flex items-center justify-center p-4">
         <Image
-          src={'https://github.com/ruangustavo.png'}
+          src="https://github.com/ruangustavo.png"
           width={36}
           height={36}
           quality={25}
@@ -41,7 +41,7 @@ export default async function Home() {
           alt="Imagem de perfil do GitHub de @ruangustavo"
         />
         <p className="ml-2 text-sm text-muted-foreground">
-          Desenvolvido por{' '}
+          Desenvolvido por
           <a
             href="https://github.com/ruangustavo"
             target="_blank"

@@ -1,6 +1,6 @@
+import { siteConfig } from '@/config/site'
 import Link from 'next/link'
 import { Icons } from './icons'
-import { siteConfig } from '@/config/site'
 
 export const GithubCorner = () => {
   return (

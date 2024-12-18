@@ -45,7 +45,7 @@ export function getGradeOrPassingGrade({
     <span
       className={cn(
         'font-mono tabular-nums',
-        hasPassingGrade && getGradeClassname(passingGrade),
+        hasPassingGrade && getGradeClassname(passingGrade)
       )}
     >
       {hasPassingGrade ? passingGrade : grade}
@@ -72,7 +72,7 @@ export function CellTable({
         <span
           className={cn(
             'font-mono tabular-nums',
-            hasPassingGrade && getGradeClassname(passingGrade),
+            hasPassingGrade && getGradeClassname(passingGrade)
           )}
         >
           {grade ?? passingGrade}

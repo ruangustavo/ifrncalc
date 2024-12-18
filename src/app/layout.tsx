@@ -1,11 +1,11 @@
 import { Nunito } from 'next/font/google'
 import './globals.css'
-import { Providers } from './providers'
-import { Metadata } from 'next'
-import { siteConfig } from '@/config/site'
-import { Analytics } from '@vercel/analytics/react'
-import { cn } from '@/lib/utils'
 import { Toaster } from '@/components/ui/toaster'
+import { siteConfig } from '@/config/site'
+import { cn } from '@/lib/utils'
+import { Analytics } from '@vercel/analytics/react'
+import type { Metadata } from 'next'
+import { Providers } from './providers'
 
 const nunito = Nunito({ subsets: ['latin'] })
 
@@ -70,7 +70,7 @@ export default function RootLayout({
       <body
         className={cn(
           nunito.className,
-          'flex flex-col antialiased bg-muted/40',
+          'flex flex-col antialiased bg-muted/40'
         )}
       >
         <Providers>{children}</Providers>
