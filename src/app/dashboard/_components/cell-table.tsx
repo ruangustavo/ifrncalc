@@ -107,7 +107,7 @@ export function CellTable({ stageKey, discipline }: CellTableProps) {
         </Button>
       )}
 
-      {editedDisciplineGrades[stageKey] && (
+      {editedDisciplineGrades[stageKey] !== undefined && (
         <Badge variant="secondary">Editada</Badge>
       )}
 
