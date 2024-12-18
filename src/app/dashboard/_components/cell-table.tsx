@@ -16,41 +16,22 @@ export interface Stage {
   passingGrade: number
 }
 
-function getGradeClassname(grade: number) {
-  if (grade <= 40) {
-    return 'text-green-500'
-  }
-
-  if (grade <= 90) {
-    return 'text-yellow-500'
-  }
-
-  return 'text-red-500'
-}
-
-function checkIfHasPassingGrade({
-  grade,
-  passingGrade,
-}: Omit<Stage, 'isAvailable'>) {
-  return !grade && passingGrade >= 0
-}
-
-export function getGradeOrPassingGrade({
-  grade,
-  passingGrade,
-  isAvailable,
-}: Stage) {
+export function GradeLabel({ grade, passingGrade, isAvailable }: Stage) {
   if (!isAvailable && grade === null) {
     return '-'
   }
 
-  const hasPassingGrade = checkIfHasPassingGrade({ grade, passingGrade })
+  const hasPassingGrade = !grade && passingGrade >= 0
 
   return (
     <span
       className={cn(
         'font-mono tabular-nums',
-        hasPassingGrade && getGradeClassname(passingGrade)
+        hasPassingGrade && {
+          'text-green-500': passingGrade <= 40,
+          'text-yellow-500': passingGrade <= 90,
+          'text-red-500': passingGrade > 90,
+        }
       )}
     >
       {hasPassingGrade ? passingGrade : grade}
@@ -92,7 +73,7 @@ export function CellTable({ stageKey, discipline }: CellTableProps) {
 
   return (
     <div className="flex items-center gap-2">
-      {getGradeOrPassingGrade({
+      {GradeLabel({
         ...currentStage,
         grade: displayGrade,
       })}

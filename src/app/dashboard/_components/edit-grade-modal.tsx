@@ -48,7 +48,7 @@ export function EditGradeModal({
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
-          <div className="grid gap-4 p-4 md:px-0 md:py-4">
+          <div className="grid gap-4 py-6 md:py-0 md:mb-2">
             <div className="grid gap-2">
               <Label htmlFor="grade">Nota</Label>
               <Input

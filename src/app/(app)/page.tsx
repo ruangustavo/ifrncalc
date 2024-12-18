@@ -46,6 +46,7 @@ export default async function Home() {
             href="https://github.com/ruangustavo"
             target="_blank"
             rel="noreferrer"
+            className="underline underline-offset-[6px] font-semibold"
           >
             @ruangustavo
           </a>
