@@ -1,4 +1,6 @@
-import { getGrades } from '@/actions/get-grades'
+'use client'
+
+import { type Discipline, getGrades } from '@/actions/get-grades'
 import {
   Table,
   TableBody,
@@ -8,10 +10,34 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { Fragment, useEffect, useState } from 'react'
 import { CellTable, getGradeOrPassingGrade } from './cell-table'
 
-export async function TableGrades() {
-  const { grades } = await getGrades()
+type StageKey = 'E1' | 'E2' | 'E3' | 'E4'
+
+const STAGES: {
+  key: StageKey
+  label: string
+}[] = [
+  { key: 'E1', label: '1° Bimestre' },
+  { key: 'E2', label: '2° Bimestre' },
+  { key: 'E3', label: '3° Bimestre' },
+  { key: 'E4', label: '4° Bimestre' },
+] as const
+
+export function TableGrades() {
+  const [grades, setGrades] = useState<Discipline[] | null>(null)
+
+  useEffect(() => {
+    async function fetchGrades() {
+      const { grades } = await getGrades()
+      if (grades) {
+        setGrades(grades)
+      }
+    }
+
+    fetchGrades()
+  }, [])
 
   return (
     <div className="mt-4 rounded-md border border-foreground/5 bg-card">
@@ -35,60 +61,21 @@ export async function TableGrades() {
                 <span className="font-semibold">{grade.name}</span>
 
                 <dl className="font-normal md:hidden">
-                  <dt className="sr-only">E1</dt>
-                  <dd className="leading-relaxed">
-                    1° Bimestre: {getGradeOrPassingGrade(grade.E1)}
-                  </dd>
-                  <dt className="sr-only">E2</dt>
-                  <dd className="leading-relaxed">
-                    2° Bimestre: {getGradeOrPassingGrade(grade.E2)}
-                  </dd>
-                  <dt className="sr-only">E3</dt>
-                  <dd className="leading-relaxed">
-                    3° Bimestre: {getGradeOrPassingGrade(grade.E3)}
-                  </dd>
-                  <dt className="sr-only">E4</dt>
-                  <dd className="leading-relaxed">
-                    4° Bimestre: {getGradeOrPassingGrade(grade.E4)}
-                  </dd>
+                  {STAGES.map(({ key, label }) => (
+                    <Fragment key={key}>
+                      <dt className="sr-only">{key}</dt>
+                      <dd className="flex items-center gap-1.5 p-2">
+                        {label}: <CellTable discipline={grade} stageKey={key} />
+                      </dd>
+                    </Fragment>
+                  ))}
                 </dl>
               </TableCell>
-              <TableCell className="hidden md:table-cell">
-                <CellTable
-                  stage={{
-                    grade: grade.E1.grade,
-                    isAvailable: grade.E1.isAvailable,
-                    passingGrade: grade.E1.passingGrade,
-                  }}
-                />
-              </TableCell>
-              <TableCell className="hidden md:table-cell">
-                <CellTable
-                  stage={{
-                    grade: grade.E2.grade,
-                    isAvailable: grade.E2.isAvailable,
-                    passingGrade: grade.E2.passingGrade,
-                  }}
-                />
-              </TableCell>
-              <TableCell className="hidden md:table-cell">
-                <CellTable
-                  stage={{
-                    grade: grade.E3.grade,
-                    isAvailable: grade.E3.isAvailable,
-                    passingGrade: grade.E3.passingGrade,
-                  }}
-                />
-              </TableCell>
-              <TableCell className="hidden md:table-cell">
-                <CellTable
-                  stage={{
-                    grade: grade.E4.grade,
-                    isAvailable: grade.E4.isAvailable,
-                    passingGrade: grade.E4.passingGrade,
-                  }}
-                />
-              </TableCell>
+              {[grade.E1, grade.E2, grade.E3, grade.E4].map((_, index) => (
+                <TableCell key={index} className="hidden md:table-cell">
+                  <CellTable discipline={grade} stageKey={`E${index + 1}`} />
+                </TableCell>
+              ))}
             </TableRow>
           ))}
         </TableBody>

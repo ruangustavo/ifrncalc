@@ -21,7 +21,7 @@ interface StageGrade {
   passingGrade: number
 }
 
-interface Discipline {
+export interface Discipline {
   name: string
   E1: StageGrade
   E2: StageGrade

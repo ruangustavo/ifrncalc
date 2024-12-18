@@ -1,11 +1,15 @@
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
-import { cn } from '@/lib/utils'
+'use client'
 
-interface Stage {
+import type { Discipline } from '@/actions/get-grades'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+import { useGradesStore } from '@/store/grades'
+import { recalculateGrades } from '@/utils/grade-calculation'
+import { Pencil } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import { EditGradeModal } from './edit-grade-modal'
+
+export interface Stage {
   grade: number | null
   isAvailable: boolean
   passingGrade: number
@@ -53,36 +57,58 @@ export function getGradeOrPassingGrade({
   )
 }
 
-export function CellTable({
-  stage: { grade, isAvailable, passingGrade },
-}: {
-  stage: Stage
-}) {
-  const shouldShowGrade = isAvailable || grade !== null
+interface CellTableProps {
+  stageKey: `E${number}`
+  discipline: Discipline
+}
 
-  if (!shouldShowGrade) {
+export function CellTable({ stageKey, discipline }: CellTableProps) {
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const { setGrade, editedGrades } = useGradesStore()
+
+  const editedDisciplineGrades = editedGrades[discipline.name] ?? {}
+
+  const recalculatedStages = useMemo(
+    () => recalculateGrades(discipline, editedDisciplineGrades),
+    [discipline, editedDisciplineGrades]
+  )
+
+  const currentStage =
+    recalculatedStages[['E1', 'E2', 'E3', 'E4'].indexOf(stageKey)]
+  const displayGrade = editedDisciplineGrades[stageKey] ?? currentStage.grade
+
+  const handleEdit = (newGrade: number) => {
+    setGrade(discipline.name, stageKey, newGrade)
+  }
+
+  if (!currentStage.isAvailable && currentStage.grade === null) {
     return <span>-</span>
   }
 
-  const hasPassingGrade = checkIfHasPassingGrade({ grade, passingGrade })
+  return (
+    <div className="flex items-center gap-2">
+      {getGradeOrPassingGrade({
+        ...currentStage,
+        grade: displayGrade,
+      })}
 
-  return hasPassingGrade ? (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <span
-          className={cn(
-            'font-mono tabular-nums',
-            hasPassingGrade && getGradeClassname(passingGrade)
-          )}
+      {currentStage.isAvailable && (
+        <Button
+          variant="ghost"
+          className="size-6 p-0 md:size-8 md:p-1"
+          onClick={() => setIsEditModalOpen(true)}
         >
-          {grade ?? passingGrade}
-        </span>
-      </TooltipTrigger>
-      <TooltipContent className="border-foreground/5">
-        Você precisa de {grade ?? passingGrade} para passar
-      </TooltipContent>
-    </Tooltip>
-  ) : (
-    <span className="font-mono tabular-nums">{grade}</span>
+          <Pencil className="size-4" />
+        </Button>
+      )}
+
+      <EditGradeModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onSubmit={handleEdit}
+        disciplineName={discipline.name}
+        stage={stageKey}
+      />
+    </div>
   )
 }
