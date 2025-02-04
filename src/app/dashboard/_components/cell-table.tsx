@@ -80,19 +80,24 @@ export function CellTable({ stageKey, discipline }: CellTableProps) {
   const hasMultipleAvailableStages =
     recalculatedStages.filter(stage => stage.isAvailable).length > 1
 
+  // When the teacher puts only part of the grade
+  const hasIncompleteGradesWhileUnavailable =
+    !currentStage.isAvailable && currentStage.grade && currentStage.grade <= 60
+
   return (
     <div className="flex items-center gap-2">
       <GradeLabel {...currentStage} grade={displayGrade} />
 
-      {currentStage.isAvailable && hasMultipleAvailableStages && (
-        <Button
-          variant="ghost"
-          className="size-6 p-0 md:size-8 md:p-1"
-          onClick={() => setIsEditModalOpen(true)}
-        >
-          <Pencil className="size-4" />
-        </Button>
-      )}
+      {currentStage.isAvailable ||
+        (hasIncompleteGradesWhileUnavailable && hasMultipleAvailableStages && (
+          <Button
+            variant="ghost"
+            className="size-6 p-0 md:size-8 md:p-1"
+            onClick={() => setIsEditModalOpen(true)}
+          >
+            <Pencil className="size-4" />
+          </Button>
+        ))}
 
       {editedDisciplineGrades[stageKey] !== undefined && (
         <Badge variant="secondary">Editada</Badge>
