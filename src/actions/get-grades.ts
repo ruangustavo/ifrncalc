@@ -3,8 +3,8 @@
 import { authOptions } from '@/lib/auth'
 import { getServerSession } from 'next-auth'
 
-const isFebruary = new Date().getMonth() >= 1
-const currentYear = isFebruary
+const isApril = new Date().getMonth() >= 3
+const currentYear = isApril
   ? new Date().getFullYear()
   : new Date().getFullYear() - 1
 
@@ -109,6 +109,8 @@ export async function getGrades(): Promise<GetGradesResponse> {
       },
     }
   ).then(res => res.json())
+
+  console.log(response)
 
   const grades: Discipline[] = response.map(discipline => {
     const gradeToPass = calculatePassingGrade(

@@ -41,7 +41,7 @@ export default async function Home() {
           alt="Imagem de perfil do GitHub de @ruangustavo"
         />
         <p className="ml-2 text-sm text-muted-foreground">
-          Desenvolvido por
+          Desenvolvido por{' '}
           <a
             href="https://github.com/ruangustavo"
             target="_blank"
