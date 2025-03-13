@@ -128,7 +128,6 @@ export function FeedbackDialog({ webhookUrl, user }: FeedbackDialogProps) {
                     placeholder="Algo não funcionou como esperado? Ou tem uma ideia para melhorar?"
                     className="text-base min-h-[120px]"
                     disabled={isSubmitting || showSuccess}
-                    autoFocus
                   />
                 </div>
               </div>
