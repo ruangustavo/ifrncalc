@@ -85,7 +85,7 @@ export function CellTable({ stageKey, discipline }: CellTableProps) {
     <div className="flex items-center gap-2">
       <GradeLabel {...currentStage} grade={displayGrade} />
 
-      {true && (
+      {currentStage.isAvailable && hasMultipleAvailableStages && (
         <Button
           variant="ghost"
           className="size-8 p-1.5 hover:bg-primary/10 active:bg-primary/20 transition-colors duration-200"
