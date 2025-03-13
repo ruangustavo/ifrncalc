@@ -70,7 +70,7 @@ export default function RootLayout({
       <body
         className={cn(
           nunito.className,
-          'flex flex-col antialiased bg-muted/40'
+          'flex flex-col antialiased bg-muted/40 min-h-dvh'
         )}
       >
         <Providers>{children}</Providers>
