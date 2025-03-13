@@ -28,7 +28,7 @@ export function GradeLabel({ grade, passingGrade, isAvailable }: Stage) {
   return (
     <span
       className={cn(
-        'font-mono tabular-nums text-lg',
+        'font-mono tabular-nums text-base',
         hasPassingGrade && {
           'text-green-500 font-medium': passingGrade <= 40,
           'text-yellow-500 font-medium': passingGrade <= 90,
@@ -85,7 +85,7 @@ export function CellTable({ stageKey, discipline }: CellTableProps) {
     <div className="flex items-center gap-2">
       <GradeLabel {...currentStage} grade={displayGrade} />
 
-      {currentStage.isAvailable && hasMultipleAvailableStages && (
+      {true && (
         <Button
           variant="ghost"
           className="size-8 p-1.5 hover:bg-primary/10 active:bg-primary/20 transition-colors duration-200"

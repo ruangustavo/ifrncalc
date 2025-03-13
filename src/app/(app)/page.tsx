@@ -4,7 +4,6 @@ import { siteConfig } from '@/config/site'
 import { authOptions } from '@/lib/auth'
 import { motion } from 'framer-motion'
 import { getServerSession } from 'next-auth'
-import Image from 'next/image'
 import { redirect } from 'next/navigation'
 import { MainContent } from './_components/main-content'
 

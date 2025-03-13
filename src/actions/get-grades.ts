@@ -110,8 +110,6 @@ export async function getGrades(): Promise<GetGradesResponse> {
     }
   ).then(res => res.json())
 
-  console.log(response)
-
   const grades: Discipline[] = response.map(discipline => {
     const gradeToPass = calculatePassingGrade(
       [
