@@ -1,6 +1,7 @@
 'use client'
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Separator } from '@/components/ui/separator'
 import {
   Table,
   TableBody,
@@ -11,8 +12,23 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { useGrades } from '@/hooks/use-grades'
-import { Info } from 'lucide-react'
-import { Fragment } from 'react'
+import {
+  Apple,
+  Atom,
+  BookMarked,
+  BookText,
+  Calculator,
+  Cpu,
+  Dumbbell,
+  FlaskConical,
+  Globe2,
+  Info,
+  Languages,
+  Leaf,
+  Monitor,
+  Package,
+} from 'lucide-react'
+import { Component, Fragment } from 'react'
 import { CellTable } from './cell-table'
 import { ClearEditedGradesButton } from './clear-edited-grades-button'
 import { TableSkeleton } from './table-skeleton'
@@ -44,6 +60,33 @@ export function TableGrades() {
     )
   }
 
+  const getIcon = (gradeName: string) => {
+    const iconMap = {
+      matemática: Calculator,
+      português: BookText,
+      história: BookMarked,
+      geografia: Globe2,
+      física: Atom,
+      química: FlaskConical,
+      biologia: Leaf,
+      'educação física': Dumbbell,
+      inglês: Languages,
+      computação: Cpu,
+      computadores: Monitor,
+      arquitetura: Component,
+      alimento: Apple,
+      embalagem: Package,
+    }
+
+    const name = gradeName.toLowerCase()
+
+    const Icon =
+      Object.entries(iconMap).find(([key]) => name.includes(key))?.[1] ??
+      BookText
+
+    return <Icon className="size-4 text-primary" />
+  }
+
   return (
     <div className="mb-16 md:my-2 md:m-0 space-y-2">
       <ClearEditedGradesButton />
@@ -56,10 +99,16 @@ export function TableGrades() {
             {grades?.map(grade => (
               <div
                 key={grade.name}
-                className="rounded-lg border border-foreground/5 bg-card p-4"
+                className="rounded-lg border border-foreground/5 bg-card"
               >
-                <h3 className="font-semibold mb-2">{grade.name}</h3>
-                <div className="space-y-2">
+                <div className="flex items-center gap-1.5 p-4 pb-2">
+                  {getIcon(grade.name)}
+                  <h3 className="font-semibold flex items-center gap-2">
+                    {grade.name}
+                  </h3>
+                </div>
+                <Separator />
+                <div className="p-4 pt-2 space-y-2">
                   {STAGES.map(({ key, label }) => (
                     <div
                       key={key}
