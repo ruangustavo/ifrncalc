@@ -10,8 +10,9 @@ export function SignOutButton() {
       variant="ghost"
       onClick={() => signOut()}
       className="flex items-center space-x-2"
+      size="xs"
     >
-      <LogOut className="size-5" />
+      <LogOut className="size-4" />
       <span className="sr-only md:not-sr-only">Sair</span>
     </Button>
   )

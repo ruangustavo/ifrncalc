@@ -12,6 +12,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         defaultTheme="light"
         enableSystem
         disableTransitionOnChange
+        storageKey="ifrn-calc-theme"
       >
         <TooltipProvider>{children}</TooltipProvider>
       </ThemeProvider>
