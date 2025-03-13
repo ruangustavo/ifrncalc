@@ -8,7 +8,7 @@ import { SignInButton } from './sign-in-button'
 
 export function MainContent() {
   return (
-    <main className="relative flex min-h-screen flex-1 flex-col items-center justify-center overflow-hidden bg-gradient-to-b from-background via-background/95 to-secondary/20">
+    <main className="relative flex flex-1 flex-col items-center justify-center overflow-hidden bg-gradient-to-b from-background via-background/95 to-secondary/20">
       <motion.div
         className="absolute inset-0 -z-10"
         initial={{ opacity: 0 }}
