@@ -36,7 +36,7 @@ export function MainContent() {
               ease: 'easeInOut',
             }}
           >
-            <Sparkles className="size-6 text-primary" />
+            <Sparkles className="size-8 text-primary" />
           </motion.div>
           <CalculatorIcon className="size-28 text-primary drop-shadow-lg" />
         </motion.div>
