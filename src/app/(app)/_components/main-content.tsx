@@ -20,62 +20,50 @@ export function MainContent() {
 
       <div className="mx-4 flex max-w-3xl flex-col items-center space-y-6 px-4 py-16">
         <motion.div
-          className="relative rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 p-6 backdrop-blur-sm"
-          initial={{ scale: 0.8, opacity: 0 }}
+          initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.5 }}
+          className="space-y-6 flex flex-col items-center justify-center"
         >
-          <motion.div
-            className="absolute -right-2 -top-2"
-            animate={{
-              scale: [1, 1.2, 1],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Number.POSITIVE_INFINITY,
-              ease: 'easeInOut',
-            }}
-          >
-            <Sparkles className="size-8 text-primary" />
-          </motion.div>
-          <CalculatorIcon className="size-28 text-primary drop-shadow-lg" />
-        </motion.div>
+          <div className="relative rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 p-6 backdrop-blur-sm w-fit">
+            <motion.div
+              className="absolute -right-2 -top-2"
+              animate={{
+                scale: [1, 1.2, 1],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Number.POSITIVE_INFINITY,
+                ease: 'easeInOut',
+              }}
+            >
+              <Sparkles className="size-8 text-primary" />
+            </motion.div>
+            <CalculatorIcon className="size-28 text-primary drop-shadow-lg" />
+          </div>
 
-        <div className="space-y-6 text-center">
-          <motion.h1
-            className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-5xl font-bold tracking-tight text-transparent sm:text-6xl lg:text-7xl"
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            {siteConfig.name}
-          </motion.h1>
+          <div className="space-y-6 text-center">
+            <h1 className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-5xl font-bold tracking-tight text-transparent sm:text-6xl lg:text-7xl">
+              {siteConfig.name}
+            </h1>
 
-          <motion.p
-            className="text-pretty mx-auto max-w-[42rem] text-lg text-muted-foreground/90 sm:text-xl"
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-          >
-            Use nossa calculadora de notas para saber as médias necessárias para
-            aprovação no IFRN. Acesse com seu login SUAP e acompanhe seu
-            desempenho.
-          </motion.p>
-        </div>
+            <p className="text-pretty mx-auto max-w-[42rem] text-lg text-muted-foreground/90 sm:text-xl">
+              Use nossa calculadora de notas para saber as médias necessárias
+              para aprovação no IFRN. Acesse com seu login SUAP e acompanhe seu
+              desempenho.
+            </p>
+          </div>
 
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-        >
-          <SignInButton />
+          <div>
+            <SignInButton />
+          </div>
         </motion.div>
 
         <motion.div
           className="mt-8 flex items-center gap-2 text-sm text-muted-foreground"
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.8 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
         >
           <span>Desenvolvido por</span>
           <Image
