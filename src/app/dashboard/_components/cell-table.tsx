@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils'
 import { useGradesStore } from '@/store/grades'
 import { recalculateGrades } from '@/utils/grade-calculation'
 import { mockDisciplineGrades } from '@/utils/mock-utils'
+import { motion } from 'framer-motion'
 import { Pencil } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { EditGradeModal } from './edit-grade-modal'
@@ -27,11 +28,11 @@ export function GradeLabel({ grade, passingGrade, isAvailable }: Stage) {
   return (
     <span
       className={cn(
-        'font-mono tabular-nums',
+        'font-mono tabular-nums text-lg',
         hasPassingGrade && {
-          'text-green-500': passingGrade <= 40,
-          'text-yellow-500': passingGrade <= 90,
-          'text-red-500': passingGrade > 90,
+          'text-green-500 font-medium': passingGrade <= 40,
+          'text-yellow-500 font-medium': passingGrade <= 90,
+          'text-red-500 font-medium': passingGrade > 90,
         }
       )}
     >
@@ -74,7 +75,7 @@ export function CellTable({ stageKey, discipline }: CellTableProps) {
   }
 
   if (!currentStage.isAvailable && currentStage.grade === null) {
-    return <span>-</span>
+    return <span className="text-muted-foreground">-</span>
   }
 
   const hasMultipleAvailableStages =
@@ -87,7 +88,7 @@ export function CellTable({ stageKey, discipline }: CellTableProps) {
       {currentStage.isAvailable && hasMultipleAvailableStages && (
         <Button
           variant="ghost"
-          className="size-6 p-0 md:size-8 md:p-1"
+          className="size-8 p-1.5 hover:bg-primary/10 active:bg-primary/20 transition-colors duration-200"
           onClick={() => setIsEditModalOpen(true)}
         >
           <Pencil className="size-4" />
@@ -95,7 +96,9 @@ export function CellTable({ stageKey, discipline }: CellTableProps) {
       )}
 
       {editedDisciplineGrades[stageKey] !== undefined && (
-        <Badge variant="secondary">Editada</Badge>
+        <Badge variant="secondary" className="font-medium animate-in">
+          Editada
+        </Badge>
       )}
 
       <EditGradeModal

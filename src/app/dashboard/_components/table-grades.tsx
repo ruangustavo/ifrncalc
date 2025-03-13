@@ -51,53 +51,63 @@ export function TableGrades() {
       {isLoading ? (
         <TableSkeleton />
       ) : (
-        <div className="rounded-md border border-foreground/5 bg-card">
-          <Table>
-            <TableCaption className="block caption-top text-xs md:hidden md:text-sm">
-              As notas coloridas são as médias necessárias para ser aprovado
-            </TableCaption>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-full md:w-[300px]">
-                  Disciplina
-                </TableHead>
-                <TableHead className="hidden md:table-cell">E1</TableHead>
-                <TableHead className="hidden md:table-cell">E2</TableHead>
-                <TableHead className="hidden md:table-cell">E3</TableHead>
-                <TableHead className="hidden md:table-cell">E4</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {grades?.map(grade => (
-                <TableRow key={grade.name}>
-                  <TableCell className="font-medium">
-                    <span className="font-semibold">{grade.name}</span>
-
-                    <dl className="font-normal md:hidden">
-                      {STAGES.map(({ key, label }) => (
-                        <Fragment key={key}>
-                          <dt className="sr-only">{key}</dt>
-                          <dd className="flex items-center gap-1.5 py-2">
-                            {label}:
-                            <CellTable discipline={grade} stageKey={key} />
-                          </dd>
-                        </Fragment>
-                      ))}
-                    </dl>
-                  </TableCell>
-                  {[grade.E1, grade.E2, grade.E3, grade.E4].map((_, index) => (
-                    <TableCell key={index} className="hidden md:table-cell">
-                      <CellTable
-                        discipline={grade}
-                        stageKey={`E${index + 1}`}
-                      />
-                    </TableCell>
+        <>
+          <div className="md:hidden space-y-4">
+            {grades?.map(grade => (
+              <div
+                key={grade.name}
+                className="rounded-lg border border-foreground/5 bg-card p-4"
+              >
+                <h3 className="font-semibold mb-2">{grade.name}</h3>
+                <div className="space-y-2">
+                  {STAGES.map(({ key, label }) => (
+                    <div
+                      key={key}
+                      className="flex items-center justify-between"
+                    >
+                      <span className="text-sm text-muted-foreground">
+                        {label}
+                      </span>
+                      <CellTable discipline={grade} stageKey={key} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="hidden md:block rounded-md border border-foreground/5 bg-card">
+            <Table>
+              <TableCaption className="caption-top text-sm">
+                As notas coloridas são as médias necessárias para ser aprovado
+              </TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[300px]">Disciplina</TableHead>
+                  {STAGES.map(({ key, label }) => (
+                    <TableHead key={key}>{label}</TableHead>
                   ))}
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+              </TableHeader>
+              <TableBody>
+                {grades?.map(grade => (
+                  <TableRow key={grade.name}>
+                    <TableCell className="font-medium">{grade.name}</TableCell>
+                    {[grade.E1, grade.E2, grade.E3, grade.E4].map(
+                      (_, index) => (
+                        <TableCell key={index}>
+                          <CellTable
+                            discipline={grade}
+                            stageKey={`E${index + 1}`}
+                          />
+                        </TableCell>
+                      )
+                    )}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </>
       )}
     </div>
   )
