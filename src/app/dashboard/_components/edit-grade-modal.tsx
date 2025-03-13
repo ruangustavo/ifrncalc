@@ -2,12 +2,12 @@
 
 import { Button } from '@/components/ui/button'
 import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+  Credenza,
+  CredenzaContent,
+  CredenzaFooter,
+  CredenzaHeader,
+  CredenzaTitle,
+} from '@/components/ui/credenza'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useState } from 'react'
@@ -40,14 +40,14 @@ export function EditGradeModal({
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>
+    <Credenza open={isOpen} onOpenChange={onClose}>
+      <CredenzaContent className="sm:max-w-[425px] mx-auto">
+        <CredenzaHeader>
+          <CredenzaTitle>
             Editar nota - {disciplineName} ({stage})
-          </DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit}>
+          </CredenzaTitle>
+        </CredenzaHeader>
+        <form onSubmit={handleSubmit} className="p-4 md:p-0">
           <div className="grid gap-4 py-6 md:py-0 md:mb-2">
             <div className="grid gap-2">
               <Label htmlFor="grade">Nota</Label>
@@ -59,18 +59,25 @@ export function EditGradeModal({
                 value={grade}
                 onChange={e => setGrade(e.target.value)}
                 placeholder="Digite a nota..."
-                className="col-span-3"
+                className="col-span-3 text-base"
               />
             </div>
           </div>
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose}>
+          <CredenzaFooter className="p-0 md:p-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              className="text-base md:text-sm"
+            >
               Cancelar
             </Button>
-            <Button type="submit">Salvar</Button>
-          </DialogFooter>
+            <Button type="submit" className="text-base md:text-sm">
+              Salvar
+            </Button>
+          </CredenzaFooter>
         </form>
-      </DialogContent>
-    </Dialog>
+      </CredenzaContent>
+    </Credenza>
   )
 }
