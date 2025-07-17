@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import { Button } from '@/components/ui/button'
-import { LogOut } from 'lucide-react'
-import { signOut } from 'next-auth/react'
+import { LogOut } from "lucide-react"
+import { signOut } from "next-auth/react"
+import { Button } from "@/components/ui/button"
 
 export function SignOutButton() {
   return (

@@ -1,7 +1,7 @@
-'use server'
+"use server"
 
-import { authOptions } from '@/lib/auth'
-import { getServerSession } from 'next-auth'
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
 
 const isApril = new Date().getMonth() >= 3
 const currentYear = isApril
@@ -46,7 +46,7 @@ interface GetGradesResponse {
 
 const getWeight = (
   currentIndex: number,
-  numberOfAssessments: number
+  numberOfAssessments: number,
 ): number => {
   const isSemester = numberOfAssessments === 2
   return isSemester
@@ -58,7 +58,7 @@ const getWeight = (
 
 function calculatePassingGrade(
   grades: Grade[],
-  numberOfAssessments: number
+  numberOfAssessments: number,
 ): number {
   let totalWeightNull = 0
   let sumOfGradesNotNull = 0
@@ -76,7 +76,7 @@ function calculatePassingGrade(
 
   const weightAccordingToNumberOfAssessments = Array.from(
     { length: numberOfAssessments },
-    (_, i) => getWeight(i, numberOfAssessments) || 0
+    (_, i) => getWeight(i, numberOfAssessments) || 0,
   ).reduce((sum, weight) => sum + weight, 0)
 
   const gradeNeededToPass =
@@ -86,7 +86,7 @@ function calculatePassingGrade(
 }
 
 function parseDisciplineName(discipline: string): string {
-  return discipline.substring(11).replace(/\(.*\)/, '')
+  return discipline.substring(11).replace(/\(.*\)/, "")
 }
 
 export async function getGrades(): Promise<GetGradesResponse> {
@@ -94,23 +94,23 @@ export async function getGrades(): Promise<GetGradesResponse> {
   const accessToken = session?.accessToken
 
   if (!accessToken) {
-    return { success: false, message: 'Not authenticated' }
+    return { success: false, message: "Not authenticated" }
   }
 
   const response: SUAPResponse[] = await fetch(
     `${process.env.SUAP_URL}/api/v2/minhas-informacoes/boletim/${currentYear}/1/`,
     {
-      method: 'GET',
+      method: "GET",
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
       next: {
         revalidate: 60 * 60 * 6, // 6 hours
       },
-    }
-  ).then(res => res.json())
+    },
+  ).then((res) => res.json())
 
-  const grades: Discipline[] = response.map(discipline => {
+  const grades: Discipline[] = response.map((discipline) => {
     const gradeToPass = calculatePassingGrade(
       [
         discipline.nota_etapa_1,
@@ -118,7 +118,7 @@ export async function getGrades(): Promise<GetGradesResponse> {
         discipline.nota_etapa_3,
         discipline.nota_etapa_4,
       ],
-      discipline.quantidade_avaliacoes
+      discipline.quantidade_avaliacoes,
     )
 
     const isAvailable = (grade: number | null, index: number) =>

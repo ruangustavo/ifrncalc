@@ -1,8 +1,8 @@
-import type { Metadata } from 'next'
-import type React from 'react'
-import { Header } from './_components/header'
+import type { Metadata } from "next"
+import type React from "react"
+import { Header } from "./_components/header"
 
-export const metadata: Metadata = { title: 'Boletim' }
+export const metadata: Metadata = { title: "Boletim" }
 
 export default function DashboardLayout({
   children,

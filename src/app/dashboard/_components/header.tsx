@@ -1,7 +1,7 @@
-import { siteConfig } from '@/config/site'
-import { CalculatorIcon } from 'lucide-react'
-import Link from 'next/link'
-import { SignOutButton } from './sign-out-button'
+import { CalculatorIcon } from "lucide-react"
+import Link from "next/link"
+import { siteConfig } from "@/config/site"
+import { SignOutButton } from "./sign-out-button"
 
 export function Header() {
   return (

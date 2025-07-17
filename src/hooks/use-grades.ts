@@ -1,5 +1,5 @@
-import { type Discipline, getGrades } from '@/actions/get-grades'
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react"
+import { type Discipline, getGrades } from "@/actions/get-grades"
 
 export function useGrades() {
   const [grades, setGrades] = useState<Discipline[] | null>(null)
@@ -15,7 +15,7 @@ export function useGrades() {
         setGrades(grades)
       }
     } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to fetch grades'))
+      setError(err instanceof Error ? err : new Error("Failed to fetch grades"))
     } finally {
       setIsLoading(false)
     }

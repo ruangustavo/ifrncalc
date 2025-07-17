@@ -1,10 +1,10 @@
-'use client'
+"use client"
 
-import { Button, type ButtonProps } from '@/components/ui/button'
-import { useToast } from '@/components/ui/use-toast'
-import { useGradesStore } from '@/store/grades'
-import { AnimatePresence, motion } from 'framer-motion'
-import { CheckCircle, Trash2 } from 'lucide-react'
+import { AnimatePresence, motion } from "framer-motion"
+import { CheckCircle, Trash2 } from "lucide-react"
+import { Button, type ButtonProps } from "@/components/ui/button"
+import { useToast } from "@/components/ui/use-toast"
+import { useGradesStore } from "@/store/grades"
 
 function ClearButton(props: ButtonProps) {
   return (
@@ -41,7 +41,7 @@ export function ClearEditedGradesButton() {
       <ClearButton
         onClick={handleClearEditedGrades}
         disabled={isEmptyGrades}
-        className="hidden md:flex ml-auto"
+        className="ml-auto hidden md:flex"
       />
 
       <AnimatePresence>
@@ -50,8 +50,8 @@ export function ClearEditedGradesButton() {
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
-            transition={{ type: 'spring', stiffness: 260, damping: 20 }}
-            className="md:hidden fixed left-0 right-0 bottom-4 mx-auto px-4 z-10 w-full max-w-[calc(100%-2rem)]"
+            transition={{ type: "spring", stiffness: 260, damping: 20 }}
+            className="fixed right-0 bottom-4 left-0 z-10 mx-auto w-full max-w-[calc(100%-2rem)] px-4 md:hidden"
           >
             <ClearButton
               onClick={handleClearEditedGrades}

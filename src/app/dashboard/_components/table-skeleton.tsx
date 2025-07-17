@@ -1,4 +1,4 @@
-import { Skeleton } from '@/components/ui/skeleton'
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   Table,
   TableBody,
@@ -6,8 +6,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { STAGES } from './table-grades'
+} from "@/components/ui/table"
+import { STAGES } from "./table-grades"
 
 export function TableSkeleton() {
   return (

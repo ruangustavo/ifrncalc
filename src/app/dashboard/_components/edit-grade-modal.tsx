@@ -1,16 +1,16 @@
-'use client'
+"use client"
 
-import { Button } from '@/components/ui/button'
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
 import {
   Credenza,
   CredenzaContent,
   CredenzaFooter,
   CredenzaHeader,
   CredenzaTitle,
-} from '@/components/ui/credenza'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { useState } from 'react'
+} from "@/components/ui/credenza"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 interface EditGradeModalProps {
   isOpen: boolean
@@ -27,7 +27,7 @@ export function EditGradeModal({
   disciplineName,
   stage,
 }: EditGradeModalProps) {
-  const [grade, setGrade] = useState<string>('')
+  const [grade, setGrade] = useState<string>("")
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -35,20 +35,20 @@ export function EditGradeModal({
     if (numGrade >= 0 && numGrade <= 100) {
       onSubmit(numGrade)
       onClose()
-      setGrade('')
+      setGrade("")
     }
   }
 
   return (
     <Credenza open={isOpen} onOpenChange={onClose}>
-      <CredenzaContent className="sm:max-w-[425px] mx-auto">
+      <CredenzaContent className="mx-auto sm:max-w-[425px]">
         <CredenzaHeader>
           <CredenzaTitle>
             Editar nota - {disciplineName} ({stage})
           </CredenzaTitle>
         </CredenzaHeader>
         <form onSubmit={handleSubmit} className="p-4 md:p-0">
-          <div className="grid gap-4 py-6 md:py-0 md:mb-2">
+          <div className="grid gap-4 py-6 md:mb-2 md:py-0">
             <div className="grid gap-2">
               <Label htmlFor="grade">Nota</Label>
               <Input
@@ -57,7 +57,7 @@ export function EditGradeModal({
                 min="0"
                 max="100"
                 value={grade}
-                onChange={e => setGrade(e.target.value)}
+                onChange={(e) => setGrade(e.target.value)}
                 placeholder="Digite a nota..."
                 className="col-span-3 text-base"
               />

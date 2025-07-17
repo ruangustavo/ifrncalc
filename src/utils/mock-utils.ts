@@ -1,7 +1,7 @@
-import type { Discipline } from '@/actions/get-grades'
+import type { Discipline } from "@/actions/get-grades"
 
 export function mockDisciplineGrades(discipline: Discipline): Discipline {
-  const stages = ['E1', 'E2', 'E3', 'E4'] as const
+  const stages = ["E1", "E2", "E3", "E4"] as const
 
   return {
     ...discipline,
@@ -22,7 +22,7 @@ export function mockDisciplineGrades(discipline: Discipline): Discipline {
       {} as Record<
         (typeof stages)[number],
         (typeof discipline)[(typeof stages)[number]]
-      >
+      >,
     ),
   }
 }

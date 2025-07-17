@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import { ThemeProvider } from '@/components/theme-provider'
-import { TooltipProvider } from '@/components/ui/tooltip'
-import { SessionProvider } from 'next-auth/react'
+import { SessionProvider } from "next-auth/react"
+import { ThemeProvider } from "@/components/theme-provider"
+import { TooltipProvider } from "@/components/ui/tooltip"
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (

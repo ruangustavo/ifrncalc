@@ -1,10 +1,10 @@
-import type { Discipline } from '@/actions/get-grades'
+import type { Discipline } from "@/actions/get-grades"
 
 const STAGE_TO_WEIGHT: Record<number, number> = { 1: 2, 2: 2, 3: 3, 4: 3 }
 
 export function getWeight(
   currentIndex: number,
-  numberOfAssessments: number
+  numberOfAssessments: number,
 ): number {
   const isSemester = numberOfAssessments === 2
   return isSemester
@@ -16,12 +16,12 @@ export function getWeight(
 
 export function recalculateGrades(
   discipline: Discipline,
-  editedGrades: Record<string, number> = {}
+  editedGrades: Record<string, number> = {},
 ) {
-  const stages = ['E1', 'E2', 'E3', 'E4'] as const
+  const stages = ["E1", "E2", "E3", "E4"] as const
   const numberOfAssessments = stages.reduce(
     (count, stage) => (discipline[stage].passingGrade >= 0 ? count + 1 : count),
-    0
+    0,
   )
 
   let totalWeightNull = 0
@@ -52,7 +52,7 @@ export function recalculateGrades(
       ? 0
       : Math.max(
           0,
-          Math.round((60 * totalWeight - sumOfGradesNotNull) / totalWeightNull)
+          Math.round((60 * totalWeight - sumOfGradesNotNull) / totalWeightNull),
         )
 
   return stages.map((stage, index) => ({

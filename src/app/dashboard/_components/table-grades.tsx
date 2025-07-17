@@ -1,17 +1,5 @@
-'use client'
+"use client"
 
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Separator } from '@/components/ui/separator'
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
-import { useGrades } from '@/hooks/use-grades'
 import {
   Apple,
   Atom,
@@ -27,22 +15,34 @@ import {
   Leaf,
   Monitor,
   Package,
-} from 'lucide-react'
-import { Component, Fragment } from 'react'
-import { CellTable } from './cell-table'
-import { ClearEditedGradesButton } from './clear-edited-grades-button'
-import { TableSkeleton } from './table-skeleton'
+} from "lucide-react"
+import { Component, Fragment } from "react"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Separator } from "@/components/ui/separator"
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { useGrades } from "@/hooks/use-grades"
+import { CellTable } from "./cell-table"
+import { ClearEditedGradesButton } from "./clear-edited-grades-button"
+import { TableSkeleton } from "./table-skeleton"
 
-type StageKey = 'E1' | 'E2' | 'E3' | 'E4'
+type StageKey = "E1" | "E2" | "E3" | "E4"
 
 export const STAGES: {
   key: StageKey
   label: string
 }[] = [
-  { key: 'E1', label: '1° Bimestre' },
-  { key: 'E2', label: '2° Bimestre' },
-  { key: 'E3', label: '3° Bimestre' },
-  { key: 'E4', label: '4° Bimestre' },
+  { key: "E1", label: "1° Bimestre" },
+  { key: "E2", label: "2° Bimestre" },
+  { key: "E3", label: "3° Bimestre" },
+  { key: "E4", label: "4° Bimestre" },
 ] as const
 
 export function TableGrades() {
@@ -69,7 +69,7 @@ export function TableGrades() {
       física: Atom,
       química: FlaskConical,
       biologia: Leaf,
-      'educação física': Dumbbell,
+      "educação física": Dumbbell,
       inglês: Languages,
       computação: Cpu,
       computadores: Monitor,
@@ -88,33 +88,33 @@ export function TableGrades() {
   }
 
   return (
-    <div className="mb-16 md:my-2 md:m-0 space-y-2">
+    <div className="mb-16 space-y-2 md:m-0 md:my-2">
       <ClearEditedGradesButton />
 
       {isLoading ? (
         <TableSkeleton />
       ) : (
         <>
-          <div className="md:hidden space-y-4">
-            {grades?.map(grade => (
+          <div className="space-y-4 md:hidden">
+            {grades?.map((grade) => (
               <div
                 key={grade.name}
                 className="rounded-lg border border-foreground/5 bg-card"
               >
                 <div className="flex items-center gap-1.5 p-4 pb-2">
                   {getIcon(grade.name)}
-                  <h3 className="font-semibold flex items-center gap-2">
+                  <h3 className="flex items-center gap-2 font-semibold">
                     {grade.name}
                   </h3>
                 </div>
                 <Separator />
-                <div className="p-4 pt-2 space-y-2">
+                <div className="space-y-2 p-4 pt-2">
                   {STAGES.map(({ key, label }) => (
                     <div
                       key={key}
                       className="flex items-center justify-between"
                     >
-                      <span className="text-sm text-muted-foreground">
+                      <span className="text-muted-foreground text-sm">
                         {label}
                       </span>
                       <CellTable discipline={grade} stageKey={key} />
@@ -124,7 +124,7 @@ export function TableGrades() {
               </div>
             ))}
           </div>
-          <div className="hidden md:block rounded-md border border-foreground/5 bg-card">
+          <div className="hidden rounded-md border border-foreground/5 bg-card md:block">
             <Table>
               <TableCaption className="caption-top text-sm">
                 As notas coloridas são as médias necessárias para ser aprovado
@@ -138,7 +138,7 @@ export function TableGrades() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {grades?.map(grade => (
+                {grades?.map((grade) => (
                   <TableRow key={grade.name}>
                     <TableCell className="font-medium">{grade.name}</TableCell>
                     {[grade.E1, grade.E2, grade.E3, grade.E4].map(
@@ -149,7 +149,7 @@ export function TableGrades() {
                             stageKey={`E${index + 1}`}
                           />
                         </TableCell>
-                      )
+                      ),
                     )}
                   </TableRow>
                 ))}

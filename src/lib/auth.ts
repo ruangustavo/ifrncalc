@@ -1,4 +1,4 @@
-import type { NextAuthOptions } from 'next-auth'
+import type { NextAuthOptions } from "next-auth"
 
 interface Profile {
   identificacao: string
@@ -20,7 +20,7 @@ interface Profile {
 
 export const authOptions: NextAuthOptions = {
   session: {
-    strategy: 'jwt',
+    strategy: "jwt",
   },
   callbacks: {
     async session({ session, token }) {
@@ -40,12 +40,12 @@ export const authOptions: NextAuthOptions = {
     {
       clientId: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET,
-      id: 'suap',
-      name: 'SUAP',
-      type: 'oauth',
+      id: "suap",
+      name: "SUAP",
+      type: "oauth",
       authorization: {
         url: `${process.env.SUAP_URL}/o/authorize`,
-        params: { scope: 'email identificacao' },
+        params: { scope: "email identificacao" },
       },
       token: `${process.env.SUAP_URL}/o/token/`,
       userinfo: `${process.env.SUAP_URL}/api/eu/`,
@@ -53,12 +53,13 @@ export const authOptions: NextAuthOptions = {
         return {
           id: profile.identificacao,
           name: profile.nome_registro
-            .split(' ')
+            .split(" ")
             .slice(0, 2)
             .map(
-              word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+              (word) =>
+                word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
             )
-            .join(' '),
+            .join(" "),
           email: profile.email_preferencial,
           role: profile.tipo_usuario,
           image: profile.foto,

@@ -1,16 +1,16 @@
-'use client'
+"use client"
 
-import { siteConfig } from '@/config/site'
-import { motion } from 'framer-motion'
-import { CalculatorIcon, Sparkles } from 'lucide-react'
-import Image from 'next/image'
-import { SignInButton } from './sign-in-button'
+import { motion } from "framer-motion"
+import { CalculatorIcon, Sparkles } from "lucide-react"
+import Image from "next/image"
+import { siteConfig } from "@/config/site"
+import { SignInButton } from "./sign-in-button"
 
 export function MainContent() {
   return (
     <main className="relative flex flex-1 flex-col items-center justify-center overflow-hidden bg-gradient-to-b from-background via-background/95 to-secondary/20">
       <motion.div
-        className="absolute inset-0 -z-10"
+        className="-z-10 absolute inset-0"
         initial={{ opacity: 0 }}
         animate={{ opacity: 0.5 }}
         transition={{ duration: 2 }}
@@ -23,18 +23,18 @@ export function MainContent() {
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="space-y-6 flex flex-col items-center justify-center"
+          className="flex flex-col items-center justify-center space-y-6"
         >
-          <div className="relative rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 p-6 backdrop-blur-sm w-fit">
+          <div className="relative w-fit rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 p-6 backdrop-blur-sm">
             <motion.div
-              className="absolute -right-2 -top-2"
+              className="-right-2 -top-2 absolute"
               animate={{
                 scale: [1, 1.2, 1],
               }}
               transition={{
                 duration: 2,
                 repeat: Number.POSITIVE_INFINITY,
-                ease: 'easeInOut',
+                ease: "easeInOut",
               }}
             >
               <Sparkles className="size-8 text-primary" />
@@ -43,11 +43,11 @@ export function MainContent() {
           </div>
 
           <div className="space-y-6 text-center">
-            <h1 className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-5xl font-bold tracking-tight text-transparent sm:text-6xl lg:text-7xl">
+            <h1 className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text font-bold text-5xl text-transparent tracking-tight sm:text-6xl lg:text-7xl">
               {siteConfig.name}
             </h1>
 
-            <p className="text-pretty mx-auto max-w-[42rem] text-lg text-muted-foreground/90 sm:text-xl">
+            <p className="mx-auto max-w-[42rem] text-pretty text-lg text-muted-foreground/90 sm:text-xl">
               Use nossa calculadora de notas para saber as médias necessárias
               para aprovação no IFRN. Acesse com seu login SUAP e acompanhe seu
               desempenho.
@@ -60,7 +60,7 @@ export function MainContent() {
         </motion.div>
 
         <motion.div
-          className="mt-8 flex items-center gap-2 text-sm text-muted-foreground"
+          className="mt-8 flex items-center gap-2 text-muted-foreground text-sm"
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.6 }}
@@ -76,7 +76,7 @@ export function MainContent() {
           <a
             href="https://github.com/ruangustavo"
             target="_blank"
-            className="font-medium underline underline-offset-4 hover:text-primary transition-colors"
+            className="font-medium underline underline-offset-4 transition-colors hover:text-primary"
             rel="noreferrer"
           >
             Ruan Gustavo

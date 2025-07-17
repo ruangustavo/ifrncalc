@@ -1,8 +1,8 @@
-import { create } from 'zustand'
+import { create } from "zustand"
 
 export interface EditedGrade {
   disciplineName: string
-  stage: 'E1' | 'E2' | 'E3' | 'E4'
+  stage: "E1" | "E2" | "E3" | "E4"
   grade: number
 }
 
@@ -18,10 +18,10 @@ interface GradesStore {
   clearEditedGrades: () => void
 }
 
-export const useGradesStore = create<GradesStore>(set => ({
+export const useGradesStore = create<GradesStore>((set) => ({
   editedGrades: {},
   setGrade: (disciplineName, stage, grade) =>
-    set(state => ({
+    set((state) => ({
       editedGrades: {
         ...state.editedGrades,
         [disciplineName]: {
