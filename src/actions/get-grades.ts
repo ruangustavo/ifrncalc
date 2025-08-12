@@ -29,13 +29,20 @@ export interface Discipline {
   E4: StageGrade
 }
 
-interface SUAPResponse {
+interface SUAPDiscipline {
   disciplina: string
   nota_etapa_1: Grade
   nota_etapa_2: Grade
   nota_etapa_3: Grade
   nota_etapa_4: Grade
   quantidade_avaliacoes: number
+}
+
+interface SUAPResponse {
+  results: SUAPDiscipline[]
+  count: number
+  next: string | null
+  previous: string | null
 }
 
 interface GetGradesResponse {
@@ -97,8 +104,8 @@ export async function getGrades(): Promise<GetGradesResponse> {
     return { success: false, message: "Not authenticated" }
   }
 
-  const response: SUAPResponse[] = await fetch(
-    `${process.env.SUAP_URL}/api/v2/minhas-informacoes/boletim/${currentYear}/1/`,
+  const response: SUAPResponse = await fetch(
+    `${process.env.SUAP_URL}/api/ensino/meu-boletim/${currentYear}/1/`,
     {
       method: "GET",
       headers: {
@@ -110,7 +117,7 @@ export async function getGrades(): Promise<GetGradesResponse> {
     },
   ).then((res) => res.json())
 
-  const grades: Discipline[] = response.map((discipline) => {
+  const grades: Discipline[] = response.results.map((discipline) => {
     const gradeToPass = calculatePassingGrade(
       [
         discipline.nota_etapa_1,
