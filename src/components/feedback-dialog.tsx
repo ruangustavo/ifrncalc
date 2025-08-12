@@ -68,8 +68,9 @@ export function FeedbackDialog({ user }: FeedbackDialogProps) {
     <div className={cn(isEmptyGrades ? "fixed right-4 bottom-4" : "hidden")}>
       <Credenza open={open} onOpenChange={setOpen}>
         <CredenzaTrigger asChild>
-          <Button size="icon" title="Enviar feedback">
+          <Button title="Enviar feedback" className="gap-2">
             <MessageSquarePlus className="size-5" />
+            Feedback
           </Button>
         </CredenzaTrigger>
         <CredenzaContent className="mx-auto sm:max-w-[425px]">
