@@ -48,7 +48,7 @@ interface SUAPDiscipline {
 
 interface SUAPResponse extends PaginatedResponse<SUAPDiscipline> {}
 
-interface GetGradesResponse {
+export interface GetGradesResponse {
   success: boolean
   grades?: Discipline[]
   message?: string

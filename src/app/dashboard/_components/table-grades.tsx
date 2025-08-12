@@ -6,6 +6,7 @@ import {
   BookMarked,
   BookText,
   Calculator,
+  Component,
   Cpu,
   Dumbbell,
   ExternalLink,
@@ -17,8 +18,8 @@ import {
   Package,
 } from "lucide-react"
 import { signIn } from "next-auth/react"
-import { Component, Suspense, use } from "react"
-import { getGrades } from "@/actions/get-grades"
+import { Suspense } from "react"
+import type { GetGradesResponse } from "@/actions/get-grades"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
@@ -38,6 +39,10 @@ import { TableSkeleton } from "./table-skeleton"
 
 type StageKey = "E1" | "E2" | "E3" | "E4"
 
+interface TableGradesProps {
+  gradesResponse: GetGradesResponse
+}
+
 export const STAGES: {
   key: StageKey
   label: string
@@ -48,8 +53,8 @@ export const STAGES: {
   { key: "E4", label: "4° Bimestre" },
 ] as const
 
-export function TableGrades() {
-  const response = use(getGrades())
+export function TableGrades({ gradesResponse }: TableGradesProps) {
+  const response = gradesResponse
 
   const getIcon = (gradeName: string) => {
     const iconMap = {

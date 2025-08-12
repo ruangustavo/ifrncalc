@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation"
 import { getServerSession } from "next-auth"
+import { getGrades } from "@/actions/get-grades"
 import { FeedbackDialog } from "@/components/feedback-dialog"
 import { authOptions } from "@/lib/auth"
 import { TableGrades } from "./_components/table-grades"
@@ -11,9 +12,11 @@ export default async function Dashboard() {
     redirect("/")
   }
 
+  const gradesResponse = await getGrades()
+
   return (
     <div className="relative">
-      <TableGrades />
+      <TableGrades gradesResponse={gradesResponse} />
       <FeedbackDialog user={session.user} />
     </div>
   )
