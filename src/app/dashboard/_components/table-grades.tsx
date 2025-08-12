@@ -16,8 +16,10 @@ import {
   Monitor,
   Package,
 } from "lucide-react"
-import { Component, Fragment } from "react"
+import { signOut } from "next-auth/react"
+import { Component } from "react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import {
   Table,
@@ -54,7 +56,17 @@ export function TableGrades() {
         <Info className="size-4" />
         <AlertTitle>Houve um erro ao carregar as notas</AlertTitle>
         <AlertDescription>
-          Erro ao carregar as notas. Por favor, tente novamente mais tarde.
+          Por favor, tente entrar na sua conta do SUAP novamente:{" "}
+          <Button
+            onClick={() =>
+              signOut({
+                redirect: true,
+                callbackUrl: "/",
+              })
+            }
+          >
+            Entrar novamente
+          </Button>
         </AlertDescription>
       </Alert>
     )
