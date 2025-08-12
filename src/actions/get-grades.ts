@@ -10,6 +10,13 @@ interface Grade {
   faltas: number
 }
 
+interface PaginatedResponse<T> {
+  results: T[]
+  count: number
+  next: string | null
+  previous: string | null
+}
+
 interface StageGrade {
   grade: number | null
   isAvailable: boolean
@@ -24,15 +31,11 @@ export interface Discipline {
   E4: StageGrade
 }
 
-interface GetPeriodsResponse {
-  results: {
+interface GetPeriodsResponse
+  extends PaginatedResponse<{
     ano_letivo: number
     periodo_letivo: number
-  }[]
-  count: number
-  next: string | null
-  previous: string | null
-}
+  }> {}
 
 interface SUAPDiscipline {
   disciplina: string
@@ -43,12 +46,7 @@ interface SUAPDiscipline {
   quantidade_avaliacoes: number
 }
 
-interface SUAPResponse {
-  results: SUAPDiscipline[]
-  count: number
-  next: string | null
-  previous: string | null
-}
+interface SUAPResponse extends PaginatedResponse<SUAPDiscipline> {}
 
 interface GetGradesResponse {
   success: boolean
