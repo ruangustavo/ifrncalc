@@ -3,16 +3,18 @@
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 
-const isApril = new Date().getMonth() >= 3
-const currentYear = isApril
-  ? new Date().getFullYear()
-  : new Date().getFullYear() - 1
-
 const STAGE_TO_WEIGHT: Record<number, number> = { 1: 2, 2: 2, 3: 3, 4: 3 }
 
 interface Grade {
   nota: number | null
   faltas: number
+}
+
+interface PaginatedResponse<T> {
+  results: T[]
+  count: number
+  next: string | null
+  previous: string | null
 }
 
 interface StageGrade {
@@ -29,7 +31,13 @@ export interface Discipline {
   E4: StageGrade
 }
 
-interface SUAPResponse {
+interface GetPeriodsResponse
+  extends PaginatedResponse<{
+    ano_letivo: number
+    periodo_letivo: number
+  }> {}
+
+interface SUAPDiscipline {
   disciplina: string
   nota_etapa_1: Grade
   nota_etapa_2: Grade
@@ -37,6 +45,8 @@ interface SUAPResponse {
   nota_etapa_4: Grade
   quantidade_avaliacoes: number
 }
+
+interface SUAPResponse extends PaginatedResponse<SUAPDiscipline> {}
 
 interface GetGradesResponse {
   success: boolean
@@ -89,6 +99,23 @@ function parseDisciplineName(discipline: string): string {
   return discipline.substring(11).replace(/\(.*\)/, "")
 }
 
+async function getPeriods(accessToken: string) {
+  const response: GetPeriodsResponse = await fetch(
+    `${process.env.SUAP_URL}/api/ensino/meus-periodos-letivos`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      next: {
+        revalidate: 60 * 60 * 24, // 24 hours
+      },
+    },
+  ).then((res) => res.json())
+
+  return response.results
+}
+
 export async function getGrades(): Promise<GetGradesResponse> {
   const session = await getServerSession(authOptions)
   const accessToken = session?.accessToken
@@ -97,8 +124,12 @@ export async function getGrades(): Promise<GetGradesResponse> {
     return { success: false, message: "Not authenticated" }
   }
 
-  const response: SUAPResponse[] = await fetch(
-    `${process.env.SUAP_URL}/api/v2/minhas-informacoes/boletim/${currentYear}/1/`,
+  const periods = await getPeriods(accessToken)
+
+  const period = periods[0]
+
+  const response: SUAPResponse = await fetch(
+    `${process.env.SUAP_URL}/api/ensino/meu-boletim/${period.ano_letivo}/${period.periodo_letivo}/`,
     {
       method: "GET",
       headers: {
@@ -110,7 +141,7 @@ export async function getGrades(): Promise<GetGradesResponse> {
     },
   ).then((res) => res.json())
 
-  const grades: Discipline[] = response.map((discipline) => {
+  const grades: Discipline[] = response.results.map((discipline) => {
     const gradeToPass = calculatePassingGrade(
       [
         discipline.nota_etapa_1,

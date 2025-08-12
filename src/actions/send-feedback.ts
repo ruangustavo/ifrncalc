@@ -1,5 +1,8 @@
 "use server"
 
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
+
 interface UserInfo {
   name?: string | null
   email?: string | null
@@ -9,6 +12,9 @@ export async function sendFeedback(
   feedback: string,
   user: UserInfo,
 ): Promise<{ ok: boolean }> {
+  const session = await getServerSession(authOptions)
+  const accessToken = session?.accessToken
+
   if (!feedback.trim()) {
     return { ok: false }
   }
@@ -17,6 +23,29 @@ export async function sendFeedback(
   if (!webhookUrl) {
     console.error("DISCORD_WEBHOOK_URL is not configured")
     return { ok: false }
+  }
+
+  let courseInfo = "Não disponível"
+
+  if (accessToken) {
+    try {
+      const response = await fetch(
+        `${process.env.SUAP_URL}/api/edu/meus-dados-aluno/`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        },
+      )
+
+      if (response.ok) {
+        const studentData = await response.json()
+        courseInfo = studentData.curso || "Não disponível"
+      }
+    } catch (_error) {
+      courseInfo = "Erro ao buscar dados"
+    }
   }
 
   try {
@@ -34,6 +63,10 @@ export async function sendFeedback(
               {
                 name: "Usuário",
                 value: `${user.name ?? "Desconhecido"} (${user.email ?? "sem email"})`,
+              },
+              {
+                name: "Curso",
+                value: courseInfo,
               },
             ],
             color: 0x00ff00,
