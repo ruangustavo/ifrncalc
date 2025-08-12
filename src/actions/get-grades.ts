@@ -3,11 +3,6 @@
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 
-const isApril = new Date().getMonth() >= 3
-const currentYear = isApril
-  ? new Date().getFullYear()
-  : new Date().getFullYear() - 1
-
 const STAGE_TO_WEIGHT: Record<number, number> = { 1: 2, 2: 2, 3: 3, 4: 3 }
 
 interface Grade {
@@ -27,6 +22,16 @@ export interface Discipline {
   E2: StageGrade
   E3: StageGrade
   E4: StageGrade
+}
+
+interface GetPeriodsResponse {
+  results: {
+    ano_letivo: number
+    periodo_letivo: number
+  }[]
+  count: number
+  next: string | null
+  previous: string | null
 }
 
 interface SUAPDiscipline {
@@ -96,6 +101,23 @@ function parseDisciplineName(discipline: string): string {
   return discipline.substring(11).replace(/\(.*\)/, "")
 }
 
+async function getPeriods(accessToken: string) {
+  const response: GetPeriodsResponse = await fetch(
+    `${process.env.SUAP_URL}/api/ensino/meus-periodos-letivos`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      next: {
+        revalidate: 60 * 60 * 24, // 24 hours
+      },
+    },
+  ).then((res) => res.json())
+
+  return response.results
+}
+
 export async function getGrades(): Promise<GetGradesResponse> {
   const session = await getServerSession(authOptions)
   const accessToken = session?.accessToken
@@ -104,8 +126,12 @@ export async function getGrades(): Promise<GetGradesResponse> {
     return { success: false, message: "Not authenticated" }
   }
 
+  const periods = await getPeriods(accessToken)
+
+  const period = periods[0]
+
   const response: SUAPResponse = await fetch(
-    `${process.env.SUAP_URL}/api/ensino/meu-boletim/${currentYear}/1/`,
+    `${process.env.SUAP_URL}/api/ensino/meu-boletim/${period.ano_letivo}/${period.periodo_letivo}/`,
     {
       method: "GET",
       headers: {
