@@ -126,13 +126,3 @@ export async function reportError(error: ErrorReport): Promise<void> {
     console.error("Error sending to Discord webhook:", webhookError)
   }
 }
-
-export function extractErrorInfo(
-  error: Error & { digest: string },
-): Partial<ErrorReport> {
-  return {
-    message: error.message,
-    stack: error.stack,
-    digest: error.digest,
-  }
-}
