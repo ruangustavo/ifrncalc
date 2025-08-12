@@ -100,20 +100,33 @@ function parseDisciplineName(discipline: string): string {
 }
 
 async function getPeriods(accessToken: string) {
-  const response: GetPeriodsResponse = await fetch(
-    `${process.env.SUAP_URL}/api/ensino/meus-periodos-letivos`,
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
+  try {
+    const response = await fetch(
+      `${process.env.SUAP_URL}/api/ensino/meus-periodos-letivos`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        next: {
+          revalidate: 60 * 60 * 24, // 24 hours
+        },
       },
-      next: {
-        revalidate: 60 * 60 * 24, // 24 hours
-      },
-    },
-  ).then((res) => res.json())
+    )
 
-  return response.results
+    if (!response.ok) {
+      console.error(
+        `Failed to fetch periods: ${response.status} ${response.statusText}`,
+      )
+      return []
+    }
+
+    const data: GetPeriodsResponse = await response.json()
+    return data.results || []
+  } catch (error) {
+    console.error("Error fetching periods:", error)
+    return []
+  }
 }
 
 export async function getGrades(): Promise<GetGradesResponse> {
@@ -121,61 +134,105 @@ export async function getGrades(): Promise<GetGradesResponse> {
   const accessToken = session?.accessToken
 
   if (!accessToken) {
-    return { success: false, message: "Not authenticated" }
+    return {
+      success: false,
+      message:
+        "Sua sessão expirou. Por favor, faça login novamente para continuar.",
+    }
   }
 
-  const periods = await getPeriods(accessToken)
+  try {
+    const periods = await getPeriods(accessToken)
 
-  const period = periods[0]
+    if (!periods || periods.length === 0) {
+      return {
+        success: false,
+        message:
+          "Não foi possível carregar seus dados acadêmicos. Sua sessão pode ter expirado. Por favor, faça login novamente.",
+      }
+    }
 
-  const response: SUAPResponse = await fetch(
-    `${process.env.SUAP_URL}/api/ensino/meu-boletim/${period.ano_letivo}/${period.periodo_letivo}/`,
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
+    const period = periods[0]
+
+    const gradesResponse = await fetch(
+      `${process.env.SUAP_URL}/api/ensino/meu-boletim/${period.ano_letivo}/${period.periodo_letivo}/`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        next: {
+          revalidate: 60 * 60 * 6, // 6 hours
+        },
       },
-      next: {
-        revalidate: 60 * 60 * 6, // 6 hours
-      },
-    },
-  ).then((res) => res.json())
-
-  const grades: Discipline[] = response.results.map((discipline) => {
-    const gradeToPass = calculatePassingGrade(
-      [
-        discipline.nota_etapa_1,
-        discipline.nota_etapa_2,
-        discipline.nota_etapa_3,
-        discipline.nota_etapa_4,
-      ],
-      discipline.quantidade_avaliacoes,
     )
 
-    const isAvailable = (grade: number | null, index: number) =>
-      grade == null && index <= discipline.quantidade_avaliacoes
+    if (!gradesResponse.ok) {
+      console.error(
+        `Failed to fetch grades: ${gradesResponse.status} ${gradesResponse.statusText}`,
+      )
+      return {
+        success: false,
+        message:
+          gradesResponse.status === 401
+            ? "Sua sessão expirou. Por favor, faça login novamente para acessar suas notas."
+            : "Erro ao carregar suas notas. Tente novamente em alguns instantes.",
+      }
+    }
 
-    const createStageGrade = (grade: Grade, index: number): StageGrade => ({
-      grade: grade.nota,
-      isAvailable: isAvailable(grade.nota, index),
-      passingGrade: isAvailable(grade.nota, index)
-        ? gradeToPass
-        : discipline.quantidade_avaliacoes >= index
-          ? 0
-          : -1,
+    const response: SUAPResponse = await gradesResponse.json()
+
+    if (!response.results || !Array.isArray(response.results)) {
+      return {
+        success: false,
+        message:
+          "Dados de notas não encontrados. Verifique se você tem disciplinas cadastradas neste período.",
+      }
+    }
+
+    const grades: Discipline[] = response.results.map((discipline) => {
+      const gradeToPass = calculatePassingGrade(
+        [
+          discipline.nota_etapa_1,
+          discipline.nota_etapa_2,
+          discipline.nota_etapa_3,
+          discipline.nota_etapa_4,
+        ],
+        discipline.quantidade_avaliacoes,
+      )
+
+      const isAvailable = (grade: number | null, index: number) =>
+        grade == null && index <= discipline.quantidade_avaliacoes
+
+      const createStageGrade = (grade: Grade, index: number): StageGrade => ({
+        grade: grade.nota,
+        isAvailable: isAvailable(grade.nota, index),
+        passingGrade: isAvailable(grade.nota, index)
+          ? gradeToPass
+          : discipline.quantidade_avaliacoes >= index
+            ? 0
+            : -1,
+      })
+
+      return {
+        name: parseDisciplineName(discipline.disciplina),
+        E1: createStageGrade(discipline.nota_etapa_1, 1),
+        E2: createStageGrade(discipline.nota_etapa_2, 2),
+        E3: createStageGrade(discipline.nota_etapa_3, 3),
+        E4: createStageGrade(discipline.nota_etapa_4, 4),
+      }
     })
 
     return {
-      name: parseDisciplineName(discipline.disciplina),
-      E1: createStageGrade(discipline.nota_etapa_1, 1),
-      E2: createStageGrade(discipline.nota_etapa_2, 2),
-      E3: createStageGrade(discipline.nota_etapa_3, 3),
-      E4: createStageGrade(discipline.nota_etapa_4, 4),
+      success: true,
+      grades,
     }
-  })
-
-  return {
-    success: true,
-    grades,
+  } catch (error) {
+    console.error("Error in getGrades:", error)
+    return {
+      success: false,
+      message:
+        "Ocorreu um erro inesperado ao carregar suas notas. Por favor, tente fazer login novamente ou entre em contato com o suporte.",
+    }
   }
 }

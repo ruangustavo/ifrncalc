@@ -8,6 +8,7 @@ import {
   Calculator,
   Cpu,
   Dumbbell,
+  ExternalLink,
   FlaskConical,
   Globe2,
   Languages,
@@ -15,8 +16,11 @@ import {
   Monitor,
   Package,
 } from "lucide-react"
+import { signIn } from "next-auth/react"
 import { Component, Suspense, use } from "react"
 import { getGrades } from "@/actions/get-grades"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import {
   Table,
@@ -45,7 +49,7 @@ export const STAGES: {
 ] as const
 
 export function TableGrades() {
-  const grades = use(getGrades())
+  const response = use(getGrades())
 
   const getIcon = (gradeName: string) => {
     const iconMap = {
@@ -74,13 +78,50 @@ export function TableGrades() {
     return <Icon className="size-4 text-primary" />
   }
 
+  if (!response.success) {
+    return (
+      <div className="mb-16 space-y-2 md:m-0 md:my-2">
+        <ClearEditedGradesButton />
+        <Alert className="border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive">
+          <AlertDescription className="text-sm">
+            <div className="space-y-3">
+              <p>{response.message}</p>
+              <Button
+                onClick={() => signIn("suap")}
+                variant="outline"
+                size="sm"
+                className="border-destructive/20 text-destructive hover:bg-destructive/10"
+              >
+                Entrar novamente
+                <ExternalLink className="ml-2 size-4" />
+              </Button>
+            </div>
+          </AlertDescription>
+        </Alert>
+      </div>
+    )
+  }
+
+  if (!response.grades || response.grades.length === 0) {
+    return (
+      <div className="mb-16 space-y-2 md:m-0 md:my-2">
+        <ClearEditedGradesButton />
+        <Alert>
+          <AlertDescription className="text-sm">
+            Nenhuma disciplina encontrada para este período.
+          </AlertDescription>
+        </Alert>
+      </div>
+    )
+  }
+
   return (
     <div className="mb-16 space-y-2 md:m-0 md:my-2">
       <ClearEditedGradesButton />
 
       <Suspense fallback={<TableSkeleton />}>
         <div className="space-y-4 md:hidden">
-          {grades?.grades?.map((grade) => (
+          {response.grades.map((grade) => (
             <div
               key={grade.name}
               className="rounded-lg border border-foreground/5 bg-card"
@@ -119,15 +160,12 @@ export function TableGrades() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {grades?.grades?.map((grade) => (
+              {response.grades.map((grade) => (
                 <TableRow key={grade.name}>
                   <TableCell className="font-medium">{grade.name}</TableCell>
-                  {[grade.E1, grade.E2, grade.E3, grade.E4].map((_, index) => (
-                    <TableCell key={index}>
-                      <CellTable
-                        discipline={grade}
-                        stageKey={`E${index + 1}`}
-                      />
+                  {STAGES.map(({ key }) => (
+                    <TableCell key={key}>
+                      <CellTable discipline={grade} stageKey={key} />
                     </TableCell>
                   ))}
                 </TableRow>
