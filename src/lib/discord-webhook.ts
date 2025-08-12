@@ -94,12 +94,22 @@ export async function reportError(error: ErrorReport): Promise<void> {
   try {
     let response: Response
 
-    if (error.stack) {
+    if (error.stack || error.headers) {
       const formData = new FormData()
       formData.append("payload_json", JSON.stringify(payload))
 
-      const stackBlob = new Blob([error.stack], { type: "text/plain" })
-      formData.append("files[0]", stackBlob, "stack-trace.txt")
+      if (error.stack) {
+        const stackBlob = new Blob([error.stack], { type: "text/plain" })
+        formData.append("files[0]", stackBlob, "stack-trace.txt")
+      }
+
+      if (error.headers && Object.keys(error.headers).length > 0) {
+        const headersString = Object.entries(error.headers)
+          .map(([key, value]) => `${key}: ${value}`)
+          .join("\n")
+        const headersBlob = new Blob([headersString], { type: "text/plain" })
+        formData.append("files[1]", headersBlob, "headers.txt")
+      }
 
       response = await fetch(webhookUrl, {
         method: "POST",
