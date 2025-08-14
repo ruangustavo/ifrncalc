@@ -26,6 +26,13 @@ interface GradeInput {
   weight: number
 }
 
+interface CalculationResult {
+  currentAverage: number | null
+  neededGrade: number | null
+  missingGradeIndex: number | null
+  canPass: boolean
+}
+
 export default function Calculadora() {
   const { data: session } = useSession()
   const [disciplineType, setDisciplineType] = useState<DisciplineType>("annual")
@@ -35,9 +42,12 @@ export default function Calculadora() {
     { value: "", weight: 3 },
     { value: "", weight: 3 },
   ])
-  const [calculatedAverage, setCalculatedAverage] = useState<number | null>(
-    null,
-  )
+  const [calculationResult, setCalculationResult] = useState<CalculationResult>({
+    currentAverage: null,
+    neededGrade: null,
+    missingGradeIndex: null,
+    canPass: false,
+  })
   const [isCalculated, setIsCalculated] = useState(false)
 
   const updateGrade = (index: number, value: string) => {
@@ -46,22 +56,49 @@ export default function Calculadora() {
     setGrades(newGrades)
   }
 
+  const calculateGradeNeeded = (grades: GradeInput[], targetAverage: number = 60): CalculationResult => {
+    const validGrades = grades.filter((grade) => grade.value !== "")
+    const emptyGradeIndex = grades.findIndex((grade) => grade.value === "")
+    
+    if (emptyGradeIndex === -1) {
+      const totalWeightedSum = validGrades.reduce((sum, grade) => {
+        return sum + parseFloat(grade.value) * grade.weight
+      }, 0)
+      const totalWeight = validGrades.reduce((sum, grade) => sum + grade.weight, 0)
+      const currentAverage = totalWeightedSum / totalWeight
+      
+      return {
+        currentAverage,
+        neededGrade: null,
+        missingGradeIndex: null,
+        canPass: currentAverage >= targetAverage,
+      }
+    }
+    
+    const totalWeightedSum = validGrades.reduce((sum, grade) => {
+      return sum + parseFloat(grade.value) * grade.weight
+    }, 0)
+    const totalWeight = validGrades.reduce((sum, grade) => sum + grade.weight, 0)
+    const missingGradeWeight = grades[emptyGradeIndex].weight
+    
+    const currentAverage = totalWeightedSum / totalWeight
+    const neededGrade = (targetAverage * (totalWeight + missingGradeWeight) - totalWeightedSum) / missingGradeWeight
+    
+    return {
+      currentAverage,
+      neededGrade: neededGrade <= 100 ? neededGrade : null,
+      missingGradeIndex: emptyGradeIndex,
+      canPass: neededGrade <= 100,
+    }
+  }
+
   const calculateAverage = () => {
     const validGrades = grades.filter((grade) => grade.value !== "")
 
     if (validGrades.length === 0) return
 
-    const totalWeightedSum = validGrades.reduce((sum, grade) => {
-      return sum + parseFloat(grade.value) * grade.weight
-    }, 0)
-
-    const totalWeight = validGrades.reduce(
-      (sum, grade) => sum + grade.weight,
-      0,
-    )
-    const average = totalWeightedSum / totalWeight
-
-    setCalculatedAverage(average)
+    const result = calculateGradeNeeded(grades)
+    setCalculationResult(result)
     setIsCalculated(true)
   }
 
@@ -72,7 +109,12 @@ export default function Calculadora() {
       { value: "", weight: 3 },
       { value: "", weight: 3 },
     ])
-    setCalculatedAverage(null)
+    setCalculationResult({
+      currentAverage: null,
+      neededGrade: null,
+      missingGradeIndex: null,
+      canPass: false,
+    })
     setIsCalculated(false)
   }
 
@@ -94,14 +136,24 @@ export default function Calculadora() {
       ])
     }
 
-    setCalculatedAverage(null)
+    setCalculationResult({
+      currentAverage: null,
+      neededGrade: null,
+      missingGradeIndex: null,
+      canPass: false,
+    })
     setIsCalculated(false)
   }
 
   const getApprovalStatus = (average: number) => {
-    if (average >= 7.0) return { status: "Aprovado", color: "bg-green-500" }
-    if (average >= 5.0) return { status: "Recuperação", color: "bg-yellow-500" }
+    if (average >= 60) return { status: "Aprovado", color: "bg-green-500" }
+    if (average >= 40) return { status: "Recuperação", color: "bg-yellow-500" }
     return { status: "Reprovado", color: "bg-red-500" }
+  }
+
+  const getGradeName = (index: number) => {
+    const gradeNames = ["primeira", "segunda", "terceira", "quarta"]
+    return gradeNames[index] || `${index + 1}ª`
   }
 
   const renderGradeInputs = () => {
@@ -120,7 +172,7 @@ export default function Calculadora() {
           id={`grade-${index}`}
           type="number"
           min="0"
-          max="10"
+          max="100"
           step="0.1"
           placeholder="0"
           value={grade.value}
@@ -133,21 +185,45 @@ export default function Calculadora() {
   }
 
   const renderResult = () => {
-    if (!isCalculated || calculatedAverage === null) return null
+    if (!isCalculated || calculationResult.currentAverage === null) return null
 
-    const approvalInfo = getApprovalStatus(calculatedAverage)
+    const approvalInfo = getApprovalStatus(calculationResult.currentAverage)
 
     return (
       <div className="space-y-4">
         <div className="space-y-2 text-center">
-          <h3 className="font-semibold text-lg">Média calculada</h3>
+          <h3 className="font-semibold text-lg">Média atual</h3>
           <div className="font-bold text-3xl text-primary">
-            {calculatedAverage.toFixed(2)}
+            {calculationResult.currentAverage.toFixed(2)}
           </div>
           <Badge className={`${approvalInfo.color} text-white`}>
             {approvalInfo.status}
           </Badge>
         </div>
+
+        {calculationResult.missingGradeIndex !== null && (
+          <div className="space-y-2 text-center">
+            {calculationResult.neededGrade !== null ? (
+              <p className="text-sm text-muted-foreground">
+                Você não preencheu a {getGradeName(calculationResult.missingGradeIndex!)} avaliação, 
+                então precisa tirar{" "}
+                <span className="font-semibold text-primary">
+                  {calculationResult.neededGrade.toFixed(2)}
+                </span>{" "}
+                para passar.
+              </p>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                Você não preencheu a {getGradeName(calculationResult.missingGradeIndex!)} avaliação.
+              </p>
+            )}
+            {!calculationResult.canPass && (
+              <p className="text-sm text-red-500">
+                <TriangleAlert /> Nota necessária é maior que 100, não é possível passar.
+              </p>
+            )}
+          </div>
+        )}
 
         <div className="text-center text-muted-foreground text-sm">
           <p>Média mínima para aprovação: 60</p>
@@ -242,7 +318,8 @@ export default function Calculadora() {
                     </>
                   )}
                   <li>Use vírgula ou ponto para decimais</li>
-                  <li>Notas devem estar entre 0 e 10</li>
+                  <li>Notas devem estar entre 0 e 100</li>
+                  <li>Deixe uma nota em branco para calcular quanto precisa tirar para passar</li>
                 </ul>
               </div>
             )}
