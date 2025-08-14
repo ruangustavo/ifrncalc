@@ -1,6 +1,7 @@
 import { CalculatorIcon } from "lucide-react"
 import Link from "next/link"
 import { siteConfig } from "@/config/site"
+import { NavLink } from "./nav-link"
 import { SignOutButton } from "./sign-out-button"
 
 export function Header() {
@@ -18,6 +19,11 @@ export function Header() {
         </div>
 
         <nav className="flex items-center gap-2">
+          <ul>
+            <li>
+              <NavLink href="/calculadora">Calculadora</NavLink>
+            </li>
+          </ul>
           <SignOutButton />
         </nav>
       </div>

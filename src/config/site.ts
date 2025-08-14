@@ -2,7 +2,7 @@ export const siteConfig = {
   name: "IFRN Calc",
   url: "https://ifrncalc.vercel.app",
   description:
-    "Use nossa calculadora de notas para saber as médias necessárias para aprovação no IFRN. Acesse com seu login SUAP e acompanhe seu desempenho.",
+    "Calculadora de notas para estudantes do IFRN. Conecte com seu SUAP e visualize as médias necessárias para aprovação em suas disciplinas.",
   links: {
     github: "https://github.com/ruangustavo/ifrncalc",
   },

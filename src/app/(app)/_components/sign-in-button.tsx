@@ -6,9 +6,13 @@ import { Button } from "@/components/ui/button"
 
 export function SignInButton() {
   return (
-    <Button className="mt-4" onClick={() => signIn("suap")} size="lg">
-      Entrar com SUAP
-      <ExternalLink size={20} className="ml-2" />
+    <Button
+      className="mt-6 bg-primary hover:bg-primary/90"
+      onClick={() => signIn("suap")}
+      size="lg"
+    >
+      Conectar com SUAP
+      <ExternalLink size={18} className="ml-2" />
     </Button>
   )
 }
