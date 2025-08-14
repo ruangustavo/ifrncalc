@@ -107,22 +107,30 @@ export default function Calculadora() {
   }
 
   const calculateAverage = () => {
-    const validGrades = grades.filter((grade) => grade.value !== "")
+    const currentGrades = disciplineType === "annual" ? grades : grades.slice(0, 2)
+    const validGrades = currentGrades.filter((grade) => grade.value !== "")
 
     if (validGrades.length === 0) return
 
-    const result = calculateGradeNeeded(grades)
+    const result = calculateGradeNeeded(currentGrades)
     setCalculationResult(result)
     setIsCalculated(true)
   }
 
   const clearAll = () => {
-    setGrades([
-      { value: "", weight: 2 },
-      { value: "", weight: 2 },
-      { value: "", weight: 3 },
-      { value: "", weight: 3 },
-    ])
+    if (disciplineType === "annual") {
+      setGrades([
+        { value: "", weight: 2 },
+        { value: "", weight: 2 },
+        { value: "", weight: 3 },
+        { value: "", weight: 3 },
+      ])
+    } else {
+      setGrades([
+        { value: "", weight: 2 },
+        { value: "", weight: 3 },
+      ])
+    }
     setCalculationResult({
       currentAverage: null,
       neededGrade: null,
@@ -303,7 +311,11 @@ export default function Calculadora() {
                     <Button
                       onClick={calculateAverage}
                       className="flex-1"
-                      disabled={grades.every((grade) => grade.value === "")}
+                      disabled={
+                        (disciplineType === "annual" ? grades : grades.slice(0, 2)).every(
+                          (grade) => grade.value === ""
+                        )
+                      }
                     >
                       Calcular média
                     </Button>
