@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useSession } from "next-auth/react"
 import { useState } from "react"
 import { Header } from "@/app/dashboard/_components/header"
+import { FeedbackDialog } from "@/components/feedback-dialog"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -156,7 +157,7 @@ export default function Calculadora() {
   }
 
   return (
-    <>
+    <div className="relative">
       {session && <Header />}
       <div className="container mx-auto max-w-2xl px-4 py-8">
         <Card>
@@ -248,6 +249,7 @@ export default function Calculadora() {
           </CardContent>
         </Card>
       </div>
-    </>
+      {session && <FeedbackDialog user={session.user} />}
+    </div>
   )
 }
