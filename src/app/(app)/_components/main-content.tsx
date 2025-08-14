@@ -1,46 +1,17 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { CalculatorIcon, PenTool } from "lucide-react"
+import { Check } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import type { ReactNode } from "react"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { siteConfig } from "@/config/site"
-import { DemoPreview } from "./demo-preview"
+import screenshotImage from "@/images/screenshot.png"
+import { PhoneFrame } from "./phone-frame"
 import { SignInButton } from "./sign-in-button"
 
 export function MainContent() {
-  const features: {
-    title: string
-    description: string
-    icon: React.ReactNode
-  }[] = [
-    {
-      title: "Cálculo automático",
-      description:
-        "Calcula automaticamente as notas necessárias baseado no sistema de pesos do IFRN",
-      icon: <CalculatorIcon className="size-6 text-primary" aria-hidden />,
-    },
-    {
-      title: "Edição de notas",
-      description: "Simule diferentes cenários editando suas notas futuras",
-      icon: <PenTool className="size-6 text-primary" aria-hidden />,
-    },
-  ]
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-muted/20">
       <main className="relative flex flex-col items-center justify-center px-4 py-24">
-        <motion.div
-          className="-z-10 absolute inset-0"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.3 }}
-          transition={{ duration: 2 }}
-        >
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(59,130,246,0.1),rgba(255,255,255,0))]" />
-        </motion.div>
-
         <div className="mx-auto flex max-w-4xl flex-col items-center space-y-12">
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
@@ -48,22 +19,16 @@ export function MainContent() {
             transition={{ duration: 0.5 }}
             className="flex flex-col items-center space-y-8 text-center"
           >
-            <div className="relative w-fit rounded-2xl border border-primary/10 bg-gradient-to-br from-primary/10 to-primary/5 p-6 backdrop-blur-sm">
-              <CalculatorIcon className="size-20 text-primary" />
-            </div>
-
-            <div className="space-y-6">
-              <h1 className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text font-bold text-4xl text-transparent tracking-tight sm:text-5xl lg:text-6xl">
-                {siteConfig.name}
+            <div className="flex flex-col items-center space-y-4">
+              <h1 className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text font-bold text-4xl text-transparent tracking-tight sm:text-3xl lg:text-4xl">
+                Calcule suas médias para passar
               </h1>
 
               <p className="mx-auto max-w-2xl text-lg text-muted-foreground sm:text-xl">
                 Calcule as notas necessárias para aprovação em suas disciplinas
-                do IFRN. Conecte com seu SUAP e visualize suas médias em tempo
-                real.
+                do IFRN. Conecte com seu SUAP e visualize suas médias.
               </p>
-            </div>
-            <div className="flex flex-col items-center gap-4">
+
               <SignInButton />
               <Link
                 href="/calculadora"
@@ -71,6 +36,20 @@ export function MainContent() {
               >
                 Ir para a calculadora
               </Link>
+            </div>
+
+            <div className="relative">
+              <div
+                className="max-w-full overflow-hidden"
+                style={{
+                  WebkitMaskImage:
+                    "linear-gradient(to bottom, black 0%, transparent 100%)",
+                  maskImage:
+                    "linear-gradient(to bottom, black 0%, transparent 100%)",
+                }}
+              >
+                <PhoneFrame src={screenshotImage.src} height={441} />
+              </div>
             </div>
           </motion.div>
           <motion.div
@@ -80,27 +59,152 @@ export function MainContent() {
             className="w-full max-w-3xl"
           >
             <h2 className="mb-8 text-center font-semibold text-2xl text-foreground">
-              Funcionalidades
+              Como funciona
             </h2>
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              {features.map((feature) => (
-                <Card className="group shadow-none" key={feature.title}>
-                  <CardHeader className="pb-3">
-                    <CardDecorator>{feature.icon}</CardDecorator>
+            <div className="space-y-8 text-muted-foreground">
+              <div className="space-y-3">
+                <p>
+                  O app conecta com seu SUAP e busca suas notas automaticamente.
+                  Ele mostra todas as suas disciplinas do período atual.
+                </p>
+              </div>
 
-                    <h3 className="mt-6 font-medium">{feature.title}</h3>
-                  </CardHeader>
+              <div className="space-y-4">
+                <p>
+                  Para cada disciplina, o sistema calcula as notas que você
+                  precisa tirar nas etapas que ainda não foram feitas. O cálculo
+                  usa os pesos do IFRN:
+                </p>
 
-                  <CardContent>
-                    <p className="text-sm">{feature.description}</p>
-                  </CardContent>
-                </Card>
-              ))}
+                <div className="flex justify-center">
+                  <div className="grid max-w-md grid-cols-4 gap-2">
+                    <div className="text-center">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-lg border-2 border-primary/30 bg-primary/10 font-medium text-primary text-sm">
+                        E1
+                      </div>
+                      <div className="mt-1 text-xs">2 pts</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-lg border-2 border-primary/30 bg-primary/10 font-medium text-primary text-sm">
+                        E2
+                      </div>
+                      <div className="mt-1 text-xs">2 pts</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-lg border-2 border-primary/30 bg-primary/10 font-medium text-primary text-sm">
+                        E3
+                      </div>
+                      <div className="mt-1 text-xs">3 pts</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-lg border-2 border-primary/30 bg-primary/10 font-medium text-primary text-sm">
+                        E4
+                      </div>
+                      <div className="mt-1 text-xs">3 pts</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <p>
+                  Se você tem 4 avaliações no semestre, precisa de 60 pontos
+                  para passar. Veja um exemplo:
+                </p>
+
+                <div className="mx-auto max-w-md rounded-lg bg-muted/30 p-4">
+                  <div className="mb-3 text-center font-medium text-sm">
+                    Exemplo: Matemática (4 avaliações)
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs">E1: 70</span>
+                      <span className="text-muted-foreground text-xs">
+                        70 × 2 = 140 pts
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs">E2: 80</span>
+                      <span className="text-muted-foreground text-xs">
+                        80 × 2 = 160 pts
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs">E3: ?</span>
+                      <span className="font-medium text-primary text-xs">
+                        Precisa: 50 pts
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs">E4: ?</span>
+                      <span className="font-medium text-primary text-xs">
+                        Precisa: 50 pts
+                      </span>
+                    </div>
+                    <div className="mt-2 border-t pt-2">
+                      <div className="flex items-center justify-between text-sm">
+                        <span>Total:</span>
+                        <span>140 + 160 + 150 + 150 = 600 pts</span>
+                      </div>
+                      <div className="flex items-center justify-between text-sm">
+                        <span>Média:</span>
+                        <span className="font-medium text-green-600">
+                          600 ÷ 10 = 60 <Check className="inline size-4" />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <p>
+                  Se você tem só 2 avaliações, a primeira vale 2 pontos e a
+                  segunda vale 3:
+                </p>
+
+                <div className="mx-auto max-w-md rounded-lg bg-muted/30 p-4">
+                  <div className="mb-3 text-center font-medium text-sm">
+                    Exemplo: História (2 avaliações)
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs">E1: 60</span>
+                      <span className="text-muted-foreground text-xs">
+                        60 × 2 = 120 pts
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs">E2: ?</span>
+                      <span className="font-medium text-primary text-xs">
+                        Precisa: 60 pts
+                      </span>
+                    </div>
+                    <div className="mt-2 border-t pt-2">
+                      <div className="flex items-center justify-between text-sm">
+                        <span>Total:</span>
+                        <span>120 + 180 = 300 pts</span>
+                      </div>
+                      <div className="flex items-center justify-between text-sm">
+                        <span>Média:</span>
+                        <span className="font-medium text-green-600">
+                          300 ÷ 5 = 60 <Check className="inline size-4" />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <p>
+                  Você pode editar as notas futuras para simular diferentes
+                  cenários e ver como isso afeta sua média final.
+                </p>
+              </div>
             </div>
           </motion.div>
-
-          <DemoPreview />
 
           <motion.div
             className="flex items-center gap-2 text-muted-foreground text-sm"
@@ -130,15 +234,3 @@ export function MainContent() {
     </div>
   )
 }
-
-const CardDecorator = ({ children }: { children: ReactNode }) => (
-  <div
-    aria-hidden
-    className="relative mx-auto size-36 [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]"
-  >
-    <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:24px_24px] opacity-10 [--border:black] dark:[--border:white]" />
-    <div className="absolute inset-0 m-auto flex size-12 items-center justify-center border-t border-l bg-background">
-      {children}
-    </div>
-  </div>
-)
