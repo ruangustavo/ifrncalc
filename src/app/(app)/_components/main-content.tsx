@@ -69,8 +69,8 @@ export function MainContent() {
               <div className="space-y-4">
                 <p>
                   Para cada disciplina, o sistema calcula as notas que você
-                  precisa tirar nas etapas que ainda não foram feitas. O cálculo
-                  usa os pesos do IFRN:
+                  precisa tirar nas etapas que ainda não foram realizadas. O
+                  cálculo utiliza os pesos do IFRN:
                 </p>
 
                 <div className="flex justify-center">
@@ -156,8 +156,8 @@ export function MainContent() {
 
               <div className="space-y-4">
                 <p>
-                  Se você tem só 2 avaliações, a primeira vale 2 pontos e a
-                  segunda vale 3:
+                  Se você tem só 2 avaliações (no caso de avaliações
+                  semestrais), a primeira vale 2 pontos e a segunda vale 3:
                 </p>
 
                 <div className="mx-auto max-w-md rounded-lg bg-muted/50 p-4">
