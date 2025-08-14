@@ -11,7 +11,7 @@ import { SignInButton } from "./sign-in-button"
 export function MainContent() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-muted/20">
-      <main className="relative flex flex-col items-center justify-center px-4 py-24">
+      <main className="relative flex flex-col items-center justify-center px-4 py-16">
         <div className="mx-auto flex max-w-4xl flex-col items-center space-y-12">
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
@@ -39,16 +39,12 @@ export function MainContent() {
             </div>
 
             <div className="relative">
-              <div
-                className="max-w-full overflow-hidden"
-                style={{
-                  WebkitMaskImage:
-                    "linear-gradient(to bottom, black 0%, transparent 100%)",
-                  maskImage:
-                    "linear-gradient(to bottom, black 0%, transparent 100%)",
-                }}
-              >
-                <PhoneFrame src={screenshotImage.src} height={441} />
+              <div className="max-w-full overflow-hidden [mask-image:var(--mask-image)]">
+                <PhoneFrame
+                  src={screenshotImage.src}
+                  height={441}
+                  className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl"
+                />
               </div>
             </div>
           </motion.div>
@@ -113,7 +109,7 @@ export function MainContent() {
                   para passar. Veja um exemplo:
                 </p>
 
-                <div className="mx-auto max-w-md rounded-lg bg-muted/30 p-4">
+                <div className="mx-auto max-w-md rounded-lg bg-muted/50 p-4">
                   <div className="mb-3 text-center font-medium text-sm">
                     Exemplo: Matemática (4 avaliações)
                   </div>
@@ -164,7 +160,7 @@ export function MainContent() {
                   segunda vale 3:
                 </p>
 
-                <div className="mx-auto max-w-md rounded-lg bg-muted/30 p-4">
+                <div className="mx-auto max-w-md rounded-lg bg-muted/50 p-4">
                   <div className="mb-3 text-center font-medium text-sm">
                     Exemplo: História (2 avaliações)
                   </div>
