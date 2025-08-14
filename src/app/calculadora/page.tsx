@@ -262,8 +262,41 @@ export default function Calculadora() {
     )
   }
 
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Calculadora de Média IFRN",
+    "description": "Ferramenta para calcular média ponderada no Instituto Federal do Rio Grande do Norte (IFRN)",
+    "url": "https://ifrncalc.com/calculadora",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Web Browser",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "BRL"
+    },
+    "creator": {
+      "@type": "Person",
+      "name": "Ruan Gustavo",
+      "url": "https://www.linkedin.com/in/ruan-gustavo"
+    },
+    "audience": {
+      "@type": "EducationalAudience",
+      "educationalRole": "student"
+    },
+    "about": {
+      "@type": "EducationalOrganization",
+      "name": "Instituto Federal do Rio Grande do Norte",
+      "alternateName": "IFRN"
+    }
+  }
+
   return (
     <div className="relative">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       {session && <Header />}
       <div className="container mx-auto max-w-2xl px-4 py-8">
         <Card>

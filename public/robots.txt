@@ -1,5 +1,0 @@
-User-Agent: *
-Allow: /
-Disallow: /dashboard
-
-Sitemap: https://ifrncalc.vercel.app/sitemap.xml

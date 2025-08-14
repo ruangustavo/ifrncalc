@@ -6,4 +6,9 @@ export const siteConfig = {
   links: {
     github: "https://github.com/ruangustavo/ifrncalc",
   },
+  author: {
+    name: "Ruan Gustavo",
+    url: "https://www.linkedin.com/in/ruan-gustavo",
+    email: "devruangustavo+ifrncalc@gmail.com",
+  },
 }
