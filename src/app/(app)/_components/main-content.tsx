@@ -105,7 +105,7 @@ export function MainContent() {
 
               <div className="space-y-4">
                 <p>
-                  Se você tem 4 avaliações no semestre, precisa de 60 pontos
+                  Se você tem 4 avaliações no ano letivo, precisa de 60 pontos
                   para passar. Veja um exemplo:
                 </p>
 
