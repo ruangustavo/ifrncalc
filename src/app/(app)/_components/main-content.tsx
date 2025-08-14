@@ -62,7 +62,15 @@ export function MainContent() {
               <div className="space-y-3">
                 <p>
                   O app conecta com seu SUAP e busca suas notas automaticamente.
-                  Ele mostra todas as suas disciplinas do período atual.
+                  Ele mostra todas as suas disciplinas do período atual. Se
+                  preferir, você pode acessar a{" "}
+                  <Link
+                    href="/calculadora"
+                    className="font-medium text-primary underline underline-offset-4"
+                  >
+                    calculadora
+                  </Link>{" "}
+                  para simular suas médias manualmente.
                 </p>
               </div>
 
@@ -156,7 +164,7 @@ export function MainContent() {
 
               <div className="space-y-4">
                 <p>
-                  Se você tem só 2 avaliações (no caso de avaliações
+                  Se você tem só 2 avaliações (no caso de disciplinas
                   semestrais), a primeira vale 2 pontos e a segunda vale 3:
                 </p>
 

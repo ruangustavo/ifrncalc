@@ -107,7 +107,8 @@ export default function Calculadora() {
   }
 
   const calculateAverage = () => {
-    const currentGrades = disciplineType === "annual" ? grades : grades.slice(0, 2)
+    const currentGrades =
+      disciplineType === "annual" ? grades : grades.slice(0, 2)
     const validGrades = currentGrades.filter((grade) => grade.value !== "")
 
     if (validGrades.length === 0) return
@@ -311,11 +312,10 @@ export default function Calculadora() {
                     <Button
                       onClick={calculateAverage}
                       className="flex-1"
-                      disabled={
-                        (disciplineType === "annual" ? grades : grades.slice(0, 2)).every(
-                          (grade) => grade.value === ""
-                        )
-                      }
+                      disabled={(disciplineType === "annual"
+                        ? grades
+                        : grades.slice(0, 2)
+                      ).every((grade) => grade.value === "")}
                     >
                       Calcular média
                     </Button>
