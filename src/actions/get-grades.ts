@@ -10,13 +10,6 @@ interface Grade {
   faltas: number
 }
 
-interface PaginatedResponse<T> {
-  results: T[]
-  count: number
-  next: string | null
-  previous: string | null
-}
-
 interface StageGrade {
   grade: number | null
   isAvailable: boolean
@@ -31,11 +24,10 @@ export interface Discipline {
   E4: StageGrade
 }
 
-interface GetPeriodsResponse
-  extends PaginatedResponse<{
-    ano_letivo: number
-    periodo_letivo: number
-  }> {}
+interface GetPeriodsResponse {
+  ano_letivo: number
+  periodo_letivo: number
+}
 
 interface SUAPDiscipline {
   disciplina: string
@@ -45,8 +37,6 @@ interface SUAPDiscipline {
   nota_etapa_4: Grade
   quantidade_avaliacoes: number
 }
-
-interface SUAPResponse extends PaginatedResponse<SUAPDiscipline> {}
 
 export interface GetGradesResponse {
   success: boolean
@@ -101,18 +91,17 @@ function parseDisciplineName(discipline: string): string {
 
 async function getPeriods(accessToken: string) {
   try {
-    const response = await fetch(
-      `${process.env.SUAP_URL}/api/ensino/meus-periodos-letivos`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        next: {
-          revalidate: 60 * 60 * 24, // 24 hours
-        },
+    const url = `${process.env.SUAP_URL}/api/ensino/meus-periodos-letivos`
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
       },
-    )
+      next: {
+        revalidate: 60 * 60 * 24, // 24 hours
+      },
+    })
 
     if (!response.ok) {
       console.error(
@@ -122,7 +111,7 @@ async function getPeriods(accessToken: string) {
     }
 
     const data: GetPeriodsResponse = await response.json()
-    return data.results || []
+    return data
   } catch (error) {
     console.error("Error fetching periods:", error)
     return []
@@ -180,9 +169,9 @@ export async function getGrades(): Promise<GetGradesResponse> {
       }
     }
 
-    const response: SUAPResponse = await gradesResponse.json()
+    const response: SUAPDiscipline[] = await gradesResponse.json()
 
-    if (!response.results || !Array.isArray(response.results)) {
+    if (!response || !Array.isArray(response)) {
       return {
         success: false,
         message:
@@ -190,7 +179,7 @@ export async function getGrades(): Promise<GetGradesResponse> {
       }
     }
 
-    const grades: Discipline[] = response.results.map((discipline) => {
+    const grades: Discipline[] = response.map((discipline) => {
       const gradeToPass = calculatePassingGrade(
         [
           discipline.nota_etapa_1,
