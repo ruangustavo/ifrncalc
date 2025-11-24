@@ -19,9 +19,11 @@ export async function sendFeedback(
     return { ok: false }
   }
 
-  const webhookUrl = process.env.DISCORD_WEBHOOK_URL
-  if (!webhookUrl) {
-    console.error("DISCORD_WEBHOOK_URL is not configured")
+  const botToken = process.env.TELEGRAM_API_TOKEN
+  const chatId = process.env.TELEGRAM_CHAT_ID
+
+  if (!botToken || !chatId) {
+    console.error("TELEGRAM_API_TOKEN or TELEGRAM_CHAT_ID not configured")
     return { ok: false }
   }
 
@@ -48,33 +50,36 @@ export async function sendFeedback(
     }
   }
 
+  const escapeHtml = (text: string) =>
+    text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+
+  const message = `💬 <b>Novo Feedback</b>
+
+${escapeHtml(feedback)}
+
+👤 <b>Usuário:</b> ${escapeHtml(user.name ?? "Desconhecido")} (${escapeHtml(user.email ?? "sem email")})
+🎓 <b>Curso:</b> ${escapeHtml(courseInfo)}
+🕐 ${new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })}`
+
   try {
-    await fetch(webhookUrl, {
+    const url = `https://api.telegram.org/bot${botToken}/sendMessage`
+
+    const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        embeds: [
-          {
-            title: "Novo feedback",
-            description: feedback,
-            fields: [
-              {
-                name: "Usuário",
-                value: `${user.name ?? "Desconhecido"} (${user.email ?? "sem email"})`,
-              },
-              {
-                name: "Curso",
-                value: courseInfo,
-              },
-            ],
-            color: 0x00ff00,
-            timestamp: new Date().toISOString(),
-          },
-        ],
+        chat_id: chatId,
+        text: message,
+        parse_mode: "HTML",
       }),
     })
+
+    if (!response.ok) {
+      console.error("Error sending to Telegram:", await response.text())
+      return { ok: false }
+    }
 
     return { ok: true }
   } catch (error) {
