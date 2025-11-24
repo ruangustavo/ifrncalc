@@ -24,7 +24,7 @@ export interface Discipline {
   E4: StageGrade
 }
 
-interface GetPeriodsResponse {
+interface Period {
   ano_letivo: number
   periodo_letivo: number
 }
@@ -110,7 +110,7 @@ async function getPeriods(accessToken: string) {
       return []
     }
 
-    const data: GetPeriodsResponse = await response.json()
+    const data: Period[] = await response.json()
     return data
   } catch (error) {
     console.error("Error fetching periods:", error)
