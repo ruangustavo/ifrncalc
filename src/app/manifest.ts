@@ -1,0 +1,60 @@
+import type { MetadataRoute } from "next"
+
+export default function manifest(): MetadataRoute.Manifest {
+  return {
+    name: "IFRN Calc - Calculadora de Médias",
+    short_name: "IFRN Calc",
+    description:
+      "Calculadora de médias para estudantes do Instituto Federal do Rio Grande do Norte",
+    start_url: "/",
+    display: "fullscreen",
+    background_color: "#ffffff",
+    theme_color: "#16a34a",
+    orientation: "portrait-primary",
+    categories: ["education", "productivity", "utilities"],
+    lang: "pt-BR",
+    icons: [
+      {
+        src: "/web-app-manifest-192x192.png",
+        sizes: "192x192",
+        type: "image/png",
+        purpose: "maskable",
+      },
+      {
+        src: "/web-app-manifest-512x512.png",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "maskable",
+      },
+      {
+        src: "/favicon-16x16.png",
+        sizes: "16x16",
+        type: "image/png",
+      },
+      {
+        src: "/favicon-32x32.png",
+        sizes: "32x32",
+        type: "image/png",
+      },
+      {
+        src: "/apple-icon-180x180.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
+    ],
+    shortcuts: [
+      {
+        name: "Calculadora",
+        short_name: "Calc",
+        description: "Acessar calculadora de médias",
+        url: "/calculadora",
+        icons: [
+          {
+            src: "/favicon-32x32.png",
+            sizes: "32x32",
+          },
+        ],
+      },
+    ],
+  }
+}

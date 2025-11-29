@@ -6,7 +6,6 @@ import { Toaster } from "@/components/ui/toaster"
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
 import { Providers } from "./providers"
-import { StructuredData } from "@/components/structured-data"
 
 const nunito = Nunito({ subsets: ["latin"] })
 
@@ -151,7 +150,6 @@ export const metadata: Metadata = {
     shortcut: "/favicon-32x32.png",
     apple: "/apple-icon-180x180.png",
   },
-  manifest: "/site.webmanifest",
   category: "education",
 }
 
@@ -162,13 +160,21 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="IFRN Calc" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="theme-color" content="#16a34a" />
+        <meta name="msapplication-TileColor" content="#16a34a" />
+      </head>
       <body
         className={cn(
           nunito.className,
           "flex min-h-dvh flex-col bg-muted/40 antialiased",
         )}
       >
-        <StructuredData />
         <Providers>{children}</Providers>
         <Analytics />
         <Toaster />
