@@ -1,13 +1,11 @@
 {
   "mcpServers": {
-    "playwright": {
+    "next-devtools": {
       "command": "npx",
       "args": [
-        "@playwright/mcp@latest"
+        "-y",
+        "next-devtools-mcp@latest"
       ]
-    },
-    "context7": {
-      "url": "https://mcp.context7.com/mcp"
     }
   }
 }

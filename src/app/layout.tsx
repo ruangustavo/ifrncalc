@@ -2,6 +2,7 @@ import { Nunito } from "next/font/google"
 import "./globals.css"
 import { Analytics } from "@vercel/analytics/react"
 import type { Metadata } from "next"
+import Script from "next/script"
 import { Toaster } from "@/components/ui/toaster"
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
@@ -161,13 +162,26 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
         <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta
+          name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent"
+        />
         <meta name="apple-mobile-web-app-title" content="IFRN Calc" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="theme-color" content="#16a34a" />
         <meta name="msapplication-TileColor" content="#16a34a" />
+        {process.env.NODE_ENV === "development" && (
+          <Script
+            src="//unpkg.com/react-grab/dist/index.global.js"
+            crossOrigin="anonymous"
+            strategy="beforeInteractive"
+          />
+        )}
       </head>
       <body
         className={cn(

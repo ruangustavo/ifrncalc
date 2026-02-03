@@ -1,7 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  turbopack: {
+    root: __dirname,
+  },
   images: {
-    domains: ["localhost", "github.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "github.com",
+      },
+    ],
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",

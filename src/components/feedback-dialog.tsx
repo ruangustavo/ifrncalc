@@ -116,7 +116,7 @@ export function FeedbackDialog({ user }: FeedbackDialogProps) {
                   />
                 </div>
               </div>
-              <CredenzaFooter className="p-0 md:p-4">
+              <CredenzaFooter className="p-0">
                 <Button
                   type="button"
                   variant="outline"
