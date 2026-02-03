@@ -6,12 +6,7 @@ import { Button } from "@/components/ui/button"
 
 export function SignOutButton() {
   return (
-    <Button
-      variant="ghost"
-      onClick={() => signOut()}
-      className="flex items-center space-x-2"
-      size="xs"
-    >
+    <Button variant="ghost" onClick={() => signOut()} size="xs">
       <LogOut className="size-4" />
       <span className="sr-only md:not-sr-only">Sair</span>
     </Button>
