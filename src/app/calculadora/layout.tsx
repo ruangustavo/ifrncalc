@@ -2,7 +2,8 @@ import type { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Calculadora de Média - IFRN",
-  description: "Calcule sua média ponderada no IFRN de forma rápida e precisa. Suporte para disciplinas anuais e semestrais com os pesos corretos do sistema SUAP.",
+  description:
+    "Calcule sua média ponderada no IFRN de forma rápida e precisa. Suporte para disciplinas anuais e semestrais com os pesos corretos do sistema SUAP.",
   keywords: [
     "calculadora média ifrn",
     "cálculo notas ifrn",
@@ -17,7 +18,8 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: "Calculadora de Média IFRN - Calcule suas notas",
-    description: "Ferramenta gratuita para calcular média ponderada no IFRN. Descubra quanto precisa tirar para ser aprovado!",
+    description:
+      "Ferramenta gratuita para calcular média ponderada no IFRN. Descubra quanto precisa tirar para ser aprovado!",
     type: "website",
     images: [
       {
@@ -31,7 +33,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Calculadora de Média IFRN",
-    description: "Calcule sua média ponderada no IFRN e descubra quanto precisa tirar para ser aprovado!",
+    description:
+      "Calcule sua média ponderada no IFRN e descubra quanto precisa tirar para ser aprovado!",
     images: ["/og-image.png"],
   },
   alternates: {
@@ -48,5 +51,5 @@ export default function CalculadoraLayout({
 }: {
   children: React.ReactNode
 }) {
-  return children;
+  return children
 }

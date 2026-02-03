@@ -36,12 +36,12 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.13",
+    "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "^20",
     "@types/react": "19.1.10",
     "@types/react-dom": "19.1.7",
-    "autoprefixer": "^10.0.1",
     "postcss": "^8",
-    "tailwindcss": "^3.3.0",
+    "tailwindcss": "^4.1.18",
     "typescript": "^5"
   },
   "pnpm": {

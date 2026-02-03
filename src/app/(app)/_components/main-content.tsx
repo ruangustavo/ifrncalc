@@ -10,7 +10,7 @@ import { SignInButton } from "./sign-in-button"
 
 export function MainContent() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-muted/20">
+    <div className="min-h-screen bg-linear-to-br from-background via-background/95 to-muted/20">
       <main className="relative flex flex-col items-center justify-center px-4 py-16">
         <div className="mx-auto flex max-w-4xl flex-col items-center space-y-12">
           <motion.div
@@ -20,7 +20,7 @@ export function MainContent() {
             className="flex flex-col items-center space-y-8 text-center"
           >
             <div className="flex flex-col items-center space-y-4">
-              <h1 className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text font-bold text-4xl text-transparent tracking-tight sm:text-3xl lg:text-4xl">
+              <h1 className="bg-linear-to-r from-primary to-primary/70 bg-clip-text font-bold text-4xl text-transparent tracking-tight sm:text-3xl lg:text-4xl">
                 Calcule suas médias para passar
               </h1>
 
@@ -39,7 +39,7 @@ export function MainContent() {
             </div>
 
             <div className="relative">
-              <div className="max-w-full overflow-hidden [mask-image:var(--mask-image)]">
+              <div className="mask-(--mask-image) max-w-full overflow-hidden">
                 <PhoneFrame
                   src={screenshotImage.src}
                   height={441}
