@@ -80,7 +80,7 @@ export function TableGrades({ gradesResponse }: TableGradesProps) {
       Object.entries(iconMap).find(([key]) => name.includes(key))?.[1] ??
       BookText
 
-    return <Icon className="size-4 text-primary" />
+    return <Icon className="size-4 shrink-0 text-primary" />
   }
 
   if (!response.success) {
