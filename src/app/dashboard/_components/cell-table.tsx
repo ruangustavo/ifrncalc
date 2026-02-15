@@ -1,6 +1,5 @@
 "use client"
 
-import { motion } from "framer-motion"
 import { Pencil } from "lucide-react"
 import { useMemo, useState } from "react"
 import type { Discipline } from "@/actions/get-grades"
@@ -20,7 +19,7 @@ export interface Stage {
 
 export function GradeLabel({ grade, passingGrade, isAvailable }: Stage) {
   if (!isAvailable && grade === null) {
-    return "-"
+    return "—"
   }
 
   const hasPassingGrade = !grade && passingGrade >= 0
@@ -28,7 +27,7 @@ export function GradeLabel({ grade, passingGrade, isAvailable }: Stage) {
   return (
     <span
       className={cn(
-        "font-mono text-base tabular-nums",
+        "font-medium text-xl tabular-nums md:text-base",
         hasPassingGrade && {
           "font-medium text-green-500": passingGrade <= 40,
           "font-medium text-yellow-500": passingGrade <= 90,
@@ -44,9 +43,10 @@ export function GradeLabel({ grade, passingGrade, isAvailable }: Stage) {
 interface CellTableProps {
   stageKey: `E${number}`
   discipline: Discipline
+  compact?: boolean
 }
 
-export function CellTable({ stageKey, discipline }: CellTableProps) {
+export function CellTable({ stageKey, discipline, compact }: CellTableProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const { setGrade, editedGrades } = useGradesStore()
 
@@ -81,11 +81,35 @@ export function CellTable({ stageKey, discipline }: CellTableProps) {
   const hasMultipleAvailableStages =
     recalculatedStages.filter((stage) => stage.isAvailable).length > 1
 
+  const canEdit = currentStage.isAvailable && hasMultipleAvailableStages
+
+  if (compact) {
+    return (
+      <>
+        <button
+          type="button"
+          className={cn("text-lg tabular-nums", canEdit && "cursor-pointer")}
+          onClick={canEdit ? () => setIsEditModalOpen(true) : undefined}
+          disabled={!canEdit}
+        >
+          <GradeLabel {...currentStage} grade={displayGrade} />
+        </button>
+        <EditGradeModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          onSubmit={handleEdit}
+          disciplineName={discipline.name}
+          stage={stageKey}
+        />
+      </>
+    )
+  }
+
   return (
     <div className="flex items-center gap-2">
       <GradeLabel {...currentStage} grade={displayGrade} />
 
-      {currentStage.isAvailable && hasMultipleAvailableStages && (
+      {canEdit && (
         <Button
           variant="ghost"
           className="size-8 p-1.5 transition-colors duration-200 hover:bg-primary/10 active:bg-primary/20"

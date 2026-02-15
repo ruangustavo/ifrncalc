@@ -1,28 +1,12 @@
 "use client"
 
-import {
-  Apple,
-  Atom,
-  BookMarked,
-  BookText,
-  Calculator,
-  Component,
-  Cpu,
-  Dumbbell,
-  ExternalLink,
-  FlaskConical,
-  Globe2,
-  Languages,
-  Leaf,
-  Monitor,
-  Package,
-} from "lucide-react"
+import { AnimatePresence, motion } from "framer-motion"
+import { ChevronDown, ExternalLink } from "lucide-react"
 import { signIn } from "next-auth/react"
-import { Suspense } from "react"
-import type { GetGradesResponse } from "@/actions/get-grades"
+import { Suspense, useState } from "react"
+import type { Discipline, GetGradesResponse } from "@/actions/get-grades"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
 import {
   Table,
   TableBody,
@@ -32,6 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { cn } from "@/lib/utils"
 
 import { CellTable } from "./cell-table"
 import { ClearEditedGradesButton } from "./clear-edited-grades-button"
@@ -46,42 +31,93 @@ interface TableGradesProps {
 export const STAGES: {
   key: StageKey
   label: string
+  shortLabel: string
 }[] = [
-  { key: "E1", label: "1° Bimestre" },
-  { key: "E2", label: "2° Bimestre" },
-  { key: "E3", label: "3° Bimestre" },
-  { key: "E4", label: "4° Bimestre" },
+  { key: "E1", label: "1° Bimestre", shortLabel: "1º Bim" },
+  { key: "E2", label: "2° Bimestre", shortLabel: "2º Bim" },
+  { key: "E3", label: "3° Bimestre", shortLabel: "3º Bim" },
+  { key: "E4", label: "4° Bimestre", shortLabel: "4º Bim" },
 ] as const
+
+function GradeCard({ grade }: { grade: Discipline }) {
+  const [isExpanded, setIsExpanded] = useState(true)
+
+  const calculatePartialAverage = (grade: Discipline) => {
+    const stages = [grade.E1, grade.E2, grade.E3, grade.E4]
+    const filled = stages.filter((s) => s.grade !== null)
+    if (filled.length === 0) return null
+    const sum = filled.reduce((acc, s) => acc + (s.grade ?? 0), 0)
+    return Math.round(sum / filled.length)
+  }
+
+  const partialAverage = grade.partialAverage ?? calculatePartialAverage(grade)
+
+  return (
+    <div className="rounded-xl bg-card p-4">
+      <button
+        type="button"
+        className="flex w-full items-start gap-3"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <div
+          className={cn(
+            "mt-1 h-10 w-1.5 shrink-0 rounded-full",
+            partialAverage === null
+              ? "bg-primary"
+              : {
+                  "bg-green-500": partialAverage && partialAverage <= 40,
+                  "bg-yellow-500": partialAverage && partialAverage <= 90,
+                  "bg-red-500": partialAverage && partialAverage > 90,
+                },
+          )}
+        />
+        <div className="min-w-0 flex-1 text-left">
+          <h3 className="font-semibold leading-tight">{grade.name}</h3>
+          <p className="mt-0.5 text-muted-foreground text-sm">
+            {grade.hours}h
+            {partialAverage !== null && ` • Média parcial: ${partialAverage}`}
+          </p>
+        </div>
+        <ChevronDown
+          className={cn(
+            "mt-1 size-5 shrink-0 text-muted-foreground transition-transform",
+            isExpanded && "rotate-180",
+          )}
+        />
+      </button>
+      <AnimatePresence initial={false}>
+        {isExpanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+            className="overflow-hidden"
+          >
+            <div className="mt-3 grid grid-cols-4 gap-2">
+              {STAGES.map(({ key, shortLabel }) => {
+                return (
+                  <div
+                    key={key}
+                    className="flex flex-col items-center gap-1 rounded-lg border p-2"
+                  >
+                    <span className="text-muted-foreground text-xs">
+                      {shortLabel}
+                    </span>
+                    <CellTable discipline={grade} stageKey={key} compact />
+                  </div>
+                )
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
 
 export function TableGrades({ gradesResponse }: TableGradesProps) {
   const response = gradesResponse
-
-  const getIcon = (gradeName: string) => {
-    const iconMap = {
-      matemática: Calculator,
-      português: BookText,
-      história: BookMarked,
-      geografia: Globe2,
-      física: Atom,
-      química: FlaskConical,
-      biologia: Leaf,
-      "educação física": Dumbbell,
-      inglês: Languages,
-      computação: Cpu,
-      computadores: Monitor,
-      arquitetura: Component,
-      alimento: Apple,
-      embalagem: Package,
-    }
-
-    const name = gradeName.toLowerCase()
-
-    const Icon =
-      Object.entries(iconMap).find(([key]) => name.includes(key))?.[1] ??
-      BookText
-
-    return <Icon className="size-4 shrink-0 text-primary" />
-  }
 
   if (!response.success) {
     return (
@@ -123,32 +159,10 @@ export function TableGrades({ gradesResponse }: TableGradesProps) {
   return (
     <div className="mb-16 space-y-2 md:m-0 md:my-2">
       <ClearEditedGradesButton />
-
       <Suspense fallback={<TableSkeleton />}>
         <div className="space-y-4 md:hidden">
           {response.grades.map((grade) => (
-            <div
-              key={grade.name}
-              className="rounded-lg border border-foreground/5 bg-card"
-            >
-              <div className="flex items-center gap-1.5 p-4 pb-2">
-                {getIcon(grade.name)}
-                <h3 className="flex items-center gap-2 font-semibold">
-                  {grade.name}
-                </h3>
-              </div>
-              <Separator />
-              <div className="space-y-2 p-4 pt-2">
-                {STAGES.map(({ key, label }) => (
-                  <div key={key} className="flex items-center justify-between">
-                    <span className="text-muted-foreground text-sm">
-                      {label}
-                    </span>
-                    <CellTable discipline={grade} stageKey={key} />
-                  </div>
-                ))}
-              </div>
-            </div>
+            <GradeCard key={grade.name} grade={grade} />
           ))}
         </div>
         <div className="hidden rounded-md border border-foreground/5 bg-card md:block">

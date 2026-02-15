@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Check, Loader2, MessageSquarePlus } from "lucide-react"
+import { Check, Loader2, MessageCircle } from "lucide-react"
 import { useState } from "react"
 import { sendFeedback } from "@/actions/send-feedback"
 import { Button } from "@/components/ui/button"
@@ -69,7 +69,7 @@ export function FeedbackDialog({ user }: FeedbackDialogProps) {
       <Credenza open={open} onOpenChange={setOpen}>
         <CredenzaTrigger asChild>
           <Button title="Enviar feedback" className="gap-2">
-            <MessageSquarePlus className="size-5" />
+            <MessageCircle className="size-5" />
             Feedback
           </Button>
         </CredenzaTrigger>

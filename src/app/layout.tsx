@@ -1,4 +1,4 @@
-import { Nunito } from "next/font/google"
+import { DM_Sans } from "next/font/google"
 import "./globals.css"
 import { Analytics } from "@vercel/analytics/react"
 import type { Metadata } from "next"
@@ -8,7 +8,7 @@ import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
 import { Providers } from "./providers"
 
-const nunito = Nunito({ subsets: ["latin"] })
+const dmSans = DM_Sans({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -185,7 +185,7 @@ export default function RootLayout({
       </head>
       <body
         className={cn(
-          nunito.className,
+          dmSans.className,
           "flex min-h-dvh flex-col bg-muted/40 antialiased",
         )}
       >

@@ -25,6 +25,8 @@ interface StageGrade {
 
 export interface Discipline {
   name: string
+  hours: number
+  partialAverage: number | null
   E1: StageGrade
   E2: StageGrade
   E3: StageGrade
@@ -43,6 +45,8 @@ interface SUAPDiscipline {
   nota_etapa_3: Grade
   nota_etapa_4: Grade
   quantidade_avaliacoes: number
+  carga_horaria: number
+  media_disciplina: number | null
 }
 
 export interface GetGradesResponse {
@@ -213,6 +217,8 @@ export async function getGrades(): Promise<GetGradesResponse> {
 
       return {
         name: parseDisciplineName(discipline.disciplina),
+        hours: discipline.carga_horaria,
+        partialAverage: discipline.media_disciplina,
         E1: createStageGrade(discipline.nota_etapa_1, 1),
         E2: createStageGrade(discipline.nota_etapa_2, 2),
         E3: createStageGrade(discipline.nota_etapa_3, 3),
