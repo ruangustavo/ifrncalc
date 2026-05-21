@@ -368,9 +368,9 @@ export default function Calculadora() {
               )}
             </div>
             {!isCalculated && (
-              <div className="space-y-2 rounded-lg bg-muted/50 p-4">
+              <div className="flex flex-col gap-2 rounded-lg bg-muted/50 p-4">
                 <h4 className="font-medium text-sm">Instruções:</h4>
-                <ul className="list-inside list-disc space-y-1 text-muted-foreground text-sm">
+                <ul className="flex list-inside list-disc flex-col gap-1 text-muted-foreground text-sm">
                   {disciplineType === "annual" ? (
                     <>
                       <li>Digite as 4 notas da disciplina anual</li>
