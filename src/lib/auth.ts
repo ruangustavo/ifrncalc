@@ -19,10 +19,27 @@ interface Profile {
   email_preferencial: string
 }
 
+const NOISY_OAUTH_CALLBACK_PATTERNS = [
+  "state mismatch",
+  "state cookie was missing",
+  "state value could not be parsed",
+  "pkce code_verifier cookie was missing",
+  "pkce code_verifier value could not be parsed",
+  "nonce cookie was missing",
+  "nonce value could not be parsed",
+]
+
+function isNoisyAuthError(code: string, message: string): boolean {
+  if (code !== "OAUTH_CALLBACK_ERROR") return false
+  const m = message.toLowerCase()
+  return NOISY_OAUTH_CALLBACK_PATTERNS.some((p) => m.includes(p))
+}
+
 export const authOptions: NextAuthOptions = {
   logger: {
     error(code, metadata) {
       const error = metadata instanceof Error ? metadata : metadata.error
+      if (isNoisyAuthError(code, error.message)) return
       notifyError(`auth.ts / next-auth (${code})`, {
         code,
         message: error.message,
