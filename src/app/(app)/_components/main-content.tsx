@@ -223,16 +223,16 @@ export function MainContent({ starCount }: MainContentProps) {
             transition={{ duration: 0.5, delay: 0.7 }}
           >
             <span>
-              é dev? deixa uma{" "}
+              é dev? deixa uma estrelinha no{" "}
               <a
                 href={siteConfig.links.github}
                 target="_blank"
                 rel="noreferrer"
                 className="font-medium underline underline-offset-4 transition-colors hover:text-primary"
               >
-                estrelinha
+                projeto
               </a>{" "}
-              no projeto ou contribua com código :)
+              ou contribua com código :)
             </span>
             {starCount}
           </motion.p>
