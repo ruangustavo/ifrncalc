@@ -4,11 +4,17 @@ import { motion } from "framer-motion"
 import { Check } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import type { ReactNode } from "react"
+import { siteConfig } from "@/config/site"
 import screenshotImage from "@/images/screenshot.png"
 import { PhoneFrame } from "./phone-frame"
 import { SignInButton } from "./sign-in-button"
 
-export function MainContent() {
+interface MainContentProps {
+  starCount: ReactNode
+}
+
+export function MainContent({ starCount }: MainContentProps) {
   return (
     <div className="min-h-screen bg-linear-to-br from-background via-background/95 to-muted/20">
       <main className="relative flex flex-col items-center justify-center px-4 py-16">
@@ -209,6 +215,27 @@ export function MainContent() {
               </div>
             </div>
           </motion.div>
+
+          <motion.p
+            className="flex flex-wrap items-center justify-center gap-x-2 text-center text-muted-foreground text-sm"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.7 }}
+          >
+            <span>
+              é dev? deixa uma{" "}
+              <a
+                href={siteConfig.links.github}
+                target="_blank"
+                rel="noreferrer"
+                className="font-medium underline underline-offset-4 transition-colors hover:text-primary"
+              >
+                estrelinha
+              </a>{" "}
+              no projeto ou contribua com código :)
+            </span>
+            {starCount}
+          </motion.p>
 
           <motion.div
             className="flex items-center gap-2 text-muted-foreground text-sm"
