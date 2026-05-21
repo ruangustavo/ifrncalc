@@ -2,6 +2,8 @@
 
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
+import { notifyError } from "@/lib/notify"
+import { escapeHtml, sendTelegramMessage } from "@/lib/telegram"
 
 interface UserInfo {
   name?: string | null
@@ -16,14 +18,6 @@ export async function sendFeedback(
   const accessToken = session?.accessToken
 
   if (!feedback.trim()) {
-    return { ok: false }
-  }
-
-  const botToken = process.env.TELEGRAM_API_TOKEN
-  const chatId = process.env.TELEGRAM_CHAT_ID
-
-  if (!botToken || !chatId) {
-    console.error("TELEGRAM_API_TOKEN or TELEGRAM_CHAT_ID not configured")
     return { ok: false }
   }
 
@@ -44,14 +38,19 @@ export async function sendFeedback(
       if (response.ok) {
         const studentData = await response.json()
         courseInfo = studentData.curso || "Não disponível"
+      } else if (response.status !== 401) {
+        notifyError("send-feedback / meus-dados-aluno", {
+          code: `HTTP ${response.status}`,
+          message: response.statusText,
+        })
       }
-    } catch (_error) {
+    } catch (error) {
       courseInfo = "Erro ao buscar dados"
+      notifyError("send-feedback / meus-dados-aluno", {
+        message: error instanceof Error ? error.message : String(error),
+      })
     }
   }
-
-  const escapeHtml = (text: string) =>
-    text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
 
   const message = `💬 <b>Novo Feedback</b>
 
@@ -61,29 +60,6 @@ ${escapeHtml(feedback)}
 🎓 <b>Curso:</b> ${escapeHtml(courseInfo)}
 🕐 ${new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })}`
 
-  try {
-    const url = `https://api.telegram.org/bot${botToken}/sendMessage`
-
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text: message,
-        parse_mode: "HTML",
-      }),
-    })
-
-    if (!response.ok) {
-      console.error("Error sending to Telegram:", await response.text())
-      return { ok: false }
-    }
-
-    return { ok: true }
-  } catch (error) {
-    console.error("Error sending feedback:", error)
-    return { ok: false }
-  }
+  const ok = await sendTelegramMessage(message)
+  return { ok }
 }

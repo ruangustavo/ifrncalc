@@ -2,6 +2,7 @@
 
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
+import { notifyError } from "@/lib/notify"
 
 const STAGE_TO_WEIGHT: Record<number, number> = { 1: 2, 2: 2, 3: 3, 4: 3 }
 
@@ -118,6 +119,12 @@ async function getPeriods(accessToken: string) {
       console.error(
         `Failed to fetch periods: ${response.status} ${response.statusText}`,
       )
+      if (response.status !== 401) {
+        notifyError("get-grades / getPeriods", {
+          code: `HTTP ${response.status}`,
+          message: response.statusText,
+        })
+      }
       return { results: [] }
     }
 
@@ -125,6 +132,9 @@ async function getPeriods(accessToken: string) {
     return data
   } catch (error) {
     console.error("Error fetching periods:", error)
+    notifyError("get-grades / getPeriods", {
+      message: error instanceof Error ? error.message : String(error),
+    })
     return { results: [] }
   }
 }
@@ -171,6 +181,12 @@ export async function getGrades(): Promise<GetGradesResponse> {
       console.error(
         `Failed to fetch grades: ${gradesResponse.status} ${gradesResponse.statusText}`,
       )
+      if (gradesResponse.status !== 401) {
+        notifyError("get-grades / meu-boletim", {
+          code: `HTTP ${gradesResponse.status}`,
+          message: gradesResponse.statusText,
+        })
+      }
       return {
         success: false,
         message:
@@ -232,6 +248,9 @@ export async function getGrades(): Promise<GetGradesResponse> {
     }
   } catch (error) {
     console.error("Error in getGrades:", error)
+    notifyError("get-grades / getGrades", {
+      message: error instanceof Error ? error.message : String(error),
+    })
     return {
       success: false,
       message:

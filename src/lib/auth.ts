@@ -1,4 +1,5 @@
 import type { NextAuthOptions } from "next-auth"
+import { notifyError } from "@/lib/notify"
 
 interface Profile {
   identificacao: string
@@ -19,6 +20,15 @@ interface Profile {
 }
 
 export const authOptions: NextAuthOptions = {
+  logger: {
+    error(code, metadata) {
+      const error = metadata instanceof Error ? metadata : metadata.error
+      notifyError(`auth.ts / next-auth (${code})`, {
+        code,
+        message: error.message,
+      })
+    },
+  },
   session: {
     strategy: "jwt",
   },
