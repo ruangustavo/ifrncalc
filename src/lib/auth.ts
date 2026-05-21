@@ -48,7 +48,7 @@ export const authOptions: NextAuthOptions = {
         params: { scope: "email identificacao" },
       },
       token: `${process.env.SUAP_URL}/o/token/`,
-      userinfo: `${process.env.SUAP_URL}/api/eu/`,
+      userinfo: `${process.env.SUAP_URL}/api/rh/eu/`,
       profile(profile: Profile) {
         return {
           id: profile.identificacao,
