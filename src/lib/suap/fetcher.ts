@@ -1,15 +1,6 @@
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 
-/**
- * Mutator used by the orval-generated SUAP client.
- *
- * The generated functions call this with a path-only `url` (the spec has
- * `servers: []`, so there is no baseURL) and a `RequestInit`. We prefix
- * `SUAP_URL`, inject the bearer token from the server session, and return the
- * `{ status, data }` shape the generated response unions expect — preserving
- * the per-status branching at the call sites.
- */
 export const suapFetch = async <T>(
   url: string,
   options?: RequestInit,

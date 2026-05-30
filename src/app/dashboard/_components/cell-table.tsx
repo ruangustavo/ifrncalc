@@ -29,9 +29,9 @@ export function GradeLabel({ grade, passingGrade, isAvailable }: Stage) {
       className={cn(
         "font-medium text-xl tabular-nums md:text-base",
         hasPassingGrade && {
-          "font-medium text-green-500": passingGrade <= 40,
-          "font-medium text-yellow-500": passingGrade <= 90,
-          "font-medium text-red-500": passingGrade > 90,
+          "text-green-500": passingGrade <= 40,
+          "text-yellow-500": passingGrade > 40 && passingGrade <= 90,
+          "text-red-500": passingGrade > 90,
         },
       )}
     >
@@ -44,9 +44,15 @@ interface CellTableProps {
   stageKey: `E${number}`
   discipline: Discipline
   compact?: boolean
+  shortLabel?: string
 }
 
-export function CellTable({ stageKey, discipline, compact }: CellTableProps) {
+export function CellTable({
+  stageKey,
+  discipline,
+  compact,
+  shortLabel,
+}: CellTableProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const { setGrade, editedGrades } = useGradesStore()
 
@@ -74,26 +80,37 @@ export function CellTable({ stageKey, discipline, compact }: CellTableProps) {
     setGrade(discipline.name, stageKey, newGrade)
   }
 
-  if (!currentStage.isAvailable && currentStage.grade === null) {
-    return <span className="text-muted-foreground">-</span>
-  }
-
   const hasMultipleAvailableStages =
     recalculatedStages.filter((stage) => stage.isAvailable).length > 1
 
   const canEdit = currentStage.isAvailable && hasMultipleAvailableStages
 
   if (compact) {
+    const tileBody = (
+      <>
+        {shortLabel && (
+          <span className="text-muted-foreground text-xs">{shortLabel}</span>
+        )}
+        <GradeLabel {...currentStage} grade={displayGrade} />
+      </>
+    )
+
     return (
       <>
-        <button
-          type="button"
-          className={cn("text-lg tabular-nums", canEdit && "cursor-pointer")}
-          onClick={canEdit ? () => setIsEditModalOpen(true) : undefined}
-          disabled={!canEdit}
-        >
-          <GradeLabel {...currentStage} grade={displayGrade} />
-        </button>
+        {canEdit ? (
+          <button
+            type="button"
+            onClick={() => setIsEditModalOpen(true)}
+            className="relative flex flex-col items-center gap-1 rounded-lg border p-2 transition-colors hover:bg-muted/50 active:bg-muted"
+          >
+            {tileBody}
+            <Pencil className="absolute top-1.5 right-1.5 size-3 text-muted-foreground/60" />
+          </button>
+        ) : (
+          <div className="flex flex-col items-center gap-1 rounded-lg border p-2">
+            {tileBody}
+          </div>
+        )}
         <EditGradeModal
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
@@ -103,6 +120,10 @@ export function CellTable({ stageKey, discipline, compact }: CellTableProps) {
         />
       </>
     )
+  }
+
+  if (!currentStage.isAvailable && currentStage.grade === null) {
+    return <span className="text-muted-foreground">-</span>
   }
 
   return (

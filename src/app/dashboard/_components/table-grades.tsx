@@ -53,7 +53,7 @@ function GradeCard({ grade }: { grade: Discipline }) {
   const partialAverage = grade.partialAverage ?? calculatePartialAverage(grade)
 
   return (
-    <div className="rounded-xl bg-card p-4">
+    <div className="rounded-xl border bg-card p-4">
       <button
         type="button"
         className="flex w-full items-start gap-3"
@@ -65,9 +65,9 @@ function GradeCard({ grade }: { grade: Discipline }) {
             partialAverage === null
               ? "bg-primary"
               : {
-                  "bg-green-500": partialAverage && partialAverage <= 40,
-                  "bg-yellow-500": partialAverage && partialAverage <= 90,
-                  "bg-red-500": partialAverage && partialAverage > 90,
+                  "bg-green-500": partialAverage >= 60,
+                  "bg-yellow-500": partialAverage >= 40 && partialAverage < 60,
+                  "bg-red-500": partialAverage < 40,
                 },
           )}
         />
@@ -95,19 +95,15 @@ function GradeCard({ grade }: { grade: Discipline }) {
             className="overflow-hidden"
           >
             <div className="mt-3 grid grid-cols-4 gap-2">
-              {STAGES.map(({ key, shortLabel }) => {
-                return (
-                  <div
-                    key={key}
-                    className="flex flex-col items-center gap-1 rounded-lg border p-2"
-                  >
-                    <span className="text-muted-foreground text-xs">
-                      {shortLabel}
-                    </span>
-                    <CellTable discipline={grade} stageKey={key} compact />
-                  </div>
-                )
-              })}
+              {STAGES.map(({ key, shortLabel }) => (
+                <CellTable
+                  key={key}
+                  discipline={grade}
+                  stageKey={key}
+                  shortLabel={shortLabel}
+                  compact
+                />
+              ))}
             </div>
           </motion.div>
         )}
@@ -121,7 +117,7 @@ export function TableGrades({ gradesResponse }: TableGradesProps) {
 
   if (!response.success) {
     return (
-      <div className="mb-16 space-y-2 md:m-0 md:my-2">
+      <div className="space-y-3">
         <ClearEditedGradesButton />
         <Alert className="border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive">
           <AlertDescription className="text-sm">
@@ -145,7 +141,7 @@ export function TableGrades({ gradesResponse }: TableGradesProps) {
 
   if (!response.grades || response.grades.length === 0) {
     return (
-      <div className="mb-16 space-y-2 md:m-0 md:my-2">
+      <div className="space-y-3">
         <ClearEditedGradesButton />
         <Alert>
           <AlertDescription className="text-sm">
@@ -157,7 +153,7 @@ export function TableGrades({ gradesResponse }: TableGradesProps) {
   }
 
   return (
-    <div className="mb-16 space-y-2 md:m-0 md:my-2">
+    <div className="space-y-3">
       <ClearEditedGradesButton />
       <Suspense fallback={<TableSkeleton />}>
         <div className="space-y-4 md:hidden">

@@ -1,266 +1,261 @@
-"use client"
+"use client";
 
-import { ArrowLeft, InfoIcon } from "lucide-react"
-import Link from "next/link"
-import { useSession } from "next-auth/react"
-import { useState } from "react"
-import { Header } from "@/app/dashboard/_components/header"
-import { FeedbackDialog } from "@/components/feedback-dialog"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { ArrowLeft, CheckCircle2, Info } from "lucide-react";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { useMemo, useState } from "react";
+import { Header } from "@/app/dashboard/_components/header";
+import { FeedbackDialog } from "@/components/feedback-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { cn } from "@/lib/utils"
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 
-type DisciplineType = "annual" | "semester"
+const PASSING_AVERAGE = 60;
+
+type DisciplineType = "annual" | "semester";
 
 interface GradeInput {
-  value: string
-  weight: number
+  value: string;
+  weight: number;
 }
 
-interface CalculationResult {
-  currentAverage: number | null
-  neededGrade: number | null
-  missingGradeIndex: number | null
-  canPass: boolean
+const ANNUAL_GRADES: GradeInput[] = [
+  { value: "", weight: 2 },
+  { value: "", weight: 2 },
+  { value: "", weight: 3 },
+  { value: "", weight: 3 },
+];
+
+const SEMESTER_GRADES: GradeInput[] = [
+  { value: "", weight: 2 },
+  { value: "", weight: 3 },
+];
+
+type CalcResult =
+  | { kind: "empty" }
+  | { kind: "partial"; average: number; blanks: number }
+  | { kind: "needed"; needed: number; average: number; missingIndex: number }
+  | { kind: "secured"; average: number; missingIndex: number }
+  | {
+      kind: "impossible";
+      needed: number;
+      average: number;
+      missingIndex: number;
+    }
+  | { kind: "final"; average: number; passed: boolean };
+
+function parseGrade(value: string): number | null {
+  if (value.trim() === "") return null;
+  const parsed = Number.parseFloat(value);
+  return Number.isNaN(parsed) ? null : parsed;
+}
+
+function computeResult(active: GradeInput[]): CalcResult {
+  const parsed = active.map((g) => ({
+    value: parseGrade(g.value),
+    weight: g.weight,
+  }));
+  const filled = parsed.filter(
+    (g): g is { value: number; weight: number } => g.value !== null,
+  );
+
+  if (filled.length === 0) return { kind: "empty" };
+
+  const filledWeightedSum = filled.reduce((s, g) => s + g.value * g.weight, 0);
+  const filledWeight = filled.reduce((s, g) => s + g.weight, 0);
+  const partialAverage = filledWeightedSum / filledWeight;
+  const blanks = parsed.length - filled.length;
+
+  if (blanks === 0) {
+    return {
+      kind: "final",
+      average: partialAverage,
+      passed: partialAverage >= PASSING_AVERAGE,
+    };
+  }
+
+  if (blanks > 1) {
+    return { kind: "partial", average: partialAverage, blanks };
+  }
+
+  const missingIndex = parsed.findIndex((g) => g.value === null);
+  const missingWeight = parsed[missingIndex].weight;
+  const totalWeight = parsed.reduce((s, g) => s + g.weight, 0);
+  const needed =
+    (PASSING_AVERAGE * totalWeight - filledWeightedSum) / missingWeight;
+
+  if (needed <= 0)
+    return { kind: "secured", average: partialAverage, missingIndex };
+  if (needed > 100)
+    return {
+      kind: "impossible",
+      needed,
+      average: partialAverage,
+      missingIndex,
+    };
+  return { kind: "needed", needed, average: partialAverage, missingIndex };
+}
+
+const GRADE_NAMES = ["primeira", "segunda", "terceira", "quarta"] as const;
+
+function getGradeName(index: number) {
+  return GRADE_NAMES[index] ?? `${index + 1}ª`;
+}
+
+function formatGrade(value: number) {
+  return value.toFixed(2);
+}
+
+function neededHint(needed: number) {
+  if (needed <= 40) return "fácil de alcançar";
+  if (needed <= 90) return "alcançável";
+  return "difícil de alcançar";
 }
 
 export default function Calculadora() {
-  const { data: session } = useSession()
-  const [disciplineType, setDisciplineType] = useState<DisciplineType>("annual")
-  const [grades, setGrades] = useState<GradeInput[]>([
-    { value: "", weight: 2 },
-    { value: "", weight: 2 },
-    { value: "", weight: 3 },
-    { value: "", weight: 3 },
-  ])
-  const [calculationResult, setCalculationResult] = useState<CalculationResult>(
-    {
-      currentAverage: null,
-      neededGrade: null,
-      missingGradeIndex: null,
-      canPass: false,
-    },
-  )
-  const [isCalculated, setIsCalculated] = useState(false)
+  const { data: session } = useSession();
+  const [disciplineType, setDisciplineType] =
+    useState<DisciplineType>("annual");
+  const [grades, setGrades] = useState<GradeInput[]>(ANNUAL_GRADES);
+
+  const activeGrades =
+    disciplineType === "annual" ? grades : grades.slice(0, 2);
+
+  const result = useMemo(
+    () =>
+      computeResult(disciplineType === "annual" ? grades : grades.slice(0, 2)),
+    [grades, disciplineType],
+  );
 
   const updateGrade = (index: number, value: string) => {
-    const newGrades = [...grades]
-    newGrades[index] = { ...newGrades[index], value }
-    setGrades(newGrades)
-  }
-
-  const calculateGradeNeeded = (
-    grades: GradeInput[],
-    targetAverage: number = 60,
-  ): CalculationResult => {
-    const validGrades = grades.filter((grade) => grade.value !== "")
-    const emptyGradeIndex = grades.findIndex((grade) => grade.value === "")
-
-    if (emptyGradeIndex === -1) {
-      const totalWeightedSum = validGrades.reduce((sum, grade) => {
-        return sum + parseFloat(grade.value) * grade.weight
-      }, 0)
-      const totalWeight = validGrades.reduce(
-        (sum, grade) => sum + grade.weight,
-        0,
-      )
-      const currentAverage = totalWeightedSum / totalWeight
-
-      return {
-        currentAverage,
-        neededGrade: null,
-        missingGradeIndex: null,
-        canPass: currentAverage >= targetAverage,
-      }
-    }
-
-    const totalWeightedSum = validGrades.reduce((sum, grade) => {
-      return sum + parseFloat(grade.value) * grade.weight
-    }, 0)
-    const totalWeight = validGrades.reduce(
-      (sum, grade) => sum + grade.weight,
-      0,
-    )
-    const missingGradeWeight = grades[emptyGradeIndex].weight
-
-    const currentAverage = totalWeightedSum / totalWeight
-    const neededGrade =
-      (targetAverage * (totalWeight + missingGradeWeight) - totalWeightedSum) /
-      missingGradeWeight
-
-    return {
-      currentAverage,
-      neededGrade: neededGrade <= 100 ? neededGrade : null,
-      missingGradeIndex: emptyGradeIndex,
-      canPass: neededGrade <= 100,
-    }
-  }
-
-  const calculateAverage = () => {
-    const currentGrades =
-      disciplineType === "annual" ? grades : grades.slice(0, 2)
-    const validGrades = currentGrades.filter((grade) => grade.value !== "")
-
-    if (validGrades.length === 0) return
-
-    const result = calculateGradeNeeded(currentGrades)
-    setCalculationResult(result)
-    setIsCalculated(true)
-  }
+    setGrades((prev) => {
+      const next = [...prev];
+      next[index] = { ...next[index], value };
+      return next;
+    });
+  };
 
   const clearAll = () => {
-    if (disciplineType === "annual") {
-      setGrades([
-        { value: "", weight: 2 },
-        { value: "", weight: 2 },
-        { value: "", weight: 3 },
-        { value: "", weight: 3 },
-      ])
-    } else {
-      setGrades([
-        { value: "", weight: 2 },
-        { value: "", weight: 3 },
-      ])
-    }
-    setCalculationResult({
-      currentAverage: null,
-      neededGrade: null,
-      missingGradeIndex: null,
-      canPass: false,
-    })
-    setIsCalculated(false)
-  }
+    setGrades(disciplineType === "annual" ? ANNUAL_GRADES : SEMESTER_GRADES);
+  };
 
   const handleDisciplineTypeChange = (value: string) => {
-    const type = value as DisciplineType
-    setDisciplineType(type)
-
-    if (type === "annual") {
-      setGrades([
-        { value: "", weight: 2 },
-        { value: "", weight: 2 },
-        { value: "", weight: 3 },
-        { value: "", weight: 3 },
-      ])
-    } else {
-      setGrades([
-        { value: "", weight: 2 },
-        { value: "", weight: 3 },
-      ])
-    }
-
-    setCalculationResult({
-      currentAverage: null,
-      neededGrade: null,
-      missingGradeIndex: null,
-      canPass: false,
-    })
-    setIsCalculated(false)
-  }
-
-  const getGradeName = (index: number) => {
-    const gradeNames = ["primeira", "segunda", "terceira", "quarta"]
-    return gradeNames[index] || `${index + 1}ª`
-  }
-
-  const renderGradeInputs = () => {
-    const currentGrades =
-      disciplineType === "annual" ? grades : grades.slice(0, 2)
-
-    return currentGrades.map((grade, index) => (
-      <div key={index} className="space-y-2">
-        <Label htmlFor={`grade-${index}`}>
-          Nota {index + 1}{" "}
-          <Badge variant="secondary" className="ml-2">
-            Peso {grade.weight}
-          </Badge>
-        </Label>
-        <Input
-          id={`grade-${index}`}
-          type="number"
-          min="0"
-          max="100"
-          step="0.1"
-          placeholder="0"
-          value={grade.value}
-          onChange={(e) => updateGrade(index, e.target.value)}
-          disabled={isCalculated}
-          className="w-full"
-        />
-      </div>
-    ))
-  }
+    const type = value as DisciplineType;
+    setDisciplineType(type);
+    setGrades(type === "annual" ? ANNUAL_GRADES : SEMESTER_GRADES);
+  };
 
   const renderResult = () => {
-    if (!isCalculated || calculationResult.currentAverage === null) return null
+    if (result.kind === "empty") return null;
 
     return (
-      <div className="space-y-4">
-        <div className="space-y-2 text-center">
-          <h3 className="font-semibold text-lg">Média atual</h3>
-          <div className="font-bold text-3xl text-primary">
-            {calculationResult.currentAverage.toFixed(2)}
+      <div className="fade-in slide-in-from-bottom-1 animate-in rounded-xl border bg-muted/30 p-5 duration-200 motion-reduce:animate-none">
+        {result.kind === "partial" && (
+          <div className="space-y-1.5 text-center">
+            <p className="text-muted-foreground text-xs">
+              Média parcial das notas lançadas
+            </p>
+            <p className="font-medium text-2xl tabular-nums">
+              {formatGrade(result.average)}
+            </p>
+            <p className="text-muted-foreground text-sm">
+              Preencha as outras notas e deixe apenas uma em branco para ver
+              quanto precisa.
+            </p>
           </div>
-          <Badge
-            className={cn({
-              "bg-green-500 hover:bg-green-500/80":
-                calculationResult.currentAverage >= 60,
-              "bg-yellow-500 hover:bg-yellow-500/80":
-                calculationResult.currentAverage >= 40 &&
-                calculationResult.currentAverage < 60,
-              "bg-red-500 hover:bg-red-500/80":
-                calculationResult.currentAverage < 40,
-            })}
-          >
-            {calculationResult.canPass ? "Aprovado" : "Reprovado"}
-          </Badge>
-        </div>
+        )}
 
-        {calculationResult.missingGradeIndex !== null && (
+        {result.kind === "needed" && (
+          <div className="space-y-4">
+            <div className="space-y-2 text-center">
+              <p className="text-muted-foreground text-sm">
+                Você precisa tirar
+              </p>
+              <p
+                className={cn(
+                  "font-semibold text-5xl tabular-nums tracking-tight transition-colors",
+                  {
+                    "text-green-500": result.needed <= 40,
+                    "text-yellow-500": result.needed > 40 && result.needed <= 90,
+                    "text-red-500": result.needed > 90,
+                  },
+                )}
+              >
+                {formatGrade(result.needed)}
+              </p>
+              <p className="text-muted-foreground text-sm">
+                na {getGradeName(result.missingIndex)} avaliação ·{" "}
+                {neededHint(result.needed)}
+              </p>
+            </div>
+            <p className="border-t pt-3 text-center text-muted-foreground text-xs tabular-nums">
+              Média parcial: {formatGrade(result.average)}
+            </p>
+          </div>
+        )}
+
+        {result.kind === "secured" && (
           <div className="space-y-2 text-center">
-            {calculationResult.neededGrade !== null ? (
-              <p className="text-muted-foreground text-sm">
-                Você não preencheu a{" "}
-                {getGradeName(calculationResult.missingGradeIndex!)} avaliação,
-                então precisa tirar{" "}
-                <span className="font-semibold text-primary">
-                  {calculationResult.neededGrade.toFixed(2)}
-                </span>{" "}
-                para passar.
-              </p>
+            <CheckCircle2 className="mx-auto size-8 text-green-500" />
+            <p className="font-semibold text-2xl text-green-600 dark:text-green-500">
+              Aprovação garantida
+            </p>
+            <p className="text-muted-foreground text-sm">
+              Você já atingiu os 60 e passa independentemente da última nota.
+            </p>
+            <p className="text-muted-foreground text-xs tabular-nums">
+              Média parcial: {formatGrade(result.average)}
+            </p>
+          </div>
+        )}
+
+        {result.kind === "impossible" && (
+          <div className="space-y-2 text-center">
+            <Info className="mx-auto size-8 text-red-500" />
+            <p className="font-semibold text-2xl text-red-600 dark:text-red-500">
+              Não é possível atingir os 60
+            </p>
+            <p className="text-muted-foreground text-sm">
+              Seria necessária uma nota acima de 100 nesta avaliação.
+            </p>
+            <p className="text-muted-foreground text-xs tabular-nums">
+              Média parcial: {formatGrade(result.average)}
+            </p>
+          </div>
+        )}
+
+        {result.kind === "final" && (
+          <div className="space-y-3 text-center">
+            <p className="text-muted-foreground text-sm">Média final</p>
+            <p className="font-semibold text-5xl tabular-nums tracking-tight">
+              {formatGrade(result.average)}
+            </p>
+            {result.passed ? (
+              <div className="inline-flex items-center gap-1.5 text-primary">
+                <CheckCircle2 className="size-4" />
+                <span className="font-medium text-sm">Aprovado</span>
+              </div>
             ) : (
-              <p className="text-muted-foreground text-sm">
-                Você não preencheu a{" "}
-                {getGradeName(calculationResult.missingGradeIndex!)} avaliação.
-              </p>
-            )}
-            {!calculationResult.canPass && (
-              <div className="flex items-center justify-center gap-2 text-red-500">
-                <InfoIcon className="inline size-4" />
-                <p className="text-sm">
-                  Nota necessária é maior que 100, não é possível passar.
-                </p>
+              <div className="inline-flex items-center gap-1.5 text-muted-foreground">
+                <Info className="size-4" />
+                <span className="font-medium text-sm">Não atingiu os 60</span>
               </div>
             )}
           </div>
         )}
-
-        <div className="text-center text-muted-foreground text-sm">
-          <p>Média mínima para aprovação: 60</p>
-        </div>
       </div>
-    )
-  }
+    );
+  };
 
   const structuredData = {
     "@context": "https://schema.org",
@@ -290,7 +285,7 @@ export default function Calculadora() {
       name: "Instituto Federal do Rio Grande do Norte",
       alternateName: "IFRN",
     },
-  }
+  };
 
   return (
     <div className="relative">
@@ -317,7 +312,7 @@ export default function Calculadora() {
           </CardHeader>
 
           <CardContent className="space-y-6">
-            <div className="space-y-3">
+            <div className="flex flex-col gap-3">
               <Label className="font-medium text-base">
                 Tipo de disciplina
               </Label>
@@ -331,72 +326,71 @@ export default function Calculadora() {
                 </TabsList>
               </Tabs>
             </div>
-            <div className="space-y-4">
-              {!isCalculated ? (
-                <>
-                  <div className="space-y-4">{renderGradeInputs()}</div>
-                  <div className="flex gap-3 pt-4">
-                    <Button
-                      variant="outline"
-                      onClick={clearAll}
-                      className="flex-1"
-                    >
-                      Limpar
-                    </Button>
-                    <Button
-                      onClick={calculateAverage}
-                      className="flex-1"
-                      disabled={(disciplineType === "annual"
-                        ? grades
-                        : grades.slice(0, 2)
-                      ).every((grade) => grade.value === "")}
-                    >
-                      Calcular média
-                    </Button>
-                  </div>
-                </>
-              ) : (
-                <>
-                  {renderResult()}
 
-                  <div className="flex gap-3 pt-4">
-                    <Button onClick={clearAll} className="flex-1">
-                      Novo cálculo
-                    </Button>
-                  </div>
-                </>
-              )}
+            <div className="space-y-4">
+              {activeGrades.map((grade, index) => (
+                <div key={index} className="flex flex-col gap-3">
+                  <Label htmlFor={`grade-${index}`}>
+                    Nota {index + 1}{" "}
+                    <Badge
+                      variant="secondary"
+                      className="pointer-events-none ml-2"
+                    >
+                      Peso {grade.weight}
+                    </Badge>
+                  </Label>
+                  <Input
+                    id={`grade-${index}`}
+                    type="number"
+                    inputMode="decimal"
+                    min="0"
+                    max="100"
+                    step="0.1"
+                    placeholder="0"
+                    value={grade.value}
+                    onChange={(e) => updateGrade(index, e.target.value)}
+                    className="w-full"
+                  />
+                </div>
+              ))}
             </div>
-            {!isCalculated && (
-              <div className="flex flex-col gap-2 rounded-lg bg-muted/50 p-4">
-                <h4 className="font-medium text-sm">Instruções:</h4>
-                <ul className="flex list-inside list-disc flex-col gap-1 text-muted-foreground text-sm">
-                  {disciplineType === "annual" ? (
-                    <>
-                      <li>Digite as 4 notas da disciplina anual</li>
-                      <li>Notas 1 e 2 têm peso 2</li>
-                      <li>Notas 3 e 4 têm peso 3</li>
-                    </>
-                  ) : (
-                    <>
-                      <li>Digite as 2 notas da disciplina semestral</li>
-                      <li>Nota 1 tem peso 2</li>
-                      <li>Nota 2 tem peso 3</li>
-                    </>
-                  )}
-                  <li>Use vírgula ou ponto para decimais</li>
-                  <li>Notas devem estar entre 0 e 100</li>
-                  <li>
-                    Deixe uma nota em branco para calcular quanto precisa tirar
-                    para passar
-                  </li>
-                </ul>
-              </div>
+
+            {renderResult()}
+
+            {result.kind !== "empty" && (
+              <Button variant="outline" onClick={clearAll} className="w-full">
+                Limpar
+              </Button>
             )}
+
+            <div className="flex flex-col gap-2 rounded-lg bg-muted/50 p-4">
+              <h4 className="font-medium text-sm">Instruções:</h4>
+              <ul className="flex list-inside list-disc flex-col gap-1 text-muted-foreground text-sm">
+                {disciplineType === "annual" ? (
+                  <>
+                    <li>Digite as 4 notas da disciplina anual</li>
+                    <li>Notas 1 e 2 têm peso 2</li>
+                    <li>Notas 3 e 4 têm peso 3</li>
+                  </>
+                ) : (
+                  <>
+                    <li>Digite as 2 notas da disciplina semestral</li>
+                    <li>Nota 1 tem peso 2</li>
+                    <li>Nota 2 tem peso 3</li>
+                  </>
+                )}
+                <li>Notas devem estar entre 0 e 100</li>
+                <li>
+                  Deixe uma nota em branco para ver quanto precisa tirar para
+                  passar
+                </li>
+                <li>Média mínima para aprovação: 60</li>
+              </ul>
+            </div>
           </CardContent>
         </Card>
       </div>
       {session && <FeedbackDialog user={session.user} />}
     </div>
-  )
+  );
 }
