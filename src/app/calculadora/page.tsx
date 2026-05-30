@@ -186,7 +186,8 @@ export default function Calculadora() {
                   "font-semibold text-5xl tabular-nums tracking-tight transition-colors",
                   {
                     "text-green-500": result.needed <= 40,
-                    "text-yellow-500": result.needed > 40 && result.needed <= 90,
+                    "text-yellow-500":
+                      result.needed > 40 && result.needed <= 90,
                     "text-red-500": result.needed > 90,
                   },
                 )}
@@ -329,7 +330,7 @@ export default function Calculadora() {
 
             <div className="space-y-4">
               {activeGrades.map((grade, index) => (
-                <div key={index} className="flex flex-col gap-3">
+                <div key={index} className="flex flex-col gap-1">
                   <Label htmlFor={`grade-${index}`}>
                     Nota {index + 1}{" "}
                     <Badge
