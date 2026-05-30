@@ -33,9 +33,6 @@ export interface GetGradesResponse {
   message?: string
 }
 
-// Boundary-normalized grade. The generated `NotaBoletimSchema` has every field
-// optional (`BoletimSchema` declares no `required`), so we collapse
-// undefined/null at the edge into the resolved shape the math below relies on.
 interface Grade {
   nota: number | null
   faltas: number
