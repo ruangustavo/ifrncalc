@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation"
 import { getServerSession } from "next-auth"
 import { getGrades } from "@/actions/get-grades"
+import { getStudentData } from "@/actions/get-student-data"
 import { FeedbackDialog } from "@/components/feedback-dialog"
 import { authOptions } from "@/lib/auth"
 import { MaintenanceNotice } from "./_components/maintenance-notice"
@@ -13,7 +14,7 @@ export default async function Dashboard() {
     redirect("/")
   }
 
-  const gradesResponse = await getGrades()
+  const [gradesResponse] = await Promise.all([getGrades(), getStudentData()])
 
   return (
     <div className="relative">
