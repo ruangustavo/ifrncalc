@@ -4,20 +4,13 @@ import { getServerSession } from "next-auth"
 import { MOCK_GRADES } from "@/actions/_mocks/grades.mock"
 import { authOptions } from "@/lib/auth"
 import { notifyError } from "@/lib/notify"
+import { meuBoletim, meusPeriodosLetivos } from "@/lib/suap/generated/client"
+import type {
+  BoletimSchema,
+  NotaBoletimSchema,
+} from "@/lib/suap/generated/models"
 
 const STAGE_TO_WEIGHT: Record<number, number> = { 1: 2, 2: 2, 3: 3, 4: 3 }
-
-interface PaginatedResponse<T> {
-  results: T[]
-  count: number
-  next: string | null
-  previous: string | null
-}
-
-interface Grade {
-  nota: number | null
-  faltas: number
-}
 
 interface StageGrade {
   grade: number | null
@@ -35,12 +28,21 @@ export interface Discipline {
   E4: StageGrade
 }
 
-interface Period {
-  ano_letivo: number
-  periodo_letivo: number
+export interface GetGradesResponse {
+  success: boolean
+  grades?: Discipline[]
+  message?: string
 }
 
-interface SUAPDiscipline {
+// Boundary-normalized grade. The generated `NotaBoletimSchema` has every field
+// optional (`BoletimSchema` declares no `required`), so we collapse
+// undefined/null at the edge into the resolved shape the math below relies on.
+interface Grade {
+  nota: number | null
+  faltas: number
+}
+
+interface NormalizedDiscipline {
   disciplina: string
   nota_etapa_1: Grade
   nota_etapa_2: Grade
@@ -51,10 +53,25 @@ interface SUAPDiscipline {
   media_disciplina: number | null
 }
 
-export interface GetGradesResponse {
-  success: boolean
-  grades?: Discipline[]
-  message?: string
+function resolveGrade(nota: NotaBoletimSchema | undefined): Grade {
+  return { nota: nota?.nota ?? null, faltas: nota?.faltas ?? 0 }
+}
+
+function normalizeDiscipline(
+  boletim: BoletimSchema,
+): NormalizedDiscipline | null {
+  if (!boletim.disciplina) return null
+
+  return {
+    disciplina: boletim.disciplina,
+    nota_etapa_1: resolveGrade(boletim.nota_etapa_1),
+    nota_etapa_2: resolveGrade(boletim.nota_etapa_2),
+    nota_etapa_3: resolveGrade(boletim.nota_etapa_3),
+    nota_etapa_4: resolveGrade(boletim.nota_etapa_4),
+    quantidade_avaliacoes: boletim.quantidade_avaliacoes ?? 0,
+    carga_horaria: boletim.carga_horaria ?? 0,
+    media_disciplina: boletim.media_disciplina ?? null,
+  }
 }
 
 const getWeight = (
@@ -102,44 +119,6 @@ function parseDisciplineName(discipline: string): string {
   return discipline.substring(11).replace(/\(.*\)/, "")
 }
 
-async function getPeriods(accessToken: string) {
-  try {
-    const url = `${process.env.SUAP_URL}/api/ensino/meus-periodos-letivos`
-
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      next: {
-        revalidate: 60 * 60 * 24, // 24 hours
-      },
-    })
-
-    if (!response.ok) {
-      console.error(
-        `Failed to fetch periods: ${response.status} ${response.statusText}`,
-      )
-      if (response.status !== 401) {
-        notifyError("get-grades / getPeriods", {
-          code: `HTTP ${response.status}`,
-          message: response.statusText,
-        })
-      }
-      return { results: [] }
-    }
-
-    const data: PaginatedResponse<Period> = await response.json()
-    return data
-  } catch (error) {
-    console.error("Error fetching periods:", error)
-    notifyError("get-grades / getPeriods", {
-      message: error instanceof Error ? error.message : String(error),
-    })
-    return { results: [] }
-  }
-}
-
 export async function getGrades(): Promise<GetGradesResponse> {
   if (process.env.MOCK_GRADES === "true") {
     return { success: true, grades: MOCK_GRADES }
@@ -157,9 +136,27 @@ export async function getGrades(): Promise<GetGradesResponse> {
   }
 
   try {
-    const { results: periods } = await getPeriods(accessToken)
+    const periodsResponse = await meusPeriodosLetivos(undefined, {
+      next: { revalidate: 60 * 60 * 24 }, // 24 hours
+    })
 
-    if (!periods || periods.length === 0) {
+    if (periodsResponse.status !== 200) {
+      console.error(`Failed to fetch periods: ${periodsResponse.status}`)
+      if (periodsResponse.status !== 401) {
+        notifyError("get-grades / meusPeriodosLetivos", {
+          code: `HTTP ${periodsResponse.status}`,
+        })
+      }
+      return {
+        success: false,
+        message:
+          "Não foi possível carregar seus dados acadêmicos. Sua sessão pode ter expirado. Por favor, faça login novamente.",
+      }
+    }
+
+    const periods = periodsResponse.data.results
+
+    if (periods.length === 0) {
       return {
         success: false,
         message:
@@ -169,27 +166,18 @@ export async function getGrades(): Promise<GetGradesResponse> {
 
     const period = periods[0]
 
-    const gradesResponse = await fetch(
-      `${process.env.SUAP_URL}/api/ensino/meu-boletim/${period.ano_letivo}/${period.periodo_letivo}/`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        next: {
-          revalidate: 60 * 60 * 6, // 6 hours
-        },
-      },
+    const gradesResponse = await meuBoletim(
+      period.ano_letivo,
+      period.periodo_letivo,
+      undefined,
+      { next: { revalidate: 60 * 60 * 6 } }, // 6 hours
     )
 
-    if (!gradesResponse.ok) {
-      console.error(
-        `Failed to fetch grades: ${gradesResponse.status} ${gradesResponse.statusText}`,
-      )
+    if (gradesResponse.status !== 200) {
+      console.error(`Failed to fetch grades: ${gradesResponse.status}`)
       if (gradesResponse.status !== 401) {
-        notifyError("get-grades / meu-boletim", {
+        notifyError("get-grades / meuBoletim", {
           code: `HTTP ${gradesResponse.status}`,
-          message: gradesResponse.statusText,
         })
       }
       return {
@@ -201,51 +189,45 @@ export async function getGrades(): Promise<GetGradesResponse> {
       }
     }
 
-    const disciplinesData: PaginatedResponse<SUAPDiscipline> =
-      await gradesResponse.json()
-
-    if (!disciplinesData.results || !Array.isArray(disciplinesData.results)) {
-      return {
-        success: false,
-        message:
-          "Dados de notas não encontrados. Verifique se você tem disciplinas cadastradas neste período.",
-      }
-    }
-
-    const grades: Discipline[] = disciplinesData.results.map((discipline) => {
-      const gradeToPass = calculatePassingGrade(
-        [
-          discipline.nota_etapa_1,
-          discipline.nota_etapa_2,
-          discipline.nota_etapa_3,
-          discipline.nota_etapa_4,
-        ],
-        discipline.quantidade_avaliacoes,
+    const grades: Discipline[] = gradesResponse.data.results
+      .map(normalizeDiscipline)
+      .filter(
+        (discipline): discipline is NormalizedDiscipline => discipline !== null,
       )
+      .map((discipline) => {
+        const gradeToPass = calculatePassingGrade(
+          [
+            discipline.nota_etapa_1,
+            discipline.nota_etapa_2,
+            discipline.nota_etapa_3,
+            discipline.nota_etapa_4,
+          ],
+          discipline.quantidade_avaliacoes,
+        )
 
-      const isAvailable = (grade: number | null, index: number) =>
-        grade == null && index <= discipline.quantidade_avaliacoes
+        const isAvailable = (grade: number | null, index: number) =>
+          grade == null && index <= discipline.quantidade_avaliacoes
 
-      const createStageGrade = (grade: Grade, index: number): StageGrade => ({
-        grade: grade.nota,
-        isAvailable: isAvailable(grade.nota, index),
-        passingGrade: isAvailable(grade.nota, index)
-          ? gradeToPass
-          : discipline.quantidade_avaliacoes >= index
-            ? 0
-            : -1,
+        const createStageGrade = (grade: Grade, index: number): StageGrade => ({
+          grade: grade.nota,
+          isAvailable: isAvailable(grade.nota, index),
+          passingGrade: isAvailable(grade.nota, index)
+            ? gradeToPass
+            : discipline.quantidade_avaliacoes >= index
+              ? 0
+              : -1,
+        })
+
+        return {
+          name: parseDisciplineName(discipline.disciplina),
+          hours: discipline.carga_horaria,
+          partialAverage: discipline.media_disciplina,
+          E1: createStageGrade(discipline.nota_etapa_1, 1),
+          E2: createStageGrade(discipline.nota_etapa_2, 2),
+          E3: createStageGrade(discipline.nota_etapa_3, 3),
+          E4: createStageGrade(discipline.nota_etapa_4, 4),
+        }
       })
-
-      return {
-        name: parseDisciplineName(discipline.disciplina),
-        hours: discipline.carga_horaria,
-        partialAverage: discipline.media_disciplina,
-        E1: createStageGrade(discipline.nota_etapa_1, 1),
-        E2: createStageGrade(discipline.nota_etapa_2, 2),
-        E3: createStageGrade(discipline.nota_etapa_3, 3),
-        E4: createStageGrade(discipline.nota_etapa_4, 4),
-      }
-    })
 
     return {
       success: true,
