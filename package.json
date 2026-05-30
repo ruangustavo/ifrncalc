@@ -8,7 +8,8 @@
     "start": "next start",
     "format": "biome check --write ./src",
     "typecheck": "tsc --noEmit",
-    "suap:gen": "orval --config orval.config.ts"
+    "suap:gen": "orval --config orval.config.ts",
+    "suap:check-ops": "node scripts/check-used-ops.mts"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.4",
