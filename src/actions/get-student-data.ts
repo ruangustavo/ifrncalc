@@ -3,14 +3,7 @@
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { notifyError } from "@/lib/notify"
-
-interface SUAPStudentData {
-  ira: string
-  periodo_referencia: number
-  curso: string
-  qtd_periodos: number
-  situacao: string
-}
+import { meusDadosAluno } from "@/lib/suap/generated/client"
 
 export interface GetStudentDataResponse {
   success: boolean
@@ -31,27 +24,15 @@ export async function getStudentData(): Promise<GetStudentDataResponse> {
   }
 
   try {
-    const response = await fetch(
-      `${process.env.SUAP_URL}/api/ensino/meus-dados-aluno/`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        next: {
-          revalidate: 60 * 60 * 6, // 6 hours
-        },
-      },
-    )
+    const response = await meusDadosAluno({
+      next: { revalidate: 60 * 60 * 6 }, // 6 hours
+    })
 
-    if (!response.ok) {
-      console.error(
-        `Failed to fetch student data: ${response.status} ${response.statusText}`,
-      )
+    if (response.status !== 200) {
+      console.error(`Failed to fetch student data: ${response.status}`)
       if (response.status !== 401) {
-        notifyError("get-student-data / meus-dados-aluno", {
+        notifyError("get-student-data / meusDadosAluno", {
           code: `HTTP ${response.status}`,
-          message: response.statusText,
         })
       }
       return {
@@ -63,11 +44,9 @@ export async function getStudentData(): Promise<GetStudentDataResponse> {
       }
     }
 
-    const data: SUAPStudentData = await response.json()
-
     return {
       success: true,
-      ira: data.ira,
+      ira: response.data.ira,
     }
   } catch (error) {
     console.error("Error in getStudentData:", error)
