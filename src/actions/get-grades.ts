@@ -1,6 +1,7 @@
 "use server"
 
 import { getServerSession } from "next-auth"
+import { MOCK_GRADES } from "@/actions/_mocks/grades.mock"
 import { authOptions } from "@/lib/auth"
 import { notifyError } from "@/lib/notify"
 
@@ -140,6 +141,10 @@ async function getPeriods(accessToken: string) {
 }
 
 export async function getGrades(): Promise<GetGradesResponse> {
+  if (process.env.MOCK_GRADES === "true") {
+    return { success: true, grades: MOCK_GRADES }
+  }
+
   const session = await getServerSession(authOptions)
   const accessToken = session?.accessToken
 
