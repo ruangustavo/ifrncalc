@@ -31,12 +31,12 @@ export function MaintenanceNotice() {
   }
 
   return (
-    <Alert className="mt-4 border-muted bg-muted text-xs text-muted-foreground">
+    <Alert className="border-muted bg-muted text-muted-foreground text-xs">
       <AlertDescription className="text-xs">
         <p>
           fala, galera! me chamo Ruan. o IFRN Calc ficou fora pq o SUAP mexeu
-          umas rotas e eu nem vi (saí do IF faz 2 anos e não acompanho mais).
-          já botei alertas pra n acontecer dnv. avisem os amiguinhos que voltou,
+          umas rotas e eu nem vi (saí do IF faz 2 anos e não acompanho mais). já
+          botei alertas pra n acontecer dnv. avisem os amiguinhos que voltou,
           tmj :)
         </p>
         <p className="mt-2 font-mono opacity-70">

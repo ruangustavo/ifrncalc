@@ -3,6 +3,7 @@
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { notifyError } from "@/lib/notify"
+import { meusDadosAluno } from "@/lib/suap/generated/client"
 import { escapeHtml, sendTelegramMessage } from "@/lib/telegram"
 
 interface UserInfo {
@@ -25,28 +26,18 @@ export async function sendFeedback(
 
   if (accessToken) {
     try {
-      const response = await fetch(
-        `${process.env.SUAP_URL}/api/edu/meus-dados-aluno/`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
-          },
-        },
-      )
+      const response = await meusDadosAluno()
 
-      if (response.ok) {
-        const studentData = await response.json()
-        courseInfo = studentData.curso || "Não disponível"
+      if (response.status === 200) {
+        courseInfo = response.data.curso || "Não disponível"
       } else if (response.status !== 401) {
-        notifyError("send-feedback / meus-dados-aluno", {
+        notifyError("send-feedback / meusDadosAluno", {
           code: `HTTP ${response.status}`,
-          message: response.statusText,
         })
       }
     } catch (error) {
       courseInfo = "Erro ao buscar dados"
-      notifyError("send-feedback / meus-dados-aluno", {
+      notifyError("send-feedback / meusDadosAluno", {
         message: error instanceof Error ? error.message : String(error),
       })
     }

@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "format": "biome check --write ./src",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "suap:gen": "orval --config orval.config.ts"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.4",
@@ -40,6 +41,7 @@
     "@types/node": "^20",
     "@types/react": "19.1.10",
     "@types/react-dom": "19.1.7",
+    "orval": "^8.14.0",
     "postcss": "^8",
     "tailwindcss": "^4.1.18",
     "typescript": "^5"
