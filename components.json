@@ -12,5 +12,10 @@
   "aliases": {
     "components": "@/components",
     "utils": "@/lib/utils"
+  },
+  "registries": {
+    "@magicui": "https://magicui.design/r/{name}",
+    "@animate-ui": "https://animate-ui.com/r/{name}.json",
+    "@kokonutui": "https://kokonutui.com/r/{name}.json"
   }
 }

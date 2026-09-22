@@ -4,6 +4,14 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@theme static {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --duration-enter: 250ms;
+  --duration-feedback: 160ms;
+  --duration-fade: 200ms;
+  --duration-stagger: 50ms;
+}
+
 @utility container {
   margin-inline: auto;
   padding-inline: 1rem;

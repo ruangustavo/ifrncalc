@@ -1,0 +1,123 @@
+.hero,
+.card {
+  animation: enter var(--duration-enter) var(--ease-out) backwards;
+}
+
+.target {
+  animation-delay: var(--duration-stagger);
+}
+
+.report {
+  animation-delay: calc(var(--duration-stagger) * 2);
+}
+
+.sticker {
+  animation-delay: calc(var(--duration-stagger) * 3);
+}
+
+.progress {
+  transform-origin: left;
+  animation: fill 600ms var(--ease-out) backwards;
+  animation-delay: calc(var(--duration-enter) + var(--duration-stagger));
+}
+
+.illustration[data-reveal="pending"] .card {
+  opacity: 0;
+  animation: none;
+}
+
+.illustration[data-reveal="pending"] .progress {
+  animation: none;
+}
+
+.button {
+  touch-action: manipulation;
+  user-select: none;
+  transition:
+    transform var(--duration-feedback) var(--ease-out),
+    opacity var(--duration-feedback) ease;
+}
+
+.button:active {
+  opacity: 0.9;
+}
+
+.button:focus-visible {
+  outline: 2px solid #16332a;
+  outline-offset: 4px;
+  transition: none;
+}
+
+.arrow {
+  transition: transform var(--duration-feedback) ease;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .button:active:not(:focus-visible) {
+    transform: scale(0.97);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) and (
+    prefers-reduced-motion: no-preference
+  ) {
+  .button:hover:not(:active, :focus-visible) {
+    transform: translateY(-2px);
+  }
+
+  .button:hover:not(:focus-visible) .arrow {
+    transform: translateX(4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero,
+  .card {
+    animation-name: fade;
+    animation-duration: var(--duration-fade);
+    animation-timing-function: ease;
+    animation-delay: 0ms;
+  }
+
+  .progress {
+    animation: none;
+  }
+
+  .button {
+    transition: opacity var(--duration-feedback) ease;
+  }
+
+  .button:focus-visible,
+  .arrow {
+    transition: none;
+  }
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
