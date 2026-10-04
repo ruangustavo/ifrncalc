@@ -177,7 +177,7 @@ export default function RootLayout({
         <meta name="msapplication-TileColor" content="#16a34a" />
         {process.env.NODE_ENV === "development" && (
           <Script
-            src="//unpkg.com/react-grab/dist/index.global.js"
+            src="https://unpkg.com/react-grab/dist/index.global.js"
             crossOrigin="anonymous"
             strategy="beforeInteractive"
           />

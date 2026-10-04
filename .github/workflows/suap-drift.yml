@@ -16,18 +16,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
+      - uses: oven-sh/setup-bun@v2
 
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: pnpm
 
-      - run: pnpm install --frozen-lockfile
+      - run: bun install --frozen-lockfile
 
-      - run: pnpm suap:check-ops
+      - run: bun run suap:check-ops
 
       - id: assert
         env:
@@ -36,7 +33,7 @@ jobs:
         run: node scripts/assert-suap-ops.mts
 
       - if: steps.assert.outputs.result == 'ok'
-        run: pnpm suap:gen
+        run: bun run suap:gen
 
       - id: drift
         if: steps.assert.outputs.result == 'ok'
