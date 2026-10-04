@@ -26,7 +26,7 @@ function Op({ icon: Icon }: { icon: LucideIcon }) {
 
 const SEGMENTS = [
   {
-    label: "E1",
+    label: "1º Bim",
     left: 0,
     pts: 140,
     caption: (
@@ -38,7 +38,7 @@ const SEGMENTS = [
     at: 2,
   },
   {
-    label: "E2",
+    label: "2º Bim",
     left: 140,
     pts: 160,
     caption: (
@@ -50,7 +50,7 @@ const SEGMENTS = [
     at: 3,
   },
   {
-    label: "E3",
+    label: "3º Bim",
     left: 300,
     pts: 150,
     caption: (
@@ -62,7 +62,7 @@ const SEGMENTS = [
     at: 6,
   },
   {
-    label: "E4",
+    label: "4º Bim",
     left: 450,
     pts: 150,
     caption: (
@@ -258,7 +258,7 @@ export function CalcExplainer() {
           className="mb-3 flex items-baseline justify-between text-sm"
         >
           <span className="inline-flex items-center text-muted-foreground">
-            Matemática <Dot className="size-4" /> 4 etapas
+            Matemática <Dot className="size-4" /> 4 bimestres
           </span>
           <span>
             Meta:{" "}
@@ -330,7 +330,7 @@ export function CalcExplainer() {
           show={step >= 8}
           className="mt-2 text-center font-medium text-sm"
         >
-          Precisa de <span className="text-primary">50</span> em E3 e E4{" "}
+          Precisa de <span className="text-primary">50</span> no 3º e 4º Bim{" "}
           <ArrowRight className="inline size-4" /> média{" "}
           <span className="text-green-600">
             60 <Check className="inline size-4" />
