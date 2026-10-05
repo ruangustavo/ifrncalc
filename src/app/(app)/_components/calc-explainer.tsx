@@ -1,34 +1,38 @@
 "use client"
 
 import NumberFlow from "@number-flow/react"
+import { ArrowRight, Check, RotateCcw } from "lucide-react"
 import {
   AnimatePresence,
   motion,
   useInView,
   useReducedMotion,
-} from "framer-motion"
-import { ArrowRight, Check, RotateCcw, X } from "lucide-react"
+} from "motion/react"
 import { type ReactNode, useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
-const EASE_OUT = [0.23, 1, 0.32, 1] as const
+// motion/react instead of framer-motion 11: the latter flashes the initial value for
+// one frame when a hardware-accelerated animation ends.
 
-const STEPS = [300, 1800, 1300, 1300, 1600, 2200, 2000, 900] as const
-const SOLVED_AT = 6
+const EASE_OUT = [0.23, 1, 0.32, 1] as const
+const EASE_IN_OUT = [0.77, 0, 0.175, 1] as const
+const MERGE_S = 0.55
+const GAP_PX = 4
+
+const STEPS = [
+  300, 1600, 1200, 2200, 900, 2000, 1600, 2400, 1600, 2200, 900,
+] as const
+const SOLVED_AT = 8
 
 const BIMESTERS = [
-  { label: "1º Bim", weight: 2, grade: 70, known: true, at: 2 },
-  { label: "2º Bim", weight: 2, grade: 80, known: true, at: 3 },
-  { label: "3º Bim", weight: 3, grade: 50, known: false, at: 4 },
-  { label: "4º Bim", weight: 3, grade: 50, known: false, at: 4 },
+  { label: "1º Bim", weight: 2, grade: 70, known: true, at: 2, mergeAt: 3 },
+  { label: "2º Bim", weight: 2, grade: 80, known: true, at: 4, mergeAt: 5 },
+  { label: "3º Bim", weight: 3, grade: 50, known: false, at: 6, mergeAt: 9 },
+  { label: "4º Bim", weight: 3, grade: 50, known: false, at: 6, mergeAt: 9 },
 ] as const
 
 type Bimester = (typeof BIMESTERS)[number]
-
-function Op() {
-  return <X className="inline size-3 align-[-0.125em]" />
-}
 
 function Verdict() {
   return (
@@ -49,22 +53,38 @@ const CAPTIONS: Record<number, ReactNode> = {
     </>
   ),
   2: "1º Bim tem peso 2: o 70 entra 2 vezes…",
-  3: "…e o 80 do 2º Bim também entra 2 vezes.",
-  4: "3º e 4º Bim têm peso 3: entram 3 vezes cada.",
-  5: (
+  3: (
     <>
-      São 10 notas. Média 60 <ArrowRight className="inline size-4" /> soma
-      precisa dar <b>600</b>. Já tem <span className="tabular-nums">300</span>.
+      …então vale <span className="tabular-nums">70 × 2 = 140</span> pontos.
     </>
   ),
-  6: (
+  4: "O 80 do 2º Bim também entra 2 vezes…",
+  5: (
+    <>
+      …e vale <span className="tabular-nums">80 × 2 = 160</span> pontos.
+    </>
+  ),
+  6: "3º e 4º Bim têm peso 3: entram 3 vezes cada.",
+  7: (
+    <>
+      Média 60 em 10 vagas <ArrowRight className="inline size-4" /> precisa de{" "}
+      <b>600</b> pontos. Já tem{" "}
+      <span className="tabular-nums">140 + 160 = 300</span>.
+    </>
+  ),
+  8: (
     <>
       Faltam 300 em 6 vagas:{" "}
       <span className="text-primary tabular-nums">300 ÷ 6 = 50 cada</span>
     </>
   ),
-  7: <Verdict />,
-  8: <Verdict />,
+  9: (
+    <>
+      <span className="tabular-nums">50 × 3 = 150</span> pontos em cada.
+    </>
+  ),
+  10: <Verdict />,
+  11: <Verdict />,
 }
 
 function useTimeline(stepDurations: readonly number[]) {
@@ -88,41 +108,13 @@ function useTimeline(stepDurations: readonly number[]) {
   return { ref, step, done, run, replay }
 }
 
-function Reveal({
-  show,
-  delay = 0,
-  className,
-  children,
-}: {
-  show: boolean
-  delay?: number
-  className?: string
-  children: ReactNode
-}) {
-  const reduce = useReducedMotion()
-  const hidden = {
-    opacity: 0,
-    transform: reduce ? "translateY(0px)" : "translateY(8px)",
-  }
-  return (
-    <motion.div
-      className={className}
-      initial={hidden}
-      animate={show ? { opacity: 1, transform: "translateY(0px)" } : hidden}
-      transition={{ duration: 0.4, ease: EASE_OUT, delay: show ? delay : 0 }}
-    >
-      {children}
-    </motion.div>
-  )
-}
-
 function Caption({ step }: { step: number }) {
   const reduce = useReducedMotion()
   return (
     <div className="mt-4 grid min-h-10 place-items-center text-center text-sm">
       <AnimatePresence mode="wait" initial={false}>
         <motion.p
-          key={Math.min(step, 7)}
+          key={Math.min(step, 10)}
           initial={{
             opacity: 0,
             transform: reduce ? "translateY(0px)" : "translateY(6px)",
@@ -141,122 +133,186 @@ function Caption({ step }: { step: number }) {
   )
 }
 
-function Grade({ b, step }: { b: Bimester; step: number }) {
-  return b.known || step >= SOLVED_AT ? (
-    <NumberFlow value={b.grade} />
-  ) : (
-    <span>?</span>
+type GroupProps = { b: Bimester; step: number }
+
+// Opaque tints, so the merged block sliding over a copy doesn't stack two translucent layers.
+function chipClass(b: Bimester) {
+  return cn(
+    "grid place-items-center rounded-md border-2 font-medium text-xs tabular-nums",
+    b.known
+      ? "border-[color-mix(in_oklab,var(--color-primary)_30%,var(--color-background))] bg-[color-mix(in_oklab,var(--color-primary)_25%,var(--color-background))] text-foreground"
+      : "border-primary bg-primary text-primary-foreground",
   )
 }
 
-function Copy({
-  b,
-  step,
-  index,
-}: {
-  b: Bimester
-  step: number
-  index: number
-}) {
+function DashedSlots({ b, step }: GroupProps) {
+  const filled = step >= b.at
+  return (
+    <div className="absolute inset-0 flex gap-1">
+      {Array.from({ length: b.weight }, (_, k) => (
+        <div
+          key={`${b.label}-slot-${k}`}
+          className={cn(
+            "flex-1 rounded-md border-2 border-dashed transition-colors duration-300",
+            filled ? "border-transparent" : "border-primary/20",
+          )}
+          style={{ transitionDelay: filled ? `${k * 80}ms` : "0ms" }}
+        />
+      ))}
+    </div>
+  )
+}
+
+// Copies drop in, then slide to the group's center on merge. They vanish only once the
+// merged block fully covers them, so the group never goes blank mid-merge.
+function Copies({ b, step }: GroupProps) {
   const reduce = useReducedMotion()
   const shown = step >= b.at
+  const merged = step >= b.mergeAt
+  const rest = "translateX(0px) translateY(0px) scale(1)"
   const hidden = {
     opacity: 0,
-    transform: reduce
-      ? "translateY(0px) scale(1)"
-      : "translateY(-8px) scale(0.95)",
+    transform: reduce ? rest : "translateX(0px) translateY(-8px) scale(0.95)",
   }
+
+  return (
+    <div className="absolute inset-0 flex gap-1">
+      {Array.from({ length: b.weight }, (_, k) => {
+        const toCenter = (b.weight - 1) / 2 - k
+        return (
+          <motion.div
+            key={`${b.label}-copy-${k}`}
+            className={cn(chipClass(b), "h-full flex-1")}
+            initial={hidden}
+            animate={
+              merged
+                ? {
+                    opacity: 0,
+                    transform: reduce
+                      ? rest
+                      : `translateX(calc(${toCenter} * (100% + ${GAP_PX}px))) translateY(0px) scale(0.95)`,
+                  }
+                : shown
+                  ? { opacity: 1, transform: rest }
+                  : hidden
+            }
+            transition={
+              merged
+                ? {
+                    transform: { duration: MERGE_S, ease: EASE_IN_OUT },
+                    opacity: { duration: 0, delay: reduce ? 0.2 : MERGE_S },
+                  }
+                : {
+                    duration: 0.35,
+                    ease: EASE_OUT,
+                    delay: shown ? k * 0.08 : 0,
+                  }
+            }
+          >
+            {b.known || step >= SOLVED_AT ? b.grade : "?"}
+          </motion.div>
+        )
+      })}
+    </div>
+  )
+}
+
+// "70 × 2" shows, then blurs into the product.
+function Evaluate({ b, delay }: { b: Bimester; delay: number }) {
+  return (
+    <span className="grid place-items-center">
+      <motion.span
+        className="[grid-area:1/1]"
+        initial={{ opacity: 0, filter: "blur(0px)" }}
+        animate={{
+          opacity: [0, 1, 1, 0],
+          filter: ["blur(0px)", "blur(0px)", "blur(0px)", "blur(4px)"],
+        }}
+        transition={{
+          duration: 1.2,
+          times: [0, 0.15, 0.8, 1],
+          ease: "linear",
+          delay,
+        }}
+      >
+        {b.grade} × {b.weight}
+      </motion.span>
+      <motion.span
+        className="font-semibold [grid-area:1/1]"
+        initial={{ opacity: 0, filter: "blur(4px)" }}
+        animate={{ opacity: 1, filter: "blur(0px)" }}
+        transition={{ duration: 0.3, ease: EASE_OUT, delay: delay + 1.0 }}
+      >
+        <NumberFlow value={b.grade * b.weight} />
+      </motion.span>
+    </span>
+  )
+}
+
+// The merged block opens from the center (clip-path) while the copies converge under it.
+function MergedBlock({ b, step }: GroupProps) {
+  const reduce = useReducedMotion()
+  if (step < b.mergeAt) return null
+  const inset = (x: number) =>
+    `inset(0% calc(50% * ${x}) 0% calc(50% * ${x}) round 6px)`
   return (
     <motion.div
-      className={cn(
-        "absolute -inset-0.5 grid place-items-center rounded-md border-2 bg-clip-padding font-medium text-xs tabular-nums",
-        b.known
-          ? "border-primary/30 bg-primary/25 text-foreground"
-          : "border-primary bg-primary text-primary-foreground",
-      )}
-      initial={hidden}
-      animate={
-        shown ? { opacity: 1, transform: "translateY(0px) scale(1)" } : hidden
+      className={cn(chipClass(b), "absolute inset-0")}
+      initial={reduce ? { opacity: 0 } : { clipPath: inset(1) }}
+      animate={reduce ? { opacity: 1 } : { clipPath: inset(0) }}
+      transition={
+        reduce ? { duration: 0.2 } : { duration: MERGE_S, ease: EASE_IN_OUT }
       }
-      transition={{
-        duration: 0.35,
-        ease: EASE_OUT,
-        delay: shown ? index * 0.08 : 0,
-      }}
     >
-      <Grade b={b} step={step} />
+      <Evaluate b={b} delay={reduce ? 0.2 : MERGE_S * 0.6} />
     </motion.div>
   )
 }
 
 export function CalcExplainer() {
   const { ref, step, done, run, replay } = useTimeline(STEPS)
+  const reduce = useReducedMotion()
+  const hidden = {
+    opacity: 0,
+    transform: reduce ? "translateY(0px)" : "translateY(8px)",
+  }
 
   return (
     <div ref={ref} className="mx-auto w-full max-w-2xl">
       <div key={run}>
-        <div className="grid grid-cols-4 gap-2">
-          {BIMESTERS.map((b, i) => (
-            <Reveal
+        <motion.div
+          initial={hidden}
+          animate={
+            step >= 1 ? { opacity: 1, transform: "translateY(0px)" } : hidden
+          }
+          transition={{ duration: 0.4, ease: EASE_OUT }}
+          className="grid grid-cols-10 gap-1"
+        >
+          {BIMESTERS.map((b) => (
+            <div
               key={b.label}
-              show={step >= 1}
-              delay={i * 0.06}
-              className={cn(
-                "flex flex-col items-center gap-0.5 rounded-lg border-2 p-2",
-                b.known ? "border-primary/30" : "border-primary",
-              )}
+              className="flex flex-col gap-1.5"
+              style={{ gridColumn: `span ${b.weight}` }}
             >
-              <span className="text-muted-foreground text-xs">{b.label}</span>
-              <span className="inline-flex items-baseline gap-1">
+              <div className="relative h-10">
+                <DashedSlots b={b} step={step} />
+                <Copies b={b} step={step} />
+                <MergedBlock b={b} step={step} />
+              </div>
+              <div className="flex flex-col items-center border-muted-foreground/40 border-t pt-1 text-xs leading-tight">
+                <span className="text-muted-foreground">{b.label}</span>
                 <span
                   className={cn(
-                    "font-semibold text-xl tabular-nums",
-                    !b.known && "text-primary",
+                    "font-medium",
+                    b.weight === 3 ? "text-primary" : "text-muted-foreground",
                   )}
                 >
-                  <Grade b={b} step={step} />
+                  peso {b.weight}
                 </span>
-                <span className="font-medium text-muted-foreground text-sm">
-                  <Op />
-                  {b.weight}
-                </span>
-              </span>
-            </Reveal>
-          ))}
-        </div>
-
-        <Reveal show={step >= 1} delay={0.3} className="mt-6">
-          <div className="grid grid-cols-10 gap-1">
-            {BIMESTERS.flatMap((b) =>
-              Array.from({ length: b.weight }, (_, k) => (
-                <div
-                  key={`${b.label}-${k}`}
-                  className={cn(
-                    "relative h-10 rounded-md border-2 border-dashed transition-colors duration-300",
-                    step >= b.at ? "border-transparent" : "border-primary/20",
-                  )}
-                  style={{
-                    transitionDelay: step >= b.at ? `${k * 80}ms` : "0ms",
-                  }}
-                >
-                  <Copy b={b} step={step} index={k} />
-                </div>
-              )),
-            )}
-          </div>
-          <div className="mt-1.5 grid grid-cols-10 gap-1 text-center text-muted-foreground text-xs">
-            {BIMESTERS.map((b) => (
-              <div
-                key={b.label}
-                className="border-muted-foreground/40 border-t pt-1"
-                style={{ gridColumn: `span ${b.weight}` }}
-              >
-                {b.label.replace(" Bim", "")} <Op />
-                {b.weight}
               </div>
-            ))}
-          </div>
-        </Reveal>
+            </div>
+          ))}
+        </motion.div>
 
         <Caption step={step} />
       </div>
