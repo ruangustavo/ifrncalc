@@ -1,83 +1,71 @@
 "use client"
 
 import NumberFlow from "@number-flow/react"
-import { animate, motion, useInView, useReducedMotion } from "framer-motion"
 import {
-  ArrowRight,
-  Check,
-  Divide,
-  Dot,
-  type LucideIcon,
-  RotateCcw,
-  X,
-} from "lucide-react"
+  AnimatePresence,
+  motion,
+  useInView,
+  useReducedMotion,
+} from "framer-motion"
+import { ArrowRight, Check, RotateCcw, X } from "lucide-react"
 import { type ReactNode, useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 const EASE_OUT = [0.23, 1, 0.32, 1] as const
-const EASE_IN_OUT = [0.77, 0, 0.175, 1] as const
 
-const STEPS = [300, 1100, 1100, 1200, 1200, 1400, 800, 900] as const
+const STEPS = [300, 1800, 1300, 1300, 1600, 2200, 2000, 900] as const
+const SOLVED_AT = 6
 
-function Op({ icon: Icon }: { icon: LucideIcon }) {
-  return <Icon className="inline size-3 align-[-0.125em]" />
-}
-
-const SEGMENTS = [
-  {
-    label: "1º Bim",
-    left: 0,
-    pts: 140,
-    caption: (
-      <>
-        70 <Op icon={X} /> 2
-      </>
-    ),
-    known: true,
-    at: 2,
-  },
-  {
-    label: "2º Bim",
-    left: 140,
-    pts: 160,
-    caption: (
-      <>
-        80 <Op icon={X} /> 2
-      </>
-    ),
-    known: true,
-    at: 3,
-  },
-  {
-    label: "3º Bim",
-    left: 300,
-    pts: 150,
-    caption: (
-      <>
-        150 <Op icon={Divide} /> 3 = 50
-      </>
-    ),
-    known: false,
-    at: 6,
-  },
-  {
-    label: "4º Bim",
-    left: 450,
-    pts: 150,
-    caption: (
-      <>
-        150 <Op icon={Divide} /> 3 = 50
-      </>
-    ),
-    known: false,
-    at: 7,
-  },
+const BIMESTERS = [
+  { label: "1º Bim", weight: 2, grade: 70, known: true, at: 2 },
+  { label: "2º Bim", weight: 2, grade: 80, known: true, at: 3 },
+  { label: "3º Bim", weight: 3, grade: 50, known: false, at: 4 },
+  { label: "4º Bim", weight: 3, grade: 50, known: false, at: 4 },
 ] as const
 
-const GRID_COLUMNS = SEGMENTS.map((s) => `minmax(0, ${s.pts}fr)`).join(" ")
-const CLIP_HIDDEN = "inset(0% 100% 0% 0%)"
-const CLIP_SHOWN = "inset(0% 0% 0% 0%)"
+type Bimester = (typeof BIMESTERS)[number]
+
+function Op() {
+  return <X className="inline size-3 align-[-0.125em]" />
+}
+
+function Verdict() {
+  return (
+    <span className="font-medium">
+      Precisa de <span className="text-primary">50</span> no 3º e 4º Bim{" "}
+      <ArrowRight className="inline size-4" /> média{" "}
+      <span className="text-green-600">
+        60 <Check className="inline size-4" />
+      </span>
+    </span>
+  )
+}
+
+const CAPTIONS: Record<number, ReactNode> = {
+  1: (
+    <>
+      <b>Peso</b> é quantas vezes a nota conta.
+    </>
+  ),
+  2: "1º Bim tem peso 2: o 70 entra 2 vezes…",
+  3: "…e o 80 do 2º Bim também entra 2 vezes.",
+  4: "3º e 4º Bim têm peso 3: entram 3 vezes cada.",
+  5: (
+    <>
+      São 10 notas. Média 60 <ArrowRight className="inline size-4" /> soma
+      precisa dar <b>600</b>. Já tem <span className="tabular-nums">300</span>.
+    </>
+  ),
+  6: (
+    <>
+      Faltam 300 em 6 vagas:{" "}
+      <span className="text-primary tabular-nums">300 ÷ 6 = 50 cada</span>
+    </>
+  ),
+  7: <Verdict />,
+  8: <Verdict />,
+}
 
 function useTimeline(stepDurations: readonly number[]) {
   const ref = useRef<HTMLDivElement>(null)
@@ -102,10 +90,12 @@ function useTimeline(stepDurations: readonly number[]) {
 
 function Reveal({
   show,
+  delay = 0,
   className,
   children,
 }: {
   show: boolean
+  delay?: number
   className?: string
   children: ReactNode
 }) {
@@ -119,223 +109,156 @@ function Reveal({
       className={className}
       initial={hidden}
       animate={show ? { opacity: 1, transform: "translateY(0px)" } : hidden}
-      transition={{ duration: 0.4, ease: EASE_OUT }}
+      transition={{ duration: 0.4, ease: EASE_OUT, delay: show ? delay : 0 }}
     >
       {children}
     </motion.div>
   )
 }
 
-// Dashes are stroke-dasharray on paths placed in px, so the pattern never re-flows.
-// Each half = an outer "C" (top/outer corner/side/bottom) + an inner edge, all anchored at the
-// vertical center line. Progress p: 0→1 grows the inner edge from the center, 1→2 pulls the
-// halves 2px apart and rounds the inner corners. Dash offsets compensate for moved path starts.
-const STROKE = 1.5
-const RADIUS = 4 - STROKE / 2
-const DASH = 6
-const DASH_GAP = 4
-const PHASE = DASH + DASH_GAP / 2
-
-function halfPaths(w: number, h: number, p: number) {
-  const reveal = Math.min(p, 1)
-  const round = Math.max(p - 1, 0)
-  const y0 = STROKE / 2
-  const y1 = h - STROKE / 2
-  const x0 = STROKE / 2
-  const mid = h / 2
-  const xi = w / 2 - (1 + STROKE / 2) * round
-  const ri = RADIUS * round
-  const xe = xi - ri
-  return {
-    outer: [
-      `M ${xe} ${y0} H ${x0 + RADIUS} A ${RADIUS} ${RADIUS} 0 0 0 ${x0} ${y0 + RADIUS} V ${mid}`,
-      `M ${xe} ${y1} H ${x0 + RADIUS} A ${RADIUS} ${RADIUS} 0 0 1 ${x0} ${y1 - RADIUS} V ${mid}`,
-    ],
-    inner: [
-      `M ${xi} ${mid} V ${mid - reveal * (mid - y0 - ri)} a ${ri} ${ri} 0 0 0 ${-ri} ${-ri}`,
-      `M ${xi} ${mid} V ${mid + reveal * (y1 - ri - mid)} a ${ri} ${ri} 0 0 1 ${-ri} ${ri}`,
-    ],
-    outerOffset: PHASE + (w / 2 - xe),
-  }
+function Caption({ step }: { step: number }) {
+  const reduce = useReducedMotion()
+  return (
+    <div className="mt-4 grid min-h-10 place-items-center text-center text-sm">
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.p
+          key={Math.min(step, 7)}
+          initial={{
+            opacity: 0,
+            transform: reduce ? "translateY(0px)" : "translateY(6px)",
+          }}
+          animate={{ opacity: 1, transform: "translateY(0px)" }}
+          exit={{
+            opacity: 0,
+            transform: reduce ? "translateY(0px)" : "translateY(-6px)",
+          }}
+          transition={{ duration: 0.25, ease: EASE_OUT }}
+        >
+          {CAPTIONS[step]}
+        </motion.p>
+      </AnimatePresence>
+    </div>
+  )
 }
 
-function DashedSplit({ step }: { step: number }) {
-  const split = step >= 5
-  const ref = useRef<HTMLDivElement>(null)
-  const [size, setSize] = useState({ w: 0, h: 0 })
-  const [p, setP] = useState(0)
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const ro = new ResizeObserver(([entry]) => {
-      if (entry)
-        setSize({ w: entry.contentRect.width, h: entry.contentRect.height })
-    })
-    ro.observe(el)
-    return () => ro.disconnect()
-  }, [])
-
-  useEffect(() => {
-    if (!split) {
-      setP(0)
-      return
-    }
-    const controls = animate(0, 2, {
-      duration: 0.6,
-      ease: "easeInOut",
-      onUpdate: setP,
-    })
-    return () => controls.stop()
-  }, [split])
-
-  const { w, h } = size
-  const paths = halfPaths(w, h, p)
-  const half = (
-    <>
-      {paths.outer.map((d, i) => (
-        <path
-          key={`outer-${i === 0 ? "top" : "bottom"}`}
-          d={d}
-          strokeDashoffset={paths.outerOffset}
-        />
-      ))}
-      {paths.inner.map((d, i) => (
-        <path
-          key={`inner-${i === 0 ? "top" : "bottom"}`}
-          d={d}
-          strokeDashoffset={PHASE}
-        />
-      ))}
-    </>
+function Grade({ b, step }: { b: Bimester; step: number }) {
+  return b.known || step >= SOLVED_AT ? (
+    <NumberFlow value={b.grade} />
+  ) : (
+    <span>?</span>
   )
+}
 
+function Copy({
+  b,
+  step,
+  index,
+}: {
+  b: Bimester
+  step: number
+  index: number
+}) {
+  const reduce = useReducedMotion()
+  const shown = step >= b.at
+  const hidden = {
+    opacity: 0,
+    transform: reduce
+      ? "translateY(0px) scale(1)"
+      : "translateY(-8px) scale(0.95)",
+  }
   return (
     <motion.div
-      className="relative col-span-2 col-start-3 row-start-1"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: step >= 4 && step <= 7 ? 1 : 0 }}
-      transition={{ duration: 0.3, ease: EASE_OUT }}
+      className={cn(
+        "absolute -inset-0.5 grid place-items-center rounded-md border-2 bg-clip-padding font-medium text-xs tabular-nums",
+        b.known
+          ? "border-primary/30 bg-primary/25 text-foreground"
+          : "border-primary bg-primary text-primary-foreground",
+      )}
+      initial={hidden}
+      animate={
+        shown ? { opacity: 1, transform: "translateY(0px) scale(1)" } : hidden
+      }
+      transition={{
+        duration: 0.35,
+        ease: EASE_OUT,
+        delay: shown ? index * 0.08 : 0,
+      }}
     >
-      <div ref={ref} className="absolute inset-0">
-        {w > 0 && (
-          <svg
-            width={w}
-            height={h}
-            className="absolute inset-0 text-primary opacity-60"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={STROKE}
-            strokeDasharray={`${DASH} ${DASH_GAP}`}
-            aria-hidden="true"
-          >
-            <g>{half}</g>
-            <g transform={`translate(${w} 0) scale(-1 1)`}>{half}</g>
-          </svg>
-        )}
-      </div>
-      <motion.span
-        className="absolute inset-0 grid place-items-center font-medium text-primary text-sm"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: step === 4 ? 1 : 0 }}
-        transition={{ duration: 0.2, ease: EASE_OUT }}
-      >
-        faltam 300 pts
-      </motion.span>
+      <Grade b={b} step={step} />
     </motion.div>
   )
 }
 
 export function CalcExplainer() {
   const { ref, step, done, run, replay } = useTimeline(STEPS)
-  const reduce = useReducedMotion()
 
   return (
     <div ref={ref} className="mx-auto w-full max-w-2xl">
       <div key={run}>
-        <Reveal
-          show={step >= 1}
-          className="mb-3 flex items-baseline justify-between text-sm"
-        >
-          <span className="inline-flex items-center text-muted-foreground">
-            Matemática <Dot className="size-4" /> 4 bimestres
-          </span>
-          <span>
-            Meta:{" "}
-            <span className="font-medium tabular-nums">
-              60 <Op icon={X} /> 10 = 600 pts
-            </span>
-          </span>
-        </Reveal>
-
-        <Reveal show={step >= 1}>
-          <div
-            className="grid h-14 gap-0.5 rounded-lg border-2 border-primary/30 bg-muted/30 p-0.5"
-            style={{ gridTemplateColumns: GRID_COLUMNS }}
-          >
-            <DashedSplit step={step} />
-
-            {SEGMENTS.map((s, i) => (
-              <motion.div
-                key={s.label}
-                className={cn(
-                  "row-start-1 grid place-items-center rounded-sm font-medium text-xs",
-                  s.known
-                    ? "bg-primary/25 text-foreground"
-                    : "bg-primary text-primary-foreground",
-                )}
-                style={{ gridColumnStart: i + 1 }}
-                initial={{ clipPath: CLIP_HIDDEN }}
-                animate={{ clipPath: step >= s.at ? CLIP_SHOWN : CLIP_HIDDEN }}
-                transition={{ duration: reduce ? 0 : 0.7, ease: EASE_IN_OUT }}
-              >
-                <span className="inline-flex items-center">
-                  {s.label} <Dot className="size-4" />
-                  <NumberFlow value={step >= s.at ? s.pts : 0} />
+        <div className="grid grid-cols-4 gap-2">
+          {BIMESTERS.map((b, i) => (
+            <Reveal
+              key={b.label}
+              show={step >= 1}
+              delay={i * 0.06}
+              className={cn(
+                "flex flex-col items-center gap-0.5 rounded-lg border-2 p-2",
+                b.known ? "border-primary/30" : "border-primary",
+              )}
+            >
+              <span className="text-muted-foreground text-xs">{b.label}</span>
+              <span className="inline-flex items-baseline gap-1">
+                <span
+                  className={cn(
+                    "font-semibold text-xl tabular-nums",
+                    !b.known && "text-primary",
+                  )}
+                >
+                  <Grade b={b} step={step} />
                 </span>
-              </motion.div>
+                <span className="font-medium text-muted-foreground text-sm">
+                  <Op />
+                  {b.weight}
+                </span>
+              </span>
+            </Reveal>
+          ))}
+        </div>
+
+        <Reveal show={step >= 1} delay={0.3} className="mt-6">
+          <div className="grid grid-cols-10 gap-1">
+            {BIMESTERS.flatMap((b) =>
+              Array.from({ length: b.weight }, (_, k) => (
+                <div
+                  key={`${b.label}-${k}`}
+                  className={cn(
+                    "relative h-10 rounded-md border-2 border-dashed transition-colors duration-300",
+                    step >= b.at ? "border-transparent" : "border-primary/20",
+                  )}
+                  style={{
+                    transitionDelay: step >= b.at ? `${k * 80}ms` : "0ms",
+                  }}
+                >
+                  <Copy b={b} step={step} index={k} />
+                </div>
+              )),
+            )}
+          </div>
+          <div className="mt-1.5 grid grid-cols-10 gap-1 text-center text-muted-foreground text-xs">
+            {BIMESTERS.map((b) => (
+              <div
+                key={b.label}
+                className="border-muted-foreground/40 border-t pt-1"
+                style={{ gridColumn: `span ${b.weight}` }}
+              >
+                {b.label.replace(" Bim", "")} <Op />
+                {b.weight}
+              </div>
             ))}
           </div>
         </Reveal>
 
-        <div
-          className="mt-2 grid gap-0.5 px-1 text-center text-xs"
-          style={{ gridTemplateColumns: GRID_COLUMNS }}
-        >
-          {SEGMENTS.map((s, i) => (
-            <div
-              key={s.label}
-              className="row-start-1"
-              style={{ gridColumnStart: i + 1 }}
-            >
-              <Reveal
-                show={step >= s.at}
-                className={
-                  s.known ? "text-muted-foreground" : "font-medium text-primary"
-                }
-              >
-                {s.caption}
-              </Reveal>
-            </div>
-          ))}
-          <Reveal
-            show={step === 5}
-            className="col-span-2 col-start-3 row-start-1 text-muted-foreground"
-          >
-            peso 3 + peso 3 <ArrowRight className="inline size-3" /> metade cada
-          </Reveal>
-        </div>
-
-        <Reveal
-          show={step >= 8}
-          className="mt-2 text-center font-medium text-sm"
-        >
-          Precisa de <span className="text-primary">50</span> no 3º e 4º Bim{" "}
-          <ArrowRight className="inline size-4" /> média{" "}
-          <span className="text-green-600">
-            60 <Check className="inline size-4" />
-          </span>
-        </Reveal>
+        <Caption step={step} />
       </div>
 
       <div className="mt-6 flex h-9 justify-center">
