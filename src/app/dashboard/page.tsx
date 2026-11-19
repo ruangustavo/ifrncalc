@@ -7,7 +7,6 @@ import { getStudentData } from "@/actions/get-student-data"
 import { FeedbackDialog } from "@/components/feedback-dialog"
 import { authOptions } from "@/lib/auth"
 import { db } from "@/lib/db"
-import { recordEvent } from "@/lib/events"
 import { notifyError } from "@/lib/notify"
 import { StudentIdentitySchema, upsertStudent } from "@/lib/students"
 import { isSuapMock } from "@/lib/suap/mock"
@@ -36,12 +35,10 @@ export default async function Dashboard() {
     }
 
     try {
-      const studentId = await upsertStudent(db, {
+      await upsertStudent(db, {
         ...identity.data,
         academic: studentData.academic ?? null,
       })
-
-      await recordEvent(db, studentId, "dashboard_viewed")
     } catch (error) {
       notifyError("dashboard / analytics", {
         message: error instanceof Error ? error.message : String(error),

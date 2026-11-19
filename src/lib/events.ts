@@ -1,6 +1,6 @@
 import type { Client } from "@libsql/client"
 
-export const EVENT_TYPES = ["dashboard_viewed"] as const
+export const EVENT_TYPES = [] as const
 
 export type EventType = (typeof EVENT_TYPES)[number]
 
