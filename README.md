@@ -48,21 +48,6 @@ Para obter o `CLIENT_ID` e o `CLIENT_SECRET`, é necessário criar um aplicativo
 
 Para testar sem uma conta no SUAP, defina `SUAP_MOCK=true` no `.env.local` (junto com `NEXTAUTH_SECRET` e `NEXTAUTH_URL`). O botão "Conectar com SUAP" passa a logar direto como um aluno demo, e o boletim e o IRA vêm de dados fake em `src/lib/suap/mock.ts`, sem nenhuma chamada ao SUAP.
 
-### Analytics (opcional)
-
-Sem `TURSO_DATABASE_URL`, o registro de alunos fica desligado e o resto do projeto funciona normalmente. Para testar o analytics localmente, use um arquivo SQLite no lugar do Turso:
-
-```bash
-# .env.local
-TURSO_DATABASE_URL=file:local.db
-```
-
-```bash
-npm run db:migrate   # cria as tabelas de db/schema.sql em local.db
-```
-
-Cada acesso ao dashboard (inclusive com `SUAP_MOCK=true`) grava o aluno em `local.db`. Para ver os dados: `sqlite3 local.db "select * from students"`.
-
 ## Contribuição
 
 Para contribuir com o projeto, basta criar uma issue ou um pull request. O projeto está aberto para contribuições.
