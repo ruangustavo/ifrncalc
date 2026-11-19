@@ -4,6 +4,7 @@ import { ArrowLeft, CheckCircle2, Info } from "lucide-react"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
 import { useMemo, useState } from "react"
+import * as z from "zod/mini"
 
 import { Header } from "@/app/dashboard/_components/header"
 import { FeedbackDialog } from "@/components/feedback-dialog"
@@ -23,11 +24,9 @@ import { cn } from "@/lib/utils"
 
 const PASSING_AVERAGE = 60
 
-type DisciplineType = "annual" | "semester"
+const DisciplineTypeSchema = z.enum(["annual", "semester"])
 
-function isDisciplineType(value: string): value is DisciplineType {
-  return value === "annual" || value === "semester"
-}
+type DisciplineType = z.infer<typeof DisciplineTypeSchema>
 
 interface GradeInput {
   value: string
@@ -160,8 +159,11 @@ export default function Calculadora() {
     setGrades(disciplineType === "annual" ? ANNUAL_GRADES : SEMESTER_GRADES)
   }
 
-  const handleDisciplineTypeChange = (type: string) => {
-    if (!isDisciplineType(type)) return
+  const handleDisciplineTypeChange = (value: string) => {
+    const parsed = DisciplineTypeSchema.safeParse(value)
+
+    if (!parsed.success) return
+    const type = parsed.data
     setDisciplineType(type)
     setGrades(type === "annual" ? ANNUAL_GRADES : SEMESTER_GRADES)
   }

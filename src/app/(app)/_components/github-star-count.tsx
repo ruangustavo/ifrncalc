@@ -1,17 +1,7 @@
 import { Star } from "lucide-react"
+import { z } from "zod"
 
-interface GithubRepo {
-  stargazers_count: number
-}
-
-function isGithubRepo(value: unknown): value is GithubRepo {
-  return (
-    value !== null &&
-    typeof value === "object" &&
-    "stargazers_count" in value &&
-    typeof value.stargazers_count === "number"
-  )
-}
+const GithubRepoSchema = z.object({ stargazers_count: z.number() })
 
 async function getStarCount(): Promise<number | null> {
   try {
@@ -24,9 +14,9 @@ async function getStarCount(): Promise<number | null> {
     )
 
     if (!response.ok) return null
-    const data: unknown = await response.json()
+    const repo = GithubRepoSchema.safeParse(await response.json())
 
-    return isGithubRepo(data) ? data.stargazers_count : null
+    return repo.success ? repo.data.stargazers_count : null
   } catch {
     return null
   }

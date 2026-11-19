@@ -1,4 +1,7 @@
 import { appendFileSync } from "node:fs"
+
+import { z } from "zod"
+
 import { escapeHtml, sendTelegramMessage } from "./telegram.mts"
 
 const SPEC_URL =
@@ -10,38 +13,22 @@ const REQUIRED_OP_IDS = [
   "api_endpoints_ensino_get_meus_dados_aluno",
 ]
 
-interface OpenApiSpec {
-  paths: object
-}
+const OpenApiSpecSchema = z.object({
+  paths: z.record(z.string(), z.record(z.string(), z.unknown())),
+})
 
-interface Operation {
-  operationId: string
-}
+const OperationSchema = z.object({ operationId: z.string() })
 
-function isObject(value: unknown): value is object {
-  return value !== null && typeof value === "object"
-}
-
-function isOpenApiSpec(value: unknown): value is OpenApiSpec {
-  return isObject(value) && "paths" in value && isObject(value.paths)
-}
-
-function isOperation(value: unknown): value is Operation {
-  return (
-    isObject(value) &&
-    "operationId" in value &&
-    typeof value.operationId === "string"
-  )
-}
+type OpenApiSpec = z.infer<typeof OpenApiSpecSchema>
 
 function collectOperationIds(spec: OpenApiSpec): Set<string> {
   const ids = new Set<string>()
 
   for (const pathItem of Object.values(spec.paths)) {
-    if (!isObject(pathItem)) continue
+    for (const value of Object.values(pathItem)) {
+      const operation = OperationSchema.safeParse(value)
 
-    for (const operation of Object.values(pathItem)) {
-      if (isOperation(operation)) ids.add(operation.operationId)
+      if (operation.success) ids.add(operation.data.operationId)
     }
   }
 
@@ -76,7 +63,12 @@ async function main(): Promise<number> {
     return 1
   }
 
-  const present = isOpenApiSpec(spec) ? collectOperationIds(spec) : new Set<string>()
+  const parsedSpec = OpenApiSpecSchema.safeParse(spec)
+
+  const present = parsedSpec.success
+    ? collectOperationIds(parsedSpec.data)
+    : new Set<string>()
+
   const missing = REQUIRED_OP_IDS.filter((id) => !present.has(id))
 
   if (missing.length > 0) {

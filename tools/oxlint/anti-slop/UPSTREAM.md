@@ -8,4 +8,3 @@
 ## Local deviations
 
 - Added `package.json` with `"type": "module"` so Node loads `index.ts` as ESM without the `MODULE_TYPELESS_PACKAGE_JSON` warning.
-- `anti-slop/no-runtime-typeof` runs with `allowInTypeGuards: true` (in `.oxlintrc.json`), so boundaries narrow through type guards.
