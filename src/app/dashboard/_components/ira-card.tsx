@@ -14,12 +14,14 @@ export function IraCard({ ira }: { ira: string }) {
       <span className="flex items-center gap-1 text-sm text-muted-foreground">
         IRA
         <Tooltip>
-          <TooltipTrigger
-            type="button"
-            aria-label="O que é o IRA?"
-            className="text-muted-foreground/70 transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:outline-none"
-          >
-            <CircleHelp className="size-3.5" />
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              aria-label="O que é o IRA?"
+              className="text-muted-foreground/70 transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:outline-none"
+            >
+              <CircleHelp className="size-3.5" />
+            </button>
           </TooltipTrigger>
           <TooltipContent className="max-w-56">
             Índice de Rendimento Acadêmico: média geral do seu desempenho no

@@ -38,9 +38,9 @@ export function GradeCard({ grade }: { grade: Discipline }) {
             partialAverage === null
               ? "bg-primary"
               : {
-                  "bg-green-500": partialAverage >= 60,
-                  "bg-yellow-500": partialAverage >= 40 && partialAverage < 60,
-                  "bg-red-500": partialAverage < 40,
+                  "bg-success": partialAverage >= 60,
+                  "bg-warning": partialAverage >= 40 && partialAverage < 60,
+                  "bg-danger": partialAverage < 40,
                 },
           )}
         />

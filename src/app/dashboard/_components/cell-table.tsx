@@ -105,8 +105,8 @@ export function CellTable({
 
       {canEdit && (
         <Button
-          variant="ghost"
-          className="size-8 p-1.5 transition-colors duration-200 hover:bg-primary/10 active:bg-primary/20"
+          variant="ghost-primary"
+          size="icon-sm"
           onClick={() => setIsEditModalOpen(true)}
         >
           <Pencil className="size-4" />
@@ -114,7 +114,7 @@ export function CellTable({
       )}
 
       {editedDisciplineGrades?.[stageKey] !== undefined && (
-        <Badge variant="secondary" className="font-medium animate-in">
+        <Badge variant="secondary" weight="medium">
           Editada
         </Badge>
       )}

@@ -70,14 +70,14 @@ export function FeedbackDialog({ user }: FeedbackDialogProps) {
     <div className={cn(isEmptyGrades ? "fixed right-4 bottom-4" : "hidden")}>
       <Credenza open={open} onOpenChange={setOpen}>
         <CredenzaTrigger asChild>
-          <Button title="Enviar feedback" className="gap-2">
+          <Button title="Enviar feedback">
             <MessageCircle className="size-5" />
             Feedback
           </Button>
         </CredenzaTrigger>
         <CredenzaContent className="mx-auto sm:max-w-[425px]">
           <CredenzaHeader>
-            <CredenzaTitle className="flex items-center gap-2">
+            <CredenzaTitle className="flex items-center">
               {showSuccess ? "Feedback enviado!" : "Enviar feedback"}
             </CredenzaTitle>
           </CredenzaHeader>
@@ -97,7 +97,7 @@ export function FeedbackDialog({ user }: FeedbackDialogProps) {
                   damping: 20,
                 }}
               >
-                <Check className="size-12 text-green-500" />
+                <Check className="size-12 text-success" />
               </motion.div>
               <p className="text-muted-foreground">
                 Obrigado pelo seu feedback!
@@ -113,17 +113,16 @@ export function FeedbackDialog({ user }: FeedbackDialogProps) {
                     value={feedback}
                     onChange={(e) => setFeedback(e.target.value)}
                     placeholder="Algo não funcionou como esperado? Ou tem uma ideia para melhorar?"
-                    className="min-h-[120px] text-base"
+                    className="min-h-[120px]"
                     disabled={isSubmitting || showSuccess}
                   />
                 </div>
               </div>
-              <CredenzaFooter className="p-0">
+              <CredenzaFooter>
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => setOpen(false)}
-                  className="text-base md:text-sm"
                   disabled={isSubmitting || showSuccess}
                 >
                   Cancelar
@@ -131,7 +130,6 @@ export function FeedbackDialog({ user }: FeedbackDialogProps) {
                 <Button
                   type="submit"
                   disabled={isSubmitting || !feedback.trim() || showSuccess}
-                  className="text-base md:text-sm"
                 >
                   Enviar
                 </Button>

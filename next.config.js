@@ -2,6 +2,10 @@
 const nextConfig = {
   turbopack: {
     root: __dirname,
+    resolveAlias: {
+      clsx: "cn",
+      "tailwind-merge": "cn",
+    },
   },
   images: {
     remotePatterns: [

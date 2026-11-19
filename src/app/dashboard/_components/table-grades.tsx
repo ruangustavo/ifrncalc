@@ -34,15 +34,14 @@ export function TableGrades({ gradesResponse }: TableGradesProps) {
     return (
       <div className="space-y-3">
         <ClearEditedGradesButton />
-        <Alert className="border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive">
-          <AlertDescription className="text-sm">
+        <Alert variant="destructive">
+          <AlertDescription>
             <div className="space-y-3">
               <p>{response.message}</p>
               <Button
                 onClick={() => signIn("suap")}
-                variant="outline"
+                variant="outline-destructive"
                 size="sm"
-                className="border-destructive/20 text-destructive hover:bg-destructive/10"
               >
                 Entrar novamente
                 <ExternalLink className="ml-2 size-4" />
@@ -59,7 +58,7 @@ export function TableGrades({ gradesResponse }: TableGradesProps) {
       <div className="space-y-3">
         <ClearEditedGradesButton />
         <Alert>
-          <AlertDescription className="text-sm">
+          <AlertDescription>
             Nenhuma disciplina encontrada para este período.
           </AlertDescription>
         </Alert>
@@ -78,7 +77,7 @@ export function TableGrades({ gradesResponse }: TableGradesProps) {
         </div>
         <div className="hidden rounded-md border border-foreground/5 bg-card md:block">
           <Table>
-            <TableCaption className="caption-top text-sm">
+            <TableCaption className="caption-top">
               As notas coloridas são as médias necessárias para ser aprovado
             </TableCaption>
             <TableHeader>
@@ -92,7 +91,9 @@ export function TableGrades({ gradesResponse }: TableGradesProps) {
             <TableBody>
               {response.grades.map((grade) => (
                 <TableRow key={grade.name}>
-                  <TableCell className="font-medium">{grade.name}</TableCell>
+                  <TableCell>
+                    <span className="font-medium">{grade.name}</span>
+                  </TableCell>
                   {STAGES.map(({ key }) => (
                     <TableCell key={key}>
                       <CellTable discipline={grade} stageKey={key} />
