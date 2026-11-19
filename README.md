@@ -44,6 +44,10 @@ SUAP_URL=<SEU_SUAP_URL_AQUI>
 
 Para obter o `CLIENT_ID` e o `CLIENT_SECRET`, é necessário criar um aplicativo no [Painel de Aplicativos do SUAP](https://suap.ifrn.edu.br/admin/api/aplicacaooauth2/). Para obter o `NEXTAUTH_SECRET`, basta gerar uma string aleatória e copiar o valor retornado. O `NEXTAUTH_URL` é a URL do seu site. O `SUAP_URL` é a URL do SUAP do seu campus.
 
+### Rodando sem o SUAP
+
+Para testar sem uma conta no SUAP, defina `SUAP_MOCK=true` no `.env.local` (junto com `NEXTAUTH_SECRET` e `NEXTAUTH_URL`). O botão "Conectar com SUAP" passa a logar direto como um aluno demo, e o boletim e o IRA vêm de dados fake em `src/lib/suap/mock.ts`, sem nenhuma chamada ao SUAP.
+
 ## Contribuição
 
 Para contribuir com o projeto, basta criar uma issue ou um pull request. O projeto está aberto para contribuições.

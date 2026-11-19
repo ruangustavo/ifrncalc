@@ -1,10 +1,15 @@
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
+import { isSuapMock, mockSuapResponse } from "@/lib/suap/mock"
 
 export const suapFetch = async <T>(
   url: string,
   options?: RequestInit,
 ): Promise<T> => {
+  if (isSuapMock()) {
+    return { ...mockSuapResponse(url), headers: new Headers() } as T
+  }
+
   const session = await getServerSession(authOptions)
   const accessToken = session?.accessToken
 
