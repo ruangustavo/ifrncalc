@@ -1,6 +1,6 @@
 "use client"
 
-import { type ReactNode, useState } from "react"
+import { type PointerEvent, type ReactNode, useState } from "react"
 
 import { cn } from "@/lib/utils"
 
@@ -41,6 +41,19 @@ export function CampusExplorer({ children }: { children: ReactNode }) {
 
   const leave = () => setActive(null)
 
+  const hover = (city: City) => (event: PointerEvent) => {
+    if (event.pointerType === "mouse") enter(city)
+  }
+
+  const unhover = (event: PointerEvent) => {
+    if (event.pointerType === "mouse") leave()
+  }
+
+  const tap = (city: City) => () => {
+    setShown(city)
+    setActive((current) => (current?.name === city.name ? null : city))
+  }
+
   return (
     <>
       <MapFrame>
@@ -56,10 +69,11 @@ export function CampusExplorer({ children }: { children: ReactNode }) {
               <path
                 key={city.name}
                 d={RN_CAMPUS_AREAS[city.name]}
-                onPointerEnter={() => enter(city)}
-                onPointerLeave={leave}
+                onPointerEnter={hover(city)}
+                onPointerLeave={unhover}
+                onClick={tap(city)}
                 className={cn(
-                  "stroke-ink/25 [stroke-width:1.5px] transition-[fill] duration-200 [stroke-linejoin:round]",
+                  "stroke-ink/25 [stroke-width:1.5px] transition-[fill] duration-200 ease-[ease] [stroke-linejoin:round]",
                   active?.name === city.name ? "fill-sun" : "fill-lime",
                 )}
               />
@@ -70,8 +84,9 @@ export function CampusExplorer({ children }: { children: ReactNode }) {
                 x={city.x * MAP_WIDTH}
                 y={city.y * MAP_WIDTH}
                 order={index}
-                onEnter={() => enter(city)}
-                onLeave={leave}
+                onEnter={hover(city)}
+                onLeave={unhover}
+                onTap={tap(city)}
               />
             ))}
           </svg>
@@ -97,12 +112,13 @@ export function CampusExplorer({ children }: { children: ReactNode }) {
           <li key={city.name}>
             <button
               type="button"
-              onPointerEnter={() => enter(city)}
-              onPointerLeave={leave}
+              onPointerEnter={hover(city)}
+              onPointerLeave={unhover}
+              onClick={tap(city)}
               onFocus={() => enter(city)}
               onBlur={leave}
               className={cn(
-                "rounded-full border px-3 py-1 text-sm transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-lime",
+                "rounded-full border px-3 py-1 text-sm transition-colors duration-150 ease-[ease] outline-none focus-visible:ring-2 focus-visible:ring-lime",
                 active?.name === city.name
                   ? "border-sun bg-sun text-ink"
                   : "border-cream/20 text-cream/80",

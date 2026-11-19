@@ -28,7 +28,7 @@ export function SiteHeader() {
             <a
               key={item.href}
               href={item.href}
-              className="transition-colors duration-150 hover:text-cream"
+              className="transition-colors duration-150 ease-[ease] hover:text-cream"
             >
               {item.label}
             </a>

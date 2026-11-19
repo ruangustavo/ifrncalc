@@ -1,3 +1,5 @@
+import type { PointerEvent } from "react"
+
 import { cn } from "@/lib/utils"
 
 const DELAYS = [
@@ -13,16 +15,25 @@ interface CampusPinProps {
   x: number
   y: number
   order: number
-  onEnter: () => void
-  onLeave: () => void
+  onEnter: (event: PointerEvent) => void
+  onLeave: (event: PointerEvent) => void
+  onTap: () => void
 }
 
-export function CampusPin({ x, y, order, onEnter, onLeave }: CampusPinProps) {
+export function CampusPin({
+  x,
+  y,
+  order,
+  onEnter,
+  onLeave,
+  onTap,
+}: CampusPinProps) {
   return (
     <g
       transform={`translate(${x} ${y})`}
       onPointerEnter={onEnter}
       onPointerLeave={onLeave}
+      onClick={onTap}
     >
       <g
         className={cn(

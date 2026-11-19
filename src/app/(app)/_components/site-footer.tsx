@@ -27,7 +27,7 @@ export function SiteFooter() {
         <nav className="flex gap-6">
           <Link
             href="/calculadora"
-            className="py-1 transition-colors duration-150 hover:text-foreground"
+            className="py-1 transition-colors duration-150 ease-[ease] hover:text-foreground"
           >
             Calculadora
           </Link>
@@ -35,7 +35,7 @@ export function SiteFooter() {
             href={siteConfig.links.github}
             target="_blank"
             rel="noreferrer"
-            className="py-1 transition-colors duration-150 hover:text-foreground"
+            className="py-1 transition-colors duration-150 ease-[ease] hover:text-foreground"
           >
             GitHub
           </a>
