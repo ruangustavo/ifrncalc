@@ -1,10 +1,10 @@
 "use client"
 
-import { AnimatePresence, motion } from "framer-motion"
-import { ChevronDown, ExternalLink } from "lucide-react"
+import { ExternalLink } from "lucide-react"
 import { signIn } from "next-auth/react"
-import { Suspense, useState } from "react"
-import type { Discipline, GetGradesResponse } from "@/actions/get-grades"
+import { Suspense } from "react"
+
+import type { GetGradesResponse } from "@/actions/get-grades"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import {
@@ -16,100 +16,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { cn } from "@/lib/utils"
 
 import { CellTable } from "./cell-table"
 import { ClearEditedGradesButton } from "./clear-edited-grades-button"
+import { GradeCard } from "./grade-card"
+import { STAGES } from "./stages"
 import { TableSkeleton } from "./table-skeleton"
-
-type StageKey = "E1" | "E2" | "E3" | "E4"
 
 interface TableGradesProps {
   gradesResponse: GetGradesResponse
-}
-
-export const STAGES: {
-  key: StageKey
-  label: string
-  shortLabel: string
-}[] = [
-  { key: "E1", label: "1° Bimestre", shortLabel: "1º Bim" },
-  { key: "E2", label: "2° Bimestre", shortLabel: "2º Bim" },
-  { key: "E3", label: "3° Bimestre", shortLabel: "3º Bim" },
-  { key: "E4", label: "4° Bimestre", shortLabel: "4º Bim" },
-] as const
-
-function GradeCard({ grade }: { grade: Discipline }) {
-  const [isExpanded, setIsExpanded] = useState(true)
-
-  const calculatePartialAverage = (grade: Discipline) => {
-    const stages = [grade.E1, grade.E2, grade.E3, grade.E4]
-    const filled = stages.filter((s) => s.grade !== null)
-    if (filled.length === 0) return null
-    const sum = filled.reduce((acc, s) => acc + (s.grade ?? 0), 0)
-    return Math.round(sum / filled.length)
-  }
-
-  const partialAverage = grade.partialAverage ?? calculatePartialAverage(grade)
-
-  return (
-    <div className="rounded-xl border bg-card p-4">
-      <button
-        type="button"
-        className="flex w-full items-start gap-3"
-        onClick={() => setIsExpanded(!isExpanded)}
-      >
-        <div
-          className={cn(
-            "mt-1 h-10 w-1.5 shrink-0 rounded-full",
-            partialAverage === null
-              ? "bg-primary"
-              : {
-                  "bg-green-500": partialAverage >= 60,
-                  "bg-yellow-500": partialAverage >= 40 && partialAverage < 60,
-                  "bg-red-500": partialAverage < 40,
-                },
-          )}
-        />
-        <div className="min-w-0 flex-1 text-left">
-          <h3 className="font-semibold leading-tight">{grade.name}</h3>
-          <p className="mt-0.5 text-muted-foreground text-sm">
-            {grade.hours}h
-            {partialAverage !== null && ` • Média parcial: ${partialAverage}`}
-          </p>
-        </div>
-        <ChevronDown
-          className={cn(
-            "mt-1 size-5 shrink-0 text-muted-foreground transition-transform",
-            isExpanded && "rotate-180",
-          )}
-        />
-      </button>
-      <AnimatePresence initial={false}>
-        {isExpanded && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2, ease: "easeInOut" }}
-            className="overflow-hidden"
-          >
-            <div className="mt-3 grid grid-cols-4 gap-2">
-              {STAGES.map(({ key, shortLabel }) => (
-                <CellTable
-                  key={key}
-                  discipline={grade}
-                  stageKey={key}
-                  shortLabel={shortLabel}
-                  compact
-                />
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  )
 }
 
 export function TableGrades({ gradesResponse }: TableGradesProps) {
@@ -119,15 +34,14 @@ export function TableGrades({ gradesResponse }: TableGradesProps) {
     return (
       <div className="space-y-3">
         <ClearEditedGradesButton />
-        <Alert className="border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive">
-          <AlertDescription className="text-sm">
+        <Alert variant="destructive">
+          <AlertDescription>
             <div className="space-y-3">
               <p>{response.message}</p>
               <Button
                 onClick={() => signIn("suap")}
-                variant="outline"
+                variant="outline-destructive"
                 size="sm"
-                className="border-destructive/20 text-destructive hover:bg-destructive/10"
               >
                 Entrar novamente
                 <ExternalLink className="ml-2 size-4" />
@@ -144,7 +58,7 @@ export function TableGrades({ gradesResponse }: TableGradesProps) {
       <div className="space-y-3">
         <ClearEditedGradesButton />
         <Alert>
-          <AlertDescription className="text-sm">
+          <AlertDescription>
             Nenhuma disciplina encontrada para este período.
           </AlertDescription>
         </Alert>
@@ -163,7 +77,7 @@ export function TableGrades({ gradesResponse }: TableGradesProps) {
         </div>
         <div className="hidden rounded-md border border-foreground/5 bg-card md:block">
           <Table>
-            <TableCaption className="caption-top text-sm">
+            <TableCaption className="caption-top">
               As notas coloridas são as médias necessárias para ser aprovado
             </TableCaption>
             <TableHeader>
@@ -177,7 +91,9 @@ export function TableGrades({ gradesResponse }: TableGradesProps) {
             <TableBody>
               {response.grades.map((grade) => (
                 <TableRow key={grade.name}>
-                  <TableCell className="font-medium">{grade.name}</TableCell>
+                  <TableCell>
+                    <span className="font-medium">{grade.name}</span>
+                  </TableCell>
                   {STAGES.map(({ key }) => (
                     <TableCell key={key}>
                       <CellTable discipline={grade} stageKey={key} />

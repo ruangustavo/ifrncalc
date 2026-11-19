@@ -8,7 +8,7 @@ export interface AcademicProfile {
   enrollmentStatus: string
 }
 
-export const studentIdentitySchema = z
+export const StudentIdentitySchema = z
   .object({
     user: z.object({
       id: z.string().min(1),
@@ -26,13 +26,13 @@ export const studentIdentitySchema = z
     userType: user.userType ?? null,
   }))
 
-export type StudentIdentity = z.output<typeof studentIdentitySchema>
+export type StudentIdentity = z.output<typeof StudentIdentitySchema>
 
 export interface StudentProfile extends StudentIdentity {
   academic: AcademicProfile | null
 }
 
-const returningIdSchema = z.object({ id: z.number() })
+const ReturningIdSchema = z.object({ id: z.number() })
 
 export async function upsertStudent(
   db: Client,
@@ -79,5 +79,6 @@ export async function upsertStudent(
   }
 
   const [upsert] = await db.batch(statements, "write")
-  return returningIdSchema.parse(upsert?.rows[0]).id
+
+  return ReturningIdSchema.parse(upsert?.rows[0]).id
 }

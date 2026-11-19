@@ -1,6 +1,7 @@
 "use server"
 
 import { getServerSession } from "next-auth"
+
 import { authOptions } from "@/lib/auth"
 import { notifyError } from "@/lib/notify"
 import { meuBoletim, meusPeriodosLetivos } from "@/lib/suap/generated/client"
@@ -9,7 +10,7 @@ import type {
   NotaBoletimSchema,
 } from "@/lib/suap/generated/models"
 
-const STAGE_TO_WEIGHT: Record<number, number> = { 1: 2, 2: 2, 3: 3, 4: 3 }
+const BIMESTER_WEIGHTS = [2, 2, 3, 3]
 
 interface StageGrade {
   grade: number | null
@@ -75,11 +76,12 @@ const getWeight = (
   numberOfAssessments: number,
 ): number => {
   const isSemester = numberOfAssessments === 2
+
   return isSemester
     ? currentIndex === 0
       ? 2
       : 3
-    : STAGE_TO_WEIGHT[currentIndex + 1]
+    : BIMESTER_WEIGHTS[currentIndex]
 }
 
 function calculatePassingGrade(
@@ -108,6 +110,7 @@ function calculatePassingGrade(
   const gradeNeededToPass =
     (60 * weightAccordingToNumberOfAssessments - sumOfGradesNotNull) /
     totalWeightNull
+
   return gradeNeededToPass < 0 ? 0 : Math.round(gradeNeededToPass)
 }
 
@@ -116,8 +119,6 @@ function parseDisciplineName(discipline: string): string {
 }
 
 export async function getGrades(): Promise<GetGradesResponse> {
-  const isMockGrades = process.env.MOCK_GRADES === "true"
-
   const session = await getServerSession(authOptions)
   const accessToken = session?.accessToken
 
@@ -133,43 +134,38 @@ export async function getGrades(): Promise<GetGradesResponse> {
     let anoLetivo: number
     let periodoLetivo: number
 
-    if (isMockGrades) {
-      // Skip period lookup and pin to a known historical period so the real
-      // boletim pipeline (normalize + calculatePassingGrade) is exercised.
-      anoLetivo = 2023
-      periodoLetivo = 1
-    } else {
-      const periodsResponse = await meusPeriodosLetivos(undefined, {
-        next: { revalidate: 60 * 60 * 24 }, // 24 hours
-      })
+    const periodsResponse = await meusPeriodosLetivos(undefined, {
+      next: { revalidate: 60 * 60 * 24 }, // 24 hours
+    })
 
-      if (periodsResponse.status !== 200) {
-        console.error(`Failed to fetch periods: ${periodsResponse.status}`)
-        if (periodsResponse.status !== 401) {
-          notifyError("get-grades / meusPeriodosLetivos", {
-            code: `HTTP ${periodsResponse.status}`,
-          })
-        }
-        return {
-          success: false,
-          message:
-            "Não foi possível carregar seus dados acadêmicos. Sua sessão pode ter expirado. Por favor, faça login novamente.",
-        }
+    if (periodsResponse.status !== 200) {
+      console.error(`Failed to fetch periods: ${periodsResponse.status}`)
+
+      if (periodsResponse.status !== 401) {
+        notifyError("get-grades / meusPeriodosLetivos", {
+          code: `HTTP ${periodsResponse.status}`,
+        })
       }
 
-      const periods = periodsResponse.data.results
-
-      if (periods.length === 0) {
-        return {
-          success: false,
-          message:
-            "Não foi possível carregar seus dados acadêmicos. Sua sessão pode ter expirado. Por favor, faça login novamente.",
-        }
+      return {
+        success: false,
+        message:
+          "Não foi possível carregar seus dados acadêmicos. Sua sessão pode ter expirado. Por favor, faça login novamente.",
       }
-
-      anoLetivo = periods[0].ano_letivo
-      periodoLetivo = periods[0].periodo_letivo
     }
+
+    const periods = periodsResponse.data.results
+
+    if (periods.length === 0) {
+      return {
+        success: false,
+        message:
+          "Não foi possível carregar seus dados acadêmicos. Sua sessão pode ter expirado. Por favor, faça login novamente.",
+      }
+    }
+
+    anoLetivo = periods[0].ano_letivo
+    periodoLetivo = periods[0].periodo_letivo
 
     const gradesResponse = await meuBoletim(
       anoLetivo,
@@ -182,11 +178,13 @@ export async function getGrades(): Promise<GetGradesResponse> {
 
     if (gradesResponse.status !== 200) {
       console.error(`Failed to fetch grades: ${gradesResponse.status}`)
+
       if (gradesResponse.status !== 401) {
         notifyError("get-grades / meuBoletim", {
           code: `HTTP ${gradesResponse.status}`,
         })
       }
+
       return {
         success: false,
         message:
@@ -245,6 +243,7 @@ export async function getGrades(): Promise<GetGradesResponse> {
     notifyError("get-grades / getGrades", {
       message: error instanceof Error ? error.message : String(error),
     })
+
     return {
       success: false,
       message:

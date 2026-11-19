@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+
 import { Button } from "@/components/ui/button"
 import {
   Credenza,
@@ -32,6 +33,7 @@ export function EditGradeModal({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     const numGrade = Number.parseFloat(grade)
+
     if (numGrade >= 0 && numGrade <= 100) {
       onSubmit(numGrade)
       onClose()
@@ -59,22 +61,15 @@ export function EditGradeModal({
                 value={grade}
                 onChange={(e) => setGrade(e.target.value)}
                 placeholder="Digite a nota..."
-                className="col-span-3 text-base"
+                className="col-span-3"
               />
             </div>
           </div>
-          <CredenzaFooter className="p-0">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onClose}
-              className="text-base md:text-sm"
-            >
+          <CredenzaFooter>
+            <Button type="button" variant="outline" onClick={onClose}>
               Cancelar
             </Button>
-            <Button type="submit" className="text-base md:text-sm">
-              Salvar
-            </Button>
+            <Button type="submit">Salvar</Button>
           </CredenzaFooter>
         </form>
       </CredenzaContent>

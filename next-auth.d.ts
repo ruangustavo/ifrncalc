@@ -12,7 +12,7 @@ declare module 'next-auth' {
   }
 
   interface Session {
-    accessToken: string
+    accessToken?: string
     user: {
       id: string | undefined
       campus?: string
@@ -23,6 +23,7 @@ declare module 'next-auth' {
 
 declare module 'next-auth/jwt' {
   interface JWT {
+    accessToken?: string
     campus?: string
     userType?: string
   }

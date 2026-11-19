@@ -1,15 +1,23 @@
 import { getServerSession } from "next-auth"
+
 import { authOptions } from "@/lib/auth"
+import { isSuapMock, mockSuapResponse } from "@/lib/suap/mock"
 
 export const suapFetch = async <T>(
   url: string,
   options?: RequestInit,
 ): Promise<T> => {
+  if (isSuapMock()) {
+    // SAFETY: mockSuapResponse returns fixtures shaped like the SUAP responses orval types as T.
+    return { ...mockSuapResponse(url), headers: new Headers() } as T
+  }
+
   const session = await getServerSession(authOptions)
   const accessToken = session?.accessToken
 
   const headers = new Headers(options?.headers)
   headers.set("Content-Type", "application/json")
+
   if (accessToken) {
     headers.set("Authorization", `Bearer ${accessToken}`)
   }
@@ -21,5 +29,6 @@ export const suapFetch = async <T>(
 
   const data = await response.json().catch(() => null)
 
+  // SAFETY: orval types T as the { status, data, headers } envelope of this operation; data is the unparsed SUAP JSON body.
   return { status: response.status, data, headers: response.headers } as T
 }

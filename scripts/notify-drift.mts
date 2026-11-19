@@ -20,4 +20,5 @@ const message =
   `<b>Operações monitoradas:</b>\n${opsList}`
 
 const sent = await sendTelegramMessage(message)
+
 process.exit(sent ? 0 : 1)

@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @plugin 'tailwindcss-animate';
 
@@ -42,6 +42,13 @@
 
   --color-card: hsl(var(--card));
   --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-success: var(--color-green-500);
+  --color-success-emphasis: var(--color-green-600);
+  --color-warning: var(--color-yellow-500);
+  --color-danger: var(--color-red-500);
+  --color-danger-emphasis: var(--color-red-600);
+  --color-star: var(--color-yellow-500);
 
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);

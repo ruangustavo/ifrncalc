@@ -14,6 +14,7 @@ const Drawer = ({
     {...props}
   />
 )
+
 Drawer.displayName = "Drawer"
 
 const DrawerTrigger = DrawerPrimitive.Trigger
@@ -32,6 +33,7 @@ const DrawerOverlay = React.forwardRef<
     {...props}
   />
 ))
+
 DrawerOverlay.displayName = DrawerPrimitive.Overlay.displayName
 
 const DrawerContent = React.forwardRef<
@@ -53,6 +55,7 @@ const DrawerContent = React.forwardRef<
     </DrawerPrimitive.Content>
   </DrawerPortal>
 ))
+
 DrawerContent.displayName = "DrawerContent"
 
 const DrawerHeader = ({
@@ -64,6 +67,7 @@ const DrawerHeader = ({
     {...props}
   />
 )
+
 DrawerHeader.displayName = "DrawerHeader"
 
 const DrawerFooter = ({
@@ -75,6 +79,7 @@ const DrawerFooter = ({
     {...props}
   />
 )
+
 DrawerFooter.displayName = "DrawerFooter"
 
 const DrawerTitle = React.forwardRef<
@@ -84,12 +89,13 @@ const DrawerTitle = React.forwardRef<
   <DrawerPrimitive.Title
     ref={ref}
     className={cn(
-      "font-semibold text-lg leading-none tracking-tight",
+      "text-lg leading-none font-semibold tracking-tight",
       className,
     )}
     {...props}
   />
 ))
+
 DrawerTitle.displayName = DrawerPrimitive.Title.displayName
 
 const DrawerDescription = React.forwardRef<
@@ -98,10 +104,11 @@ const DrawerDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DrawerPrimitive.Description
     ref={ref}
-    className={cn("text-muted-foreground text-sm", className)}
+    className={cn("text-sm text-muted-foreground", className)}
     {...props}
   />
 ))
+
 DrawerDescription.displayName = DrawerPrimitive.Description.displayName
 
 export {

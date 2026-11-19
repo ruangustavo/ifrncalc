@@ -22,12 +22,14 @@ export async function sendTelegramMessage(text: string): Promise<boolean> {
 
     if (!response.ok) {
       console.error("Telegram sendMessage failed:", await response.text())
+
       return false
     }
 
     return true
   } catch (error) {
     console.error("Telegram sendMessage error:", error)
+
     return false
   }
 }

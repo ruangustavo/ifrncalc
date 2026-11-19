@@ -2,43 +2,16 @@
 
 import { Pencil } from "lucide-react"
 import { useMemo, useState } from "react"
+
 import type { Discipline } from "@/actions/get-grades"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
 import { useGradesStore } from "@/store/grades"
 import { recalculateGrades } from "@/utils/grade-calculation"
 import { mockDisciplineGrades } from "@/utils/mock-utils"
+
 import { EditGradeModal } from "./edit-grade-modal"
-
-export interface Stage {
-  grade: number | null
-  isAvailable: boolean
-  passingGrade: number
-}
-
-export function GradeLabel({ grade, passingGrade, isAvailable }: Stage) {
-  if (!isAvailable && grade === null) {
-    return "—"
-  }
-
-  const hasPassingGrade = !grade && passingGrade >= 0
-
-  return (
-    <span
-      className={cn(
-        "font-medium text-xl tabular-nums md:text-base",
-        hasPassingGrade && {
-          "text-green-500": passingGrade <= 40,
-          "text-yellow-500": passingGrade > 40 && passingGrade <= 90,
-          "text-red-500": passingGrade > 90,
-        },
-      )}
-    >
-      {hasPassingGrade ? passingGrade : grade}
-    </span>
-  )
-}
+import { GradeLabel } from "./grade-label"
 
 interface CellTableProps {
   stageKey: `E${number}`
@@ -64,7 +37,7 @@ export function CellTable({
     [discipline],
   )
 
-  const editedDisciplineGrades = editedGrades[discipline.name] ?? {}
+  const editedDisciplineGrades = editedGrades[discipline.name]
 
   const recalculatedStages = useMemo(
     () => recalculateGrades(mockedDiscipline, editedDisciplineGrades),
@@ -74,7 +47,7 @@ export function CellTable({
   const currentStage =
     recalculatedStages[["E1", "E2", "E3", "E4"].indexOf(stageKey)]
 
-  const displayGrade = editedDisciplineGrades[stageKey] ?? currentStage.grade
+  const displayGrade = editedDisciplineGrades?.[stageKey] ?? currentStage.grade
 
   const handleEdit = (newGrade: number) => {
     setGrade(discipline.name, stageKey, newGrade)
@@ -89,7 +62,7 @@ export function CellTable({
     const tileBody = (
       <>
         {shortLabel && (
-          <span className="text-muted-foreground text-xs">{shortLabel}</span>
+          <span className="text-xs text-muted-foreground">{shortLabel}</span>
         )}
         <GradeLabel {...currentStage} grade={displayGrade} />
       </>
@@ -132,16 +105,16 @@ export function CellTable({
 
       {canEdit && (
         <Button
-          variant="ghost"
-          className="size-8 p-1.5 transition-colors duration-200 hover:bg-primary/10 active:bg-primary/20"
+          variant="ghost-primary"
+          size="icon-sm"
           onClick={() => setIsEditModalOpen(true)}
         >
           <Pencil className="size-4" />
         </Button>
       )}
 
-      {editedDisciplineGrades[stageKey] !== undefined && (
-        <Badge variant="secondary" className="animate-in font-medium">
+      {editedDisciplineGrades?.[stageKey] !== undefined && (
+        <Badge variant="secondary" weight="medium">
           Editada
         </Badge>
       )}

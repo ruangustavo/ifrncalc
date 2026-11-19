@@ -4,9 +4,11 @@ import { motion } from "framer-motion"
 import Image from "next/image"
 import Link from "next/link"
 import type { ReactNode } from "react"
+
 import { siteConfig } from "@/config/site"
 import screenshotImage from "@/images/screenshot.png"
-import { CalcExplainer } from "./calc-explainer"
+
+import { CalcExplainer } from "./calc-explainer/calc-explainer"
 import { PhoneFrame } from "./phone-frame"
 import { SignInButton } from "./sign-in-button"
 
@@ -26,7 +28,7 @@ export function MainContent({ starCount }: MainContentProps) {
             className="flex flex-col items-center space-y-8 text-center"
           >
             <div className="flex flex-col items-center space-y-4">
-              <h1 className="bg-linear-to-r from-primary to-primary/70 bg-clip-text font-bold text-4xl text-transparent tracking-tight sm:text-3xl lg:text-4xl">
+              <h1 className="bg-linear-to-r from-primary to-primary/70 bg-clip-text text-4xl font-bold tracking-tight text-transparent sm:text-3xl lg:text-4xl">
                 Calcule suas médias para passar
               </h1>
 
@@ -38,14 +40,14 @@ export function MainContent({ starCount }: MainContentProps) {
               <SignInButton />
               <Link
                 href="/calculadora"
-                className="text-muted-foreground text-sm underline underline-offset-4"
+                className="text-sm text-muted-foreground underline underline-offset-4"
               >
                 Ir para a calculadora
               </Link>
             </div>
 
             <div className="relative">
-              <div className="mask-(--mask-image) max-w-full overflow-hidden">
+              <div className="max-w-full overflow-hidden mask-(--mask-image)">
                 <PhoneFrame
                   src={screenshotImage.src}
                   height={441}
@@ -60,7 +62,7 @@ export function MainContent({ starCount }: MainContentProps) {
             transition={{ duration: 0.6, delay: 0.5 }}
             className="w-full max-w-3xl"
           >
-            <h2 className="mb-8 text-center font-semibold text-2xl text-foreground">
+            <h2 className="mb-8 text-center text-2xl font-semibold text-foreground">
               Como funciona
             </h2>
 
@@ -68,7 +70,7 @@ export function MainContent({ starCount }: MainContentProps) {
           </motion.div>
 
           <motion.p
-            className="flex flex-wrap items-center justify-center gap-x-2 text-center text-muted-foreground text-sm"
+            className="flex flex-wrap items-center justify-center gap-x-2 text-center text-sm text-muted-foreground"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.7 }}
@@ -89,7 +91,7 @@ export function MainContent({ starCount }: MainContentProps) {
           </motion.p>
 
           <motion.div
-            className="flex items-center gap-2 text-muted-foreground text-sm"
+            className="flex items-center gap-2 text-sm text-muted-foreground"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.8 }}

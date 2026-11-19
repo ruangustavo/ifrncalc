@@ -6,5 +6,6 @@ export async function GET() {
   }
 
   await db.execute("SELECT 1")
+
   return Response.json({ ok: true })
 }

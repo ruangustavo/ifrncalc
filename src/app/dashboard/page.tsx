@@ -1,6 +1,7 @@
+import { getServerSession } from "next-auth"
 import { redirect } from "next/navigation"
 import { after } from "next/server"
-import { getServerSession } from "next-auth"
+
 import { getGrades } from "@/actions/get-grades"
 import { getStudentData } from "@/actions/get-student-data"
 import { FeedbackDialog } from "@/components/feedback-dialog"
@@ -8,7 +9,9 @@ import { authOptions } from "@/lib/auth"
 import { db } from "@/lib/db"
 import { recordEvent } from "@/lib/events"
 import { notifyError } from "@/lib/notify"
-import { studentIdentitySchema, upsertStudent } from "@/lib/students"
+import { StudentIdentitySchema, upsertStudent } from "@/lib/students"
+import { isSuapMock } from "@/lib/suap/mock"
+
 import { IraCard } from "./_components/ira-card"
 import { MaintenanceNotice } from "./_components/maintenance-notice"
 import { TableGrades } from "./_components/table-grades"
@@ -26,8 +29,9 @@ export default async function Dashboard() {
   ])
 
   after(async () => {
-    const identity = studentIdentitySchema.safeParse(session)
-    if (!db || !identity.success) {
+    const identity = StudentIdentitySchema.safeParse(session)
+
+    if (!db || isSuapMock() || !identity.success) {
       return
     }
 
@@ -36,6 +40,7 @@ export default async function Dashboard() {
         ...identity.data,
         academic: studentData.academic ?? null,
       })
+
       await recordEvent(db, studentId, "dashboard_viewed")
     } catch (error) {
       notifyError("dashboard / analytics", {
