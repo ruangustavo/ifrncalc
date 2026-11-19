@@ -3,6 +3,7 @@ import Image from "next/image"
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
 
+import { RoughHighlight } from "./rough-highlight"
 import { Tape } from "./tape"
 
 const SHEET_SHADOW =
@@ -46,9 +47,9 @@ export function Story() {
             </p>
             <p>
               Um dia resolvi automatizar.{" "}
-              <span className="bg-lime box-decoration-clone px-1 font-semibold">
+              <RoughHighlight>
                 Hoje o IFRN Calc faz essa conta pra mais de 10 mil alunos,
-              </span>{" "}
+              </RoughHighlight>{" "}
               no instante em que a nota sai no SUAP.
             </p>
           </div>
