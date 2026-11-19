@@ -33,7 +33,7 @@ export function Story() {
             SHEET_SHADOW,
           )}
         >
-          <Tape className="-top-4 left-10 -rotate-3" />
+          <Tape className="-top-1 -left-9 -rotate-[38deg]" />
           <h2 className="font-display text-[clamp(2.25rem,9vw,3.25rem)] leading-[0.95] font-extrabold tracking-[-0.035em] text-balance">
             Nasceu de uma conta que eu fazia na mão.
           </h2>
