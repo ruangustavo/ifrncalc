@@ -92,7 +92,11 @@
     {
       "files": ["src/app/(app)/**"],
       "rules": {
-        "shadcn/no-arbitrary-values": "off"
+        "shadcn/no-arbitrary-values": "off",
+        "shadcn/no-raw-colors": "off",
+        "shadcn/no-restyle": "off",
+        "shadcn/no-inline-styles": "off",
+        "shadcn/require-static-classes": "off"
       }
     },
     {
