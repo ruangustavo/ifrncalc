@@ -4,6 +4,7 @@ import { Pencil } from "lucide-react"
 import { useMemo, useState } from "react"
 
 import type { Discipline } from "@/actions/get-grades"
+import { recordGradeSimulated } from "@/actions/record-event"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { useGradesStore } from "@/store/grades"
@@ -51,6 +52,7 @@ export function CellTable({
 
   const handleEdit = (newGrade: number) => {
     setGrade(discipline.name, stageKey, newGrade)
+    void recordGradeSimulated()
   }
 
   const hasMultipleAvailableStages =

@@ -13,6 +13,7 @@ import { StudentIdentitySchema, upsertStudent } from "@/lib/students"
 import { IraCard } from "./_components/ira-card"
 import { MaintenanceNotice } from "./_components/maintenance-notice"
 import { TableGrades } from "./_components/table-grades"
+import { VisitRecorder } from "./_components/visit-recorder"
 
 export default async function Dashboard() {
   const session = await getServerSession(authOptions)
@@ -53,6 +54,7 @@ export default async function Dashboard() {
       <TableGrades gradesResponse={gradesResponse} />
       <MaintenanceNotice />
       <FeedbackDialog user={session.user} />
+      <VisitRecorder />
     </div>
   )
 }

@@ -17,11 +17,15 @@ CREATE TABLE IF NOT EXISTS events (
   id           INTEGER PRIMARY KEY,
   student_id   INTEGER NOT NULL REFERENCES students(id),
   type         TEXT NOT NULL,
+  device       TEXT,
+  display_mode TEXT,
   occurred_at  TEXT NOT NULL
 );
 
 CREATE INDEX IF NOT EXISTS events_occurred_at ON events(occurred_at);
 CREATE INDEX IF NOT EXISTS events_student_id ON events(student_id, occurred_at);
+CREATE UNIQUE INDEX IF NOT EXISTS events_hourly
+  ON events(student_id, type, substr(occurred_at, 1, 13));
 
 CREATE TABLE IF NOT EXISTS campuses (
   code  TEXT PRIMARY KEY,
