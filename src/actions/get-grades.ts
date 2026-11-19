@@ -10,7 +10,7 @@ import type {
   NotaBoletimSchema,
 } from "@/lib/suap/generated/models"
 
-const STAGE_TO_WEIGHT: Record<number, number> = { 1: 2, 2: 2, 3: 3, 4: 3 }
+const BIMESTER_WEIGHTS = [2, 2, 3, 3]
 
 interface StageGrade {
   grade: number | null
@@ -81,7 +81,7 @@ const getWeight = (
     ? currentIndex === 0
       ? 2
       : 3
-    : STAGE_TO_WEIGHT[currentIndex + 1]
+    : BIMESTER_WEIGHTS[currentIndex]
 }
 
 function calculatePassingGrade(

@@ -8,6 +8,7 @@ export const suapFetch = async <T>(
   options?: RequestInit,
 ): Promise<T> => {
   if (isSuapMock()) {
+    // SAFETY: mockSuapResponse returns fixtures shaped like the SUAP responses orval types as T.
     return { ...mockSuapResponse(url), headers: new Headers() } as T
   }
 
@@ -28,5 +29,6 @@ export const suapFetch = async <T>(
 
   const data = await response.json().catch(() => null)
 
+  // SAFETY: orval types T as the { status, data, headers } envelope of this operation; data is the unparsed SUAP JSON body.
   return { status: response.status, data, headers: response.headers } as T
 }

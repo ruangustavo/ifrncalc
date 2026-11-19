@@ -4,6 +4,15 @@ interface GithubRepo {
   stargazers_count: number
 }
 
+function isGithubRepo(value: unknown): value is GithubRepo {
+  return (
+    value !== null &&
+    typeof value === "object" &&
+    "stargazers_count" in value &&
+    typeof value.stargazers_count === "number"
+  )
+}
+
 async function getStarCount(): Promise<number | null> {
   try {
     const response = await fetch(
@@ -15,9 +24,9 @@ async function getStarCount(): Promise<number | null> {
     )
 
     if (!response.ok) return null
-    const data = (await response.json()) as GithubRepo
+    const data: unknown = await response.json()
 
-    return data.stargazers_count
+    return isGithubRepo(data) ? data.stargazers_count : null
   } catch {
     return null
   }

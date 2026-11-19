@@ -10,25 +10,38 @@ const REQUIRED_OP_IDS = [
   "api_endpoints_ensino_get_meus_dados_aluno",
 ]
 
-function isRecord(value: unknown): value is Record<string, unknown> {
+interface OpenApiSpec {
+  paths: object
+}
+
+interface Operation {
+  operationId: string
+}
+
+function isObject(value: unknown): value is object {
   return value !== null && typeof value === "object"
 }
 
-function collectOperationIds(spec: unknown): Set<string> {
+function isOpenApiSpec(value: unknown): value is OpenApiSpec {
+  return isObject(value) && "paths" in value && isObject(value.paths)
+}
+
+function isOperation(value: unknown): value is Operation {
+  return (
+    isObject(value) &&
+    "operationId" in value &&
+    typeof value.operationId === "string"
+  )
+}
+
+function collectOperationIds(spec: OpenApiSpec): Set<string> {
   const ids = new Set<string>()
 
-  if (!isRecord(spec)) return ids
-  const paths = spec.paths
-
-  if (!isRecord(paths)) return ids
-
-  for (const pathItem of Object.values(paths)) {
-    if (!isRecord(pathItem)) continue
+  for (const pathItem of Object.values(spec.paths)) {
+    if (!isObject(pathItem)) continue
 
     for (const operation of Object.values(pathItem)) {
-      if (isRecord(operation) && typeof operation.operationId === "string") {
-        ids.add(operation.operationId)
-      }
+      if (isOperation(operation)) ids.add(operation.operationId)
     }
   }
 
@@ -63,7 +76,7 @@ async function main(): Promise<number> {
     return 1
   }
 
-  const present = collectOperationIds(spec)
+  const present = isOpenApiSpec(spec) ? collectOperationIds(spec) : new Set<string>()
   const missing = REQUIRED_OP_IDS.filter((id) => !present.has(id))
 
   if (missing.length > 0) {

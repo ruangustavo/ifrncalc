@@ -1,6 +1,6 @@
 import type { Discipline } from "@/actions/get-grades"
 
-const STAGE_TO_WEIGHT: Record<number, number> = { 1: 2, 2: 2, 3: 3, 4: 3 }
+const BIMESTER_WEIGHTS = [2, 2, 3, 3]
 
 export function getWeight(
   currentIndex: number,
@@ -12,7 +12,7 @@ export function getWeight(
     ? currentIndex === 0
       ? 2
       : 3
-    : STAGE_TO_WEIGHT[currentIndex + 1]
+    : BIMESTER_WEIGHTS[currentIndex]
 }
 
 export function recalculateGrades(

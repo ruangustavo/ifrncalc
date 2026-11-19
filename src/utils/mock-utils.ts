@@ -1,29 +1,23 @@
 import type { Discipline } from "@/actions/get-grades"
 
-export function mockDisciplineGrades(discipline: Discipline): Discipline {
-  const stages = ["E1", "E2", "E3", "E4"] as const
+const MOCKED_GRADE = 60
 
+function mockStage(stage: Discipline["E1"]): Discipline["E1"] {
+  return {
+    ...stage,
+    grade:
+      !stage.isAvailable && stage.passingGrade >= 0
+        ? MOCKED_GRADE
+        : stage.grade,
+  }
+}
+
+export function mockDisciplineGrades(discipline: Discipline): Discipline {
   return {
     ...discipline,
-    ...stages.reduce(
-      (acc, stage) => {
-        const currentStage = discipline[stage]
-        const MOCKED_GRADE = 60
-
-        acc[stage] = {
-          ...currentStage,
-          grade:
-            !currentStage.isAvailable && currentStage.passingGrade >= 0
-              ? MOCKED_GRADE
-              : currentStage.grade,
-        }
-
-        return acc
-      },
-      {} as Record<
-        (typeof stages)[number],
-        (typeof discipline)[(typeof stages)[number]]
-      >,
-    ),
+    E1: mockStage(discipline.E1),
+    E2: mockStage(discipline.E2),
+    E3: mockStage(discipline.E3),
+    E4: mockStage(discipline.E4),
   }
 }

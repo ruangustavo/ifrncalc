@@ -8,7 +8,7 @@ import type { ReactNode } from "react"
 import { siteConfig } from "@/config/site"
 import screenshotImage from "@/images/screenshot.png"
 
-import { CalcExplainer } from "./calc-explainer"
+import { CalcExplainer } from "./calc-explainer/calc-explainer"
 import { PhoneFrame } from "./phone-frame"
 import { SignInButton } from "./sign-in-button"
 

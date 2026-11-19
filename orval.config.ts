@@ -17,24 +17,10 @@ const HTTP_METHODS = [
   "trace",
 ] as const
 
-function collectRefs(node: unknown, acc: Set<string>): void {
-  if (Array.isArray(node)) {
-    for (const item of node) collectRefs(item, acc)
+const SCHEMA_REF = /"\$ref":"#\/components\/schemas\/([^"]+)"/g
 
-    return
-  }
-
-  if (node !== null && typeof node === "object") {
-    for (const [key, value] of Object.entries(node)) {
-      if (key === "$ref" && typeof value === "string") {
-        const match = value.match(/^#\/components\/schemas\/(.+)$/)
-
-        if (match) acc.add(match[1])
-      } else {
-        collectRefs(value, acc)
-      }
-    }
-  }
+function schemaRefsIn(json: string): Set<string> {
+  return new Set(Array.from(json.matchAll(SCHEMA_REF), (match) => match[1]))
 }
 
 export default defineConfig({
@@ -67,21 +53,19 @@ export default defineConfig({
           // 2. Collect schemas referenced by the kept operations, then expand
           //    transitively through components.schemas.
           const schemas = spec.components?.schemas ?? {}
-          const needed = new Set<string>()
-          collectRefs(paths, needed)
+          const needed = schemaRefsIn(JSON.stringify(paths))
           const queue = [...needed]
 
           while (queue.length > 0) {
             const name = queue.pop()
 
             if (name === undefined) continue
+
             const schema = schemas[name]
 
             if (!schema) continue
-            const refs = new Set<string>()
-            collectRefs(schema, refs)
 
-            for (const ref of refs) {
+            for (const ref of schemaRefsIn(JSON.stringify(schema))) {
               if (!needed.has(ref)) {
                 needed.add(ref)
                 queue.push(ref)

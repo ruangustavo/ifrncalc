@@ -25,6 +25,10 @@ const PASSING_AVERAGE = 60
 
 type DisciplineType = "annual" | "semester"
 
+function isDisciplineType(value: string): value is DisciplineType {
+  return value === "annual" || value === "semester"
+}
+
 interface GradeInput {
   value: string
   weight: number
@@ -156,8 +160,8 @@ export default function Calculadora() {
     setGrades(disciplineType === "annual" ? ANNUAL_GRADES : SEMESTER_GRADES)
   }
 
-  const handleDisciplineTypeChange = (value: string) => {
-    const type = value as DisciplineType
+  const handleDisciplineTypeChange = (type: string) => {
+    if (!isDisciplineType(type)) return
     setDisciplineType(type)
     setGrades(type === "annual" ? ANNUAL_GRADES : SEMESTER_GRADES)
   }

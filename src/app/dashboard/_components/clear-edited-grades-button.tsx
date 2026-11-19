@@ -1,22 +1,12 @@
 "use client"
 
 import { AnimatePresence, motion } from "framer-motion"
-import { CheckCircle, Trash2 } from "lucide-react"
+import { CheckCircle } from "lucide-react"
 
-import { Button, type ButtonProps } from "@/components/ui/button"
 import { useToast } from "@/components/ui/use-toast"
 import { useGradesStore } from "@/store/grades"
 
-function ClearButton(props: ButtonProps) {
-  return (
-    <Button size="xs" variant="outline" className={props.className} {...props}>
-      <span className="flex items-center gap-1.5">
-        <Trash2 className="size-4" />
-        Limpar notas editadas
-      </span>
-    </Button>
-  )
-}
+import { ClearButton } from "./clear-button"
 
 export function ClearEditedGradesButton() {
   const { clearEditedGrades, editedGrades } = useGradesStore()

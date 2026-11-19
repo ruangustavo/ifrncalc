@@ -1,11 +1,10 @@
 "use client"
 
-import { AnimatePresence, motion } from "framer-motion"
-import { ChevronDown, ExternalLink } from "lucide-react"
+import { ExternalLink } from "lucide-react"
 import { signIn } from "next-auth/react"
-import { Suspense, useState } from "react"
+import { Suspense } from "react"
 
-import type { Discipline, GetGradesResponse } from "@/actions/get-grades"
+import type { GetGradesResponse } from "@/actions/get-grades"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import {
@@ -17,102 +16,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { cn } from "@/lib/utils"
 
 import { CellTable } from "./cell-table"
 import { ClearEditedGradesButton } from "./clear-edited-grades-button"
+import { GradeCard } from "./grade-card"
+import { STAGES } from "./stages"
 import { TableSkeleton } from "./table-skeleton"
-
-type StageKey = "E1" | "E2" | "E3" | "E4"
 
 interface TableGradesProps {
   gradesResponse: GetGradesResponse
-}
-
-export const STAGES: {
-  key: StageKey
-  label: string
-  shortLabel: string
-}[] = [
-  { key: "E1", label: "1° Bimestre", shortLabel: "1º Bim" },
-  { key: "E2", label: "2° Bimestre", shortLabel: "2º Bim" },
-  { key: "E3", label: "3° Bimestre", shortLabel: "3º Bim" },
-  { key: "E4", label: "4° Bimestre", shortLabel: "4º Bim" },
-] as const
-
-function GradeCard({ grade }: { grade: Discipline }) {
-  const [isExpanded, setIsExpanded] = useState(true)
-
-  const calculatePartialAverage = (grade: Discipline) => {
-    const stages = [grade.E1, grade.E2, grade.E3, grade.E4]
-    const filled = stages.filter((s) => s.grade !== null)
-
-    if (filled.length === 0) return null
-    const sum = filled.reduce((acc, s) => acc + (s.grade ?? 0), 0)
-
-    return Math.round(sum / filled.length)
-  }
-
-  const partialAverage = grade.partialAverage ?? calculatePartialAverage(grade)
-
-  return (
-    <div className="rounded-xl border bg-card p-4">
-      <button
-        type="button"
-        className="flex w-full items-start gap-3"
-        onClick={() => setIsExpanded(!isExpanded)}
-      >
-        <div
-          className={cn(
-            "mt-1 h-10 w-1.5 shrink-0 rounded-full",
-            partialAverage === null
-              ? "bg-primary"
-              : {
-                  "bg-green-500": partialAverage >= 60,
-                  "bg-yellow-500": partialAverage >= 40 && partialAverage < 60,
-                  "bg-red-500": partialAverage < 40,
-                },
-          )}
-        />
-        <div className="min-w-0 flex-1 text-left">
-          <h3 className="leading-tight font-semibold">{grade.name}</h3>
-          <p className="mt-0.5 text-sm text-muted-foreground">
-            {grade.hours}h
-            {partialAverage !== null && ` • Média parcial: ${partialAverage}`}
-          </p>
-        </div>
-        <ChevronDown
-          className={cn(
-            "mt-1 size-5 shrink-0 text-muted-foreground transition-transform",
-            isExpanded && "rotate-180",
-          )}
-        />
-      </button>
-      <AnimatePresence initial={false}>
-        {isExpanded && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2, ease: "easeInOut" }}
-            className="overflow-hidden"
-          >
-            <div className="mt-3 grid grid-cols-4 gap-2">
-              {STAGES.map(({ key, shortLabel }) => (
-                <CellTable
-                  key={key}
-                  discipline={grade}
-                  stageKey={key}
-                  shortLabel={shortLabel}
-                  compact
-                />
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  )
 }
 
 export function TableGrades({ gradesResponse }: TableGradesProps) {
