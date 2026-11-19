@@ -1,5 +1,3 @@
-import { Analytics } from "@vercel/analytics/react"
-
 import "./globals.css"
 import type { Metadata } from "next"
 import { DM_Sans } from "next/font/google"
@@ -193,7 +191,6 @@ export default function RootLayout({
         )}
       >
         <Providers>{children}</Providers>
-        <Analytics />
         <Toaster />
       </body>
     </html>
