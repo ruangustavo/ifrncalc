@@ -5,7 +5,6 @@ import { Faq } from "./faq"
 import { FinalCta } from "./final-cta/final-cta"
 import { handFont } from "./hand-font"
 import { Hero } from "./hero/hero"
-import { HowItWorks } from "./how-it-works"
 import { Reach } from "./reach/reach"
 import { SiteFooter } from "./site-footer"
 import { SiteHeader } from "./site-header"
@@ -32,9 +31,8 @@ export function MainContent() {
         <Hero />
         <Tiers />
         <Reach />
-        <HowItWorks />
-        <Story />
         <Faq />
+        <Story />
         <FinalCta />
       </main>
       <SiteFooter />

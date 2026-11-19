@@ -14,6 +14,11 @@ export const FAQ_ITEMS = [
       "60. O IFRN Calc calcula quanto você precisa tirar nos bimestres em aberto pra sua média ponderada chegar a 60.",
   },
   {
+    question: "Dá pra simular uma nota?",
+    answer:
+      "Sim. No seu boletim, edite a nota de qualquer bimestre em aberto e o IFRN Calc recalcula quanto falta nos outros.",
+  },
+  {
     question: "Funciona pra disciplinas semestrais?",
     answer:
       "Sim. Nas anuais os pesos são 2, 2, 3 e 3. Nas semestrais, 2 e 3. O IFRN Calc identifica o tipo de cada disciplina pelo SUAP.",
