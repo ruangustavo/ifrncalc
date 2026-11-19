@@ -8,12 +8,22 @@ import { Button } from "@/components/ui/button"
 
 interface SignInButtonProps {
   size?: "sm" | "xl"
+  variant?: "default" | "secondary"
   className?: string
 }
 
-export function SignInButton({ size = "xl", className }: SignInButtonProps) {
+export function SignInButton({
+  size = "xl",
+  variant = "default",
+  className,
+}: SignInButtonProps) {
   return (
-    <Button size={size} className={className} onClick={() => signIn("suap")}>
+    <Button
+      size={size}
+      variant={variant}
+      className={className}
+      onClick={() => signIn("suap")}
+    >
       {size === "xl" ? "Conectar com SUAP" : "Entrar"}
       <HugeiconsIcon strokeWidth={2} icon={ArrowRight02Icon} />
     </Button>

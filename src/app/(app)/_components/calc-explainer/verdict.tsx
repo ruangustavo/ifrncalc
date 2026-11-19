@@ -4,7 +4,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 export function Verdict() {
   return (
     <span className="font-medium">
-      Precisa de <span className="text-primary">50</span> no 3º e 4º Bim{" "}
+      Precisa de <span className="text-highlight">50</span> no 3º e 4º Bim{" "}
       <HugeiconsIcon
         strokeWidth={2}
         icon={ArrowRight02Icon}

@@ -32,20 +32,26 @@ const POINTS = [
 
 export function Privacy() {
   return (
-    <section className="border-y bg-foreground text-background">
-      <div className="mx-auto max-w-6xl px-4 py-16 md:py-24">
-        <h2 className="max-w-2xl text-3xl font-bold tracking-tight text-balance md:text-4xl">
-          Sua senha nunca passa pela gente
+    <section className="border-t">
+      <div className="mx-auto max-w-6xl px-4 py-20 md:py-28">
+        <h2 className="max-w-2xl text-4xl leading-none font-extrabold tracking-tighter text-balance md:text-5xl">
+          Sua senha nunca passa{" "}
+          <span className="text-highlight">pela gente.</span>
         </h2>
-        <ul className="mt-10 grid gap-8 md:grid-cols-3">
+        <ul className="mt-12 grid gap-10 md:grid-cols-3">
           {POINTS.map((point) => (
             <li key={point.title}>
-              <HugeiconsIcon
-                icon={point.icon}
-                className="size-6 text-primary"
-              />
-              <h3 className="mt-3 text-lg font-semibold">{point.title}</h3>
-              <p className="mt-1 text-background/70">{point.description}</p>
+              <span className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-highlight">
+                <HugeiconsIcon
+                  strokeWidth={2}
+                  icon={point.icon}
+                  className="size-5"
+                />
+              </span>
+              <h3 className="mt-4 text-lg font-bold tracking-tight">
+                {point.title}
+              </h3>
+              <p className="mt-1 text-muted-foreground">{point.description}</p>
             </li>
           ))}
         </ul>

@@ -51,7 +51,7 @@ function captionFor(step: number): ReactNode {
       return (
         <>
           Faltam 300 em 6 vagas:{" "}
-          <span className="text-primary tabular-nums">300 ÷ 6 = 50 cada</span>
+          <span className="text-highlight tabular-nums">300 ÷ 6 = 50 cada</span>
         </>
       )
     case 9:

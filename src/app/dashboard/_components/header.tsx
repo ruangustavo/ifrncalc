@@ -1,6 +1,7 @@
 import { CalculatorIcon } from "lucide-react"
 import Link from "next/link"
 
+import { ModeToggle } from "@/components/theme-switcher"
 import { siteConfig } from "@/config/site"
 
 import { NavLink } from "./nav-link"
@@ -20,6 +21,7 @@ export function Header() {
 
         <nav className="flex items-center gap-2">
           <NavLink href="/calculadora">Calculadora</NavLink>
+          <ModeToggle />
           <div className="ml-1 border-l pl-2">
             <SignOutButton />
           </div>

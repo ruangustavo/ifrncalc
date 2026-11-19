@@ -57,7 +57,7 @@ export function CalcExplainer() {
                 <span
                   className={cn(
                     "font-medium",
-                    b.weight === 3 ? "text-primary" : "text-muted-foreground",
+                    b.weight === 3 ? "text-highlight" : "text-muted-foreground",
                   )}
                 >
                   peso {b.weight}

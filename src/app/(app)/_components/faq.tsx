@@ -17,25 +17,28 @@ const FAQ_STRUCTURED_DATA = {
 
 export function Faq() {
   return (
-    <section className="mx-auto max-w-2xl px-4 py-16 md:py-24">
-      <StructuredData data={FAQ_STRUCTURED_DATA} />
-      <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
-        Perguntas frequentes
-      </h2>
-      <div className="mt-8 divide-y border-y">
-        {FAQ_ITEMS.map((item) => (
-          <details key={item.question} className="group">
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-left font-medium [&::-webkit-details-marker]:hidden">
-              {item.question}
-              <HugeiconsIcon
-                strokeWidth={2}
-                icon={ArrowDown01Icon}
-                className="size-5 shrink-0 text-muted-foreground transition-transform group-open:rotate-180"
-              />
-            </summary>
-            <p className="pb-5 text-muted-foreground">{item.answer}</p>
-          </details>
-        ))}
+    <section id="duvidas" className="scroll-mt-16 border-t">
+      <div className="mx-auto max-w-3xl px-4 py-20 md:py-28">
+        <StructuredData data={FAQ_STRUCTURED_DATA} />
+        <h2 className="text-4xl leading-none font-extrabold tracking-tighter text-balance md:text-5xl">
+          Perguntas que a gente{" "}
+          <span className="text-highlight">sempre ouve.</span>
+        </h2>
+        <div className="mt-8 divide-y border-y">
+          {FAQ_ITEMS.map((item) => (
+            <details key={item.question} className="group">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-left text-lg font-semibold [&::-webkit-details-marker]:hidden">
+                {item.question}
+                <HugeiconsIcon
+                  strokeWidth={2}
+                  icon={ArrowDown01Icon}
+                  className="size-5 shrink-0 text-muted-foreground transition-transform group-open:rotate-180"
+                />
+              </summary>
+              <p className="pb-5 text-muted-foreground">{item.answer}</p>
+            </details>
+          ))}
+        </div>
       </div>
     </section>
   )

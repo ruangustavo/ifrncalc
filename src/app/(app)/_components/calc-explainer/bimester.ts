@@ -18,7 +18,7 @@ export function chipClass(b: Bimester) {
   return cn(
     "grid place-items-center rounded-md border-2 text-xs font-medium tabular-nums",
     b.known
-      ? "border-[color-mix(in_oklab,var(--color-primary)_30%,var(--color-background))] bg-[color-mix(in_oklab,var(--color-primary)_25%,var(--color-background))] text-foreground"
+      ? "border-[color-mix(in_oklab,var(--color-highlight)_30%,var(--color-background))] bg-[color-mix(in_oklab,var(--color-highlight)_25%,var(--color-background))] text-foreground"
       : "border-primary bg-primary text-primary-foreground",
   )
 }

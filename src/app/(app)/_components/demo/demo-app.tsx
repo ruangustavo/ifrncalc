@@ -1,6 +1,6 @@
 "use client"
 
-import { Calculator01Icon, RotateLeft01Icon } from "@hugeicons/core-free-icons"
+import { RotateLeft01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 
 import { GradeCard } from "@/app/dashboard/_components/grade-card"
@@ -16,17 +16,16 @@ export function DemoApp() {
   const hasEdits = Object.keys(editedGrades).length > 0
 
   return (
-    <div className="overflow-hidden rounded-3xl border bg-background shadow-2xl shadow-primary/10 md:rounded-[2.5rem] md:border-[10px] md:border-foreground/90">
-      <div className="flex h-12 items-center justify-between border-b px-4">
-        <span className="flex items-center gap-2 text-sm font-semibold tracking-tight">
-          <HugeiconsIcon
-            strokeWidth={2}
-            icon={Calculator01Icon}
-            className="size-4 text-primary"
-          />
-          IFRN Calc
+    <div className="overflow-hidden rounded-2xl border bg-card shadow-2xl shadow-primary/10 dark:shadow-none">
+      <div className="flex h-11 items-center gap-3 border-b px-4">
+        <span className="flex gap-1.5" aria-hidden>
+          <span className="size-2.5 rounded-full bg-border" />
+          <span className="size-2.5 rounded-full bg-border" />
+          <span className="size-2.5 rounded-full bg-border" />
         </span>
-        <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
+        <span className="text-sm font-medium">Seu boletim</span>
+        <span className="ml-auto flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-xs text-muted-foreground">
+          <span className="size-1.5 rounded-full bg-primary" />
           notas de exemplo
         </span>
       </div>

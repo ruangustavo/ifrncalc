@@ -16,7 +16,7 @@ export function DashedSlots({ b, step }: GroupProps) {
             "flex-1 rounded-md border-2 border-dashed transition-colors duration-300",
             filled
               ? ["border-transparent", SLOT_DELAYS[k]]
-              : "border-primary/20 delay-0",
+              : "border-highlight/30 delay-0",
           )}
         />
       ))}
