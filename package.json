@@ -6,10 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "format": "biome check --write ./src",
+    "format": "oxfmt ./src",
     "typecheck": "tsc --noEmit",
     "suap:gen": "orval --config orval.config.ts",
-    "suap:check-ops": "node scripts/check-used-ops.mts"
+    "suap:check-ops": "node scripts/check-used-ops.mts",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix"
   },
   "dependencies": {
     "@number-flow/react": "^0.6.2",
@@ -39,12 +41,14 @@
     "zustand": "^5.1.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.13",
+    "@oxlint/plugins": "1.94.0",
     "@tailwindcss/postcss": "^4.3.5",
     "@types/node": "^20.19.43",
     "@types/react": "19.1.10",
     "@types/react-dom": "19.1.7",
     "orval": "^8.48.0",
+    "oxfmt": "0.79.0",
+    "oxlint": "1.94.0",
     "postcss": "^8.5.33",
     "tailwindcss": "^4.3.5",
     "typescript": "^5.9.3"

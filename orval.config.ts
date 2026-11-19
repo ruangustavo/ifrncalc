@@ -107,6 +107,6 @@ export default defineConfig({
             ),
       },
     },
-    hooks: { afterAllFilesWrite: "biome check --write" },
+    hooks: { afterAllFilesWrite: "oxfmt" },
   },
 })
