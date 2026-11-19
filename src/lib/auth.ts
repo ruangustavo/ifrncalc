@@ -25,12 +25,16 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async session({ session, token }) {
       session.user.id = token.sub
+      session.user.campus = token.campus
+      session.user.userType = token.userType
       session.accessToken = token.accessToken as string
       return session
     },
-    async jwt({ token, account }) {
+    async jwt({ token, account, user }) {
       if (account) {
         token.accessToken = account.access_token
+        token.campus = user.campus
+        token.userType = user.userType
       }
 
       return token
@@ -52,17 +56,17 @@ export const authOptions: NextAuthOptions = {
       profile(profile: Profile) {
         return {
           id: profile.identificacao,
-          name: profile.nome_registro
+          name: profile.nome_usual
             .split(" ")
-            .slice(0, 2)
             .map(
               (word) =>
                 word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
             )
             .join(" "),
           email: profile.email_preferencial,
-          role: profile.tipo_usuario,
           image: profile.foto,
+          campus: profile.campus,
+          userType: profile.tipo_usuario,
         }
       },
     },
