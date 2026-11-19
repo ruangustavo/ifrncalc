@@ -9,7 +9,6 @@ import { authOptions } from "@/lib/auth"
 import { db } from "@/lib/db"
 import { notifyError } from "@/lib/notify"
 import { StudentIdentitySchema, upsertStudent } from "@/lib/students"
-import { isSuapMock } from "@/lib/suap/mock"
 
 import { IraCard } from "./_components/ira-card"
 import { MaintenanceNotice } from "./_components/maintenance-notice"
@@ -30,7 +29,7 @@ export default async function Dashboard() {
   after(async () => {
     const identity = StudentIdentitySchema.safeParse(session)
 
-    if (!db || isSuapMock() || !identity.success) {
+    if (!db || !identity.success) {
       return
     }
 
