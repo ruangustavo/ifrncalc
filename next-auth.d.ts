@@ -7,7 +7,13 @@ declare module 'next-auth' {
   }
 
   interface Session {
-    accessToken: string
+    accessToken?: string
     user: { id: string | undefined } & DefaultSession['user']
+  }
+}
+
+declare module 'next-auth/jwt' {
+  interface JWT {
+    accessToken?: string
   }
 }

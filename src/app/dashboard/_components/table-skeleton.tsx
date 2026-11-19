@@ -7,7 +7,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { STAGES } from "./table-grades"
+
+import { STAGES } from "./stages"
 
 export function TableSkeleton() {
   return (
@@ -33,8 +34,8 @@ export function TableSkeleton() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {Array.from({ length: 6 }).map((_, index) => (
-            <TableRow key={index}>
+          {Array.from({ length: 6 }).map((_row, rowIndex) => (
+            <TableRow key={rowIndex}>
               <TableCell>
                 <Skeleton className="h-4 w-40" />
                 <dl className="mt-2 space-y-2 md:hidden">
@@ -49,8 +50,8 @@ export function TableSkeleton() {
                   ))}
                 </dl>
               </TableCell>
-              {Array.from({ length: 4 }).map((_, index) => (
-                <TableCell key={index} className="hidden md:table-cell">
+              {Array.from({ length: 4 }).map((_cell, columnIndex) => (
+                <TableCell key={columnIndex} className="hidden md:table-cell">
                   <Skeleton className="h-4 w-8" />
                 </TableCell>
               ))}

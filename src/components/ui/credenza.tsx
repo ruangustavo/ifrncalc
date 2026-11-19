@@ -45,57 +45,59 @@ const CredenzaContext = React.createContext<{ isDesktop: boolean }>({
 
 const useCredenzaContext = () => {
   const context = React.useContext(CredenzaContext)
+
   if (!context) {
     throw new Error(
       "Credenza components cannot be rendered outside the Credenza Context",
     )
   }
+
   return context
 }
 
 const Credenza = ({ children, ...props }: RootCredenzaProps) => {
   const isDesktop = useMediaQuery("(min-width: 768px)")
-  const Credenza = isDesktop ? Dialog : Drawer
+  const Root = isDesktop ? Dialog : Drawer
 
   return (
     <CredenzaContext.Provider value={{ isDesktop }}>
-      <Credenza {...props} {...(!isDesktop && { autoFocus: true })}>
+      <Root {...props} {...(!isDesktop && { autoFocus: true })}>
         {children}
-      </Credenza>
+      </Root>
     </CredenzaContext.Provider>
   )
 }
 
 const CredenzaTrigger = ({ className, children, ...props }: CredenzaProps) => {
   const { isDesktop } = useCredenzaContext()
-  const CredenzaTrigger = isDesktop ? DialogTrigger : DrawerTrigger
+  const Trigger = isDesktop ? DialogTrigger : DrawerTrigger
 
   return (
-    <CredenzaTrigger className={className} {...props}>
+    <Trigger className={className} {...props}>
       {children}
-    </CredenzaTrigger>
+    </Trigger>
   )
 }
 
 const CredenzaClose = ({ className, children, ...props }: CredenzaProps) => {
   const { isDesktop } = useCredenzaContext()
-  const CredenzaClose = isDesktop ? DialogClose : DrawerClose
+  const Close = isDesktop ? DialogClose : DrawerClose
 
   return (
-    <CredenzaClose className={className} {...props}>
+    <Close className={className} {...props}>
       {children}
-    </CredenzaClose>
+    </Close>
   )
 }
 
 const CredenzaContent = ({ className, children, ...props }: CredenzaProps) => {
   const { isDesktop } = useCredenzaContext()
-  const CredenzaContent = isDesktop ? DialogContent : DrawerContent
+  const Content = isDesktop ? DialogContent : DrawerContent
 
   return (
-    <CredenzaContent className={className} {...props}>
+    <Content className={className} {...props}>
       {children}
-    </CredenzaContent>
+    </Content>
   )
 }
 
@@ -105,34 +107,34 @@ const CredenzaDescription = ({
   ...props
 }: CredenzaProps) => {
   const { isDesktop } = useCredenzaContext()
-  const CredenzaDescription = isDesktop ? DialogDescription : DrawerDescription
+  const Description = isDesktop ? DialogDescription : DrawerDescription
 
   return (
-    <CredenzaDescription className={className} {...props}>
+    <Description className={className} {...props}>
       {children}
-    </CredenzaDescription>
+    </Description>
   )
 }
 
 const CredenzaHeader = ({ className, children, ...props }: CredenzaProps) => {
   const { isDesktop } = useCredenzaContext()
-  const CredenzaHeader = isDesktop ? DialogHeader : DrawerHeader
+  const Header = isDesktop ? DialogHeader : DrawerHeader
 
   return (
-    <CredenzaHeader className={className} {...props}>
+    <Header className={className} {...props}>
       {children}
-    </CredenzaHeader>
+    </Header>
   )
 }
 
 const CredenzaTitle = ({ className, children, ...props }: CredenzaProps) => {
   const { isDesktop } = useCredenzaContext()
-  const CredenzaTitle = isDesktop ? DialogTitle : DrawerTitle
+  const Title = isDesktop ? DialogTitle : DrawerTitle
 
   return (
-    <CredenzaTitle className={className} {...props}>
+    <Title className={className} {...props}>
       {children}
-    </CredenzaTitle>
+    </Title>
   )
 }
 
@@ -146,12 +148,12 @@ const CredenzaBody = ({ className, children, ...props }: CredenzaProps) => {
 
 const CredenzaFooter = ({ className, children, ...props }: CredenzaProps) => {
   const { isDesktop } = useCredenzaContext()
-  const CredenzaFooter = isDesktop ? DialogFooter : DrawerFooter
+  const Footer = isDesktop ? DialogFooter : DrawerFooter
 
   return (
-    <CredenzaFooter className={className} {...props}>
+    <Footer className={className} {...props}>
       {children}
-    </CredenzaFooter>
+    </Footer>
   )
 }
 

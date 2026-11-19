@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+
 import { Button } from "@/components/ui/button"
 import {
   Credenza,
@@ -32,6 +33,7 @@ export function EditGradeModal({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     const numGrade = Number.parseFloat(grade)
+
     if (numGrade >= 0 && numGrade <= 100) {
       onSubmit(numGrade)
       onClose()

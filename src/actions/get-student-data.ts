@@ -1,6 +1,7 @@
 "use server"
 
 import { getServerSession } from "next-auth"
+
 import { authOptions } from "@/lib/auth"
 import { notifyError } from "@/lib/notify"
 import { meusDadosAluno } from "@/lib/suap/generated/client"
@@ -30,11 +31,13 @@ export async function getStudentData(): Promise<GetStudentDataResponse> {
 
     if (response.status !== 200) {
       console.error(`Failed to fetch student data: ${response.status}`)
+
       if (response.status !== 401) {
         notifyError("get-student-data / meusDadosAluno", {
           code: `HTTP ${response.status}`,
         })
       }
+
       return {
         success: false,
         message:
@@ -53,6 +56,7 @@ export async function getStudentData(): Promise<GetStudentDataResponse> {
     notifyError("get-student-data / getStudentData", {
       message: error instanceof Error ? error.message : String(error),
     })
+
     return {
       success: false,
       message: "Ocorreu um erro inesperado ao carregar seus dados acadêmicos.",

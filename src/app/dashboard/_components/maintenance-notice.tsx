@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+
 import { Alert, AlertDescription } from "@/components/ui/alert"
 
 const EXPIRES_AT = new Date("2026-06-22T00:00:00-03:00").getTime()
@@ -11,6 +12,7 @@ function formatRemaining(ms: number): string {
   const hours = Math.floor((totalSeconds % 86_400) / 3600)
   const minutes = Math.floor((totalSeconds % 3600) / 60)
   const seconds = totalSeconds % 60
+
   return `${days}d ${hours}h ${minutes}m ${seconds}s`
 }
 
@@ -21,8 +23,10 @@ export function MaintenanceNotice() {
     function tick() {
       setRemaining(EXPIRES_AT - Date.now())
     }
+
     tick()
     const id = window.setInterval(tick, 1000)
+
     return () => window.clearInterval(id)
   }, [])
 
@@ -31,7 +35,7 @@ export function MaintenanceNotice() {
   }
 
   return (
-    <Alert className="border-muted bg-muted text-muted-foreground text-xs">
+    <Alert className="border-muted bg-muted text-xs text-muted-foreground">
       <AlertDescription className="text-xs">
         <p>
           fala, galera! me chamo Ruan. o IFRN Calc ficou fora pq o SUAP mexeu

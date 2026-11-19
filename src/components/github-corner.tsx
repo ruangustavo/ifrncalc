@@ -1,5 +1,7 @@
 import Link from "next/link"
+
 import { siteConfig } from "@/config/site"
+
 import { Icons } from "./icons"
 
 export const GithubCorner = () => {

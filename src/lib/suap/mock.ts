@@ -37,6 +37,7 @@ function discipline(
   grades: (number | null)[],
 ): BoletimSchema {
   const [e1, e2, e3, e4] = grades
+
   return {
     disciplina: `${code} - ${name}(2025.1)`,
     carga_horaria: hours,
@@ -83,11 +84,14 @@ export function mockSuapResponse(url: string): MockResponse {
   if (pathname === "/api/ensino/meus-periodos-letivos/") {
     return { status: 200, data: PERIODS }
   }
+
   if (/^\/api\/ensino\/meu-boletim\/\d+\/\d+\/$/.test(pathname)) {
     return { status: 200, data: BOLETIM }
   }
+
   if (pathname === "/api/ensino/meus-dados-aluno/") {
     return { status: 200, data: STUDENT }
   }
+
   return { status: 404, data: { message: `No mock for ${pathname}` } }
 }
