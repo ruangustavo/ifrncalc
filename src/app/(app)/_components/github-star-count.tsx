@@ -1,4 +1,5 @@
-import { Star } from "lucide-react"
+import { StarIcon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { z } from "zod"
 
 const GithubRepoSchema = z.object({ stargazers_count: z.number() })
@@ -29,7 +30,7 @@ export async function GithubStarCount() {
 
   return (
     <span className="inline-flex items-center gap-1 text-xs text-star">
-      <Star className="size-3 fill-current" />
+      <HugeiconsIcon icon={StarIcon} className="size-3.5 fill-current" />
       {stars}
     </span>
   )

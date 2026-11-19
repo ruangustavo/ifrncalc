@@ -1,15 +1,21 @@
 "use client"
 
-import { ExternalLink } from "lucide-react"
+import { ArrowRight02Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { signIn } from "next-auth/react"
 
 import { Button } from "@/components/ui/button"
 
-export function SignInButton() {
+interface SignInButtonProps {
+  size?: "sm" | "xl"
+  className?: string
+}
+
+export function SignInButton({ size = "xl", className }: SignInButtonProps) {
   return (
-    <Button className="mt-6" onClick={() => signIn("suap")} size="lg">
-      Conectar com SUAP
-      <ExternalLink size={18} className="ml-2" />
+    <Button size={size} className={className} onClick={() => signIn("suap")}>
+      {size === "xl" ? "Conectar com SUAP" : "Entrar"}
+      <HugeiconsIcon strokeWidth={2} icon={ArrowRight02Icon} />
     </Button>
   )
 }

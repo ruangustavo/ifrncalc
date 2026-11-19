@@ -94,6 +94,13 @@
       "rules": {
         "shadcn/no-arbitrary-values": "off"
       }
+    },
+    {
+      "files": ["src/app/opengraph-image.tsx"],
+      "rules": {
+        "shadcn/no-inline-styles": "off",
+        "shadcn/no-raw-colors": "off"
+      }
     }
   ]
 }

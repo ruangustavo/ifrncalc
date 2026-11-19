@@ -1,6 +1,7 @@
 "use client"
 
-import { ArrowRight } from "lucide-react"
+import { ArrowRight02Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { AnimatePresence, motion, useReducedMotion } from "motion/react"
 import type { ReactNode } from "react"
 
@@ -36,8 +37,13 @@ function captionFor(step: number): ReactNode {
     case 7:
       return (
         <>
-          Média 60 em 10 vagas <ArrowRight className="inline size-4" /> precisa
-          de <b>600</b> pontos. Já tem{" "}
+          Média 60 em 10 vagas{" "}
+          <HugeiconsIcon
+            strokeWidth={2}
+            icon={ArrowRight02Icon}
+            className="inline size-4"
+          />{" "}
+          precisa de <b>600</b> pontos. Já tem{" "}
           <span className="tabular-nums">140 + 160 = 300</span>.
         </>
       )

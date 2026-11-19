@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
     template: `%s | ${siteConfig.name}`,
-    default: `${siteConfig.name} - ${siteConfig.description}`,
+    default: siteConfig.title,
   },
   description: siteConfig.description,
   keywords: [
@@ -129,24 +129,15 @@ export const metadata: Metadata = {
     type: "website",
     locale: "pt_BR",
     url: siteConfig.url,
-    title: siteConfig.name,
+    title: siteConfig.title,
     description: siteConfig.description,
     siteName: siteConfig.name,
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: `${siteConfig.name} - Calculadora de médias para estudantes do IFRN`,
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: siteConfig.name,
+    title: siteConfig.title,
     description: siteConfig.description,
     creator: "@ruangustavoo",
-    images: ["/og-image.png"],
   },
   icons: {
     icon: "/favicon.ico",

@@ -1,6 +1,7 @@
 "use client"
 
-import { RotateCcw } from "lucide-react"
+import { RotateLeft01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { motion, useReducedMotion } from "motion/react"
 
 import { Button } from "@/components/ui/button"
@@ -77,7 +78,7 @@ export function CalcExplainer() {
             transition={{ duration: 0.25, ease: EASE_OUT }}
           >
             <Button variant="outline" size="sm" onClick={replay}>
-              <RotateCcw />
+              <HugeiconsIcon strokeWidth={2} icon={RotateLeft01Icon} />
               Ver de novo
             </Button>
           </motion.div>
