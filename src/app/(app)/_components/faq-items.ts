@@ -1,36 +1,31 @@
 export const FAQ_ITEMS = [
   {
-    question: "Quanto custa?",
-    answer: "Nada. O IFRN Calc é gratuito.",
+    question: "Como o IFRN Calc sabe minhas notas?",
+    answer:
+      "Você entra com sua conta do SUAP e ele lê o boletim do período atual. Não precisa digitar nada.",
   },
   {
-    question: "É um site oficial do IFRN?",
+    question: "Minha senha do SUAP fica com vocês?",
     answer:
-      "Não. O IFRN Calc é um projeto independente, criado por um ex-aluno. O login usa a integração oficial do SUAP, então sua senha fica só com o SUAP.",
+      "Não. Você digita a senha na página do próprio SUAP. O IFRN Calc só recebe permissão pra ler seu boletim.",
   },
   {
-    question: "Qual a média pra ser aprovado?",
+    question: "Como a conta é feita?",
     answer:
-      "60. O IFRN Calc calcula quanto você precisa tirar nos bimestres em aberto pra sua média ponderada chegar a 60.",
+      "Os bimestres têm pesos diferentes: 2, 2, 3 e 3 nas disciplinas anuais, e 2 e 3 nas semestrais. O IFRN Calc calcula quanto você precisa tirar nos que faltam pra média chegar a 60.",
+  },
+  {
+    question: "Saiu nota e ela não apareceu aqui. Por quê?",
+    answer:
+      "O IFRN Calc mostra o que está no SUAP. Se a nota não aparece, ou o professor ainda não lançou, ou o IFRN Calc ainda não atualizou, o que pode levar algumas horas.",
   },
   {
     question: "Dá pra simular uma nota?",
     answer:
-      "Sim. No seu boletim, edite a nota de qualquer bimestre em aberto e o IFRN Calc recalcula quanto falta nos outros.",
+      "Sim. Edite a nota de um bimestre em aberto e o IFRN Calc recalcula quanto falta nos outros.",
   },
   {
-    question: "Funciona pra disciplinas semestrais?",
-    answer:
-      "Sim. Nas anuais os pesos são 2, 2, 3 e 3. Nas semestrais, 2 e 3. O IFRN Calc identifica o tipo de cada disciplina pelo SUAP.",
-  },
-  {
-    question: "Funciona no meu campus?",
-    answer:
-      "Sim. Qualquer aluno do IFRN com acesso ao SUAP pode usar, em qualquer campus do RN.",
-  },
-  {
-    question: "E se eu não quiser entrar com o SUAP?",
-    answer:
-      "Use a calculadora manual: você digita as notas e ela mostra quanto falta, sem login.",
+    question: "Funciona pro meu curso?",
+    answer: "Sim. Integrado, subsequente ou superior, em qualquer campus.",
   },
 ] as const
