@@ -1,4 +1,6 @@
 import type { NextAuthOptions } from "next-auth"
+import CredentialsProvider from "next-auth/providers/credentials"
+import { isSuapMock, MOCK_ACCESS_TOKEN, MOCK_USER } from "@/lib/suap/mock"
 
 interface Profile {
   identificacao: string
@@ -30,41 +32,52 @@ export const authOptions: NextAuthOptions = {
     },
     async jwt({ token, account }) {
       if (account) {
-        token.accessToken = account.access_token
+        token.accessToken = isSuapMock()
+          ? MOCK_ACCESS_TOKEN
+          : account.access_token
       }
 
       return token
     },
   },
-  providers: [
-    {
-      clientId: process.env.CLIENT_ID,
-      clientSecret: process.env.CLIENT_SECRET,
-      id: "suap",
-      name: "SUAP",
-      type: "oauth",
-      authorization: {
-        url: `${process.env.SUAP_URL}/o/authorize`,
-        params: { scope: "email identificacao" },
-      },
-      token: `${process.env.SUAP_URL}/o/token/`,
-      userinfo: `${process.env.SUAP_URL}/api/rh/eu/`,
-      profile(profile: Profile) {
-        return {
-          id: profile.identificacao,
-          name: profile.nome_registro
-            .split(" ")
-            .slice(0, 2)
-            .map(
-              (word) =>
-                word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
-            )
-            .join(" "),
-          email: profile.email_preferencial,
-          role: profile.tipo_usuario,
-          image: profile.foto,
-        }
-      },
-    },
-  ],
+  providers: isSuapMock()
+    ? [
+        CredentialsProvider({
+          id: "suap",
+          name: "SUAP (mock)",
+          credentials: {},
+          authorize: () => MOCK_USER,
+        }),
+      ]
+    : [
+        {
+          clientId: process.env.CLIENT_ID,
+          clientSecret: process.env.CLIENT_SECRET,
+          id: "suap",
+          name: "SUAP",
+          type: "oauth",
+          authorization: {
+            url: `${process.env.SUAP_URL}/o/authorize`,
+            params: { scope: "email identificacao" },
+          },
+          token: `${process.env.SUAP_URL}/o/token/`,
+          userinfo: `${process.env.SUAP_URL}/api/rh/eu/`,
+          profile(profile: Profile) {
+            return {
+              id: profile.identificacao,
+              name: profile.nome_registro
+                .split(" ")
+                .slice(0, 2)
+                .map(
+                  (word) =>
+                    word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
+                )
+                .join(" "),
+              email: profile.email_preferencial,
+              role: profile.tipo_usuario,
+              image: profile.foto,
+            }
+          },
+        },
+      ],
 }
