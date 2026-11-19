@@ -28,7 +28,7 @@ export async function GithubStarCount() {
   if (stars === null) return null
 
   return (
-    <span className="inline-flex items-center gap-1 text-xs text-yellow-500">
+    <span className="inline-flex items-center gap-1 text-xs text-star">
       <Star className="size-3 fill-current" />
       {stars}
     </span>

@@ -41,8 +41,10 @@ export function CalcExplainer() {
           {BIMESTERS.map((b) => (
             <div
               key={b.label}
-              className="flex flex-col gap-1.5"
-              style={{ gridColumn: `span ${b.weight}` }}
+              className={cn(
+                "flex flex-col gap-1.5",
+                b.weight === 3 ? "col-span-3" : "col-span-2",
+              )}
             >
               <div className="relative h-10">
                 <DashedSlots b={b} step={step} />

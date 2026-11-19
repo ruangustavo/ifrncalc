@@ -198,10 +198,9 @@ export default function Calculadora() {
                 className={cn(
                   "text-5xl font-semibold tracking-tight tabular-nums transition-colors",
                   {
-                    "text-green-500": result.needed <= 40,
-                    "text-yellow-500":
-                      result.needed > 40 && result.needed <= 90,
-                    "text-red-500": result.needed > 90,
+                    "text-success": result.needed <= 40,
+                    "text-warning": result.needed > 40 && result.needed <= 90,
+                    "text-danger": result.needed > 90,
                   },
                 )}
               >
@@ -220,8 +219,8 @@ export default function Calculadora() {
 
         {result.kind === "secured" && (
           <div className="space-y-2 text-center">
-            <CheckCircle2 className="mx-auto size-8 text-green-500" />
-            <p className="text-2xl font-semibold text-green-600 dark:text-green-500">
+            <CheckCircle2 className="mx-auto size-8 text-success" />
+            <p className="text-2xl font-semibold text-success-emphasis dark:text-success">
               Aprovação garantida
             </p>
             <p className="text-sm text-muted-foreground">
@@ -235,8 +234,8 @@ export default function Calculadora() {
 
         {result.kind === "impossible" && (
           <div className="space-y-2 text-center">
-            <Info className="mx-auto size-8 text-red-500" />
-            <p className="text-2xl font-semibold text-red-600 dark:text-red-500">
+            <Info className="mx-auto size-8 text-danger" />
+            <p className="text-2xl font-semibold text-danger-emphasis dark:text-danger">
               Não é possível atingir os 60
             </p>
             <p className="text-sm text-muted-foreground">
@@ -311,10 +310,10 @@ export default function Calculadora() {
       <div className="container mx-auto max-w-2xl px-4 py-8">
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-center sm:text-left">
+            <CardTitle className="flex items-center text-center sm:text-left">
               <Link
                 href={session ? "/dashboard" : "/"}
-                className="flex size-6 items-center justify-center gap-2 rounded-full bg-muted"
+                className="mr-2 flex size-6 items-center justify-center gap-2 rounded-full bg-muted"
               >
                 <ArrowLeft size={16} />
               </Link>
@@ -325,81 +324,81 @@ export default function Calculadora() {
             </CardDescription>
           </CardHeader>
 
-          <CardContent className="space-y-6">
-            <div className="flex flex-col gap-3">
-              <Label className="text-base font-medium">
-                Tipo de disciplina
-              </Label>
-              <Tabs
-                value={disciplineType}
-                onValueChange={handleDisciplineTypeChange}
-              >
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="annual">Anual</TabsTrigger>
-                  <TabsTrigger value="semester">Semestral</TabsTrigger>
-                </TabsList>
-              </Tabs>
-            </div>
+          <CardContent>
+            <div className="space-y-6">
+              <div className="flex flex-col gap-3">
+                <Label size="lg">Tipo de disciplina</Label>
+                <Tabs
+                  value={disciplineType}
+                  onValueChange={handleDisciplineTypeChange}
+                >
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="annual">Anual</TabsTrigger>
+                    <TabsTrigger value="semester">Semestral</TabsTrigger>
+                  </TabsList>
+                </Tabs>
+              </div>
 
-            <div className="space-y-4">
-              {activeGrades.map((grade, index) => (
-                <div key={index} className="flex flex-col gap-1">
-                  <Label htmlFor={`grade-${index}`}>
-                    Nota {index + 1}{" "}
-                    <Badge
-                      variant="secondary"
-                      className="pointer-events-none ml-2"
-                    >
-                      Peso {grade.weight}
-                    </Badge>
-                  </Label>
-                  <Input
-                    id={`grade-${index}`}
-                    type="number"
-                    inputMode="decimal"
-                    min="0"
-                    max="100"
-                    step="0.1"
-                    placeholder="0"
-                    value={grade.value}
-                    onChange={(e) => updateGrade(index, e.target.value)}
-                    className="w-full"
-                  />
-                </div>
-              ))}
-            </div>
+              <div className="space-y-4">
+                {activeGrades.map((grade, index) => (
+                  <div key={index} className="flex flex-col gap-1">
+                    <Label htmlFor={`grade-${index}`}>
+                      Nota {index + 1}{" "}
+                      <Badge
+                        variant="secondary"
+                        className="pointer-events-none ml-2"
+                      >
+                        Peso {grade.weight}
+                      </Badge>
+                    </Label>
+                    <Input
+                      id={`grade-${index}`}
+                      type="number"
+                      inputMode="decimal"
+                      min="0"
+                      max="100"
+                      step="0.1"
+                      placeholder="0"
+                      value={grade.value}
+                      onChange={(e) => updateGrade(index, e.target.value)}
+                      className="w-full"
+                    />
+                  </div>
+                ))}
+              </div>
 
-            {renderResult()}
+              {renderResult()}
 
-            {result.kind !== "empty" && (
-              <Button variant="outline" onClick={clearAll} className="w-full">
-                Limpar
-              </Button>
-            )}
+              {result.kind !== "empty" && (
+                <Button variant="outline" onClick={clearAll} className="w-full">
+                  Limpar
+                </Button>
+              )}
 
-            <div className="flex flex-col gap-2 rounded-lg bg-muted/50 p-4">
-              <h4 className="text-sm font-medium">Instruções:</h4>
-              <ul className="flex list-inside list-disc flex-col gap-1 text-sm text-muted-foreground">
-                {disciplineType === "annual" ? (
-                  <>
-                    <li>Digite as 4 notas da disciplina anual</li>
-                    <li>Notas 1 e 2 têm peso 2</li>
-                    <li>Notas 3 e 4 têm peso 3</li>
-                  </>
-                ) : (
-                  <>
-                    <li>Digite as 2 notas da disciplina semestral</li>
-                    <li>Nota 1 tem peso 2</li>
-                    <li>Nota 2 tem peso 3</li>
-                  </>
-                )}
-                <li>Notas devem estar entre 0 e 100</li>
-                <li>
-                  Deixe uma nota em branco para ver quanto precisa tirar para
-                  passar
-                </li>
-                <li>Média mínima para aprovação: 60</li>
-              </ul>
+              <div className="flex flex-col gap-2 rounded-lg bg-muted/50 p-4">
+                <h4 className="text-sm font-medium">Instruções:</h4>
+                <ul className="flex list-inside list-disc flex-col gap-1 text-sm text-muted-foreground">
+                  {disciplineType === "annual" ? (
+                    <>
+                      <li>Digite as 4 notas da disciplina anual</li>
+                      <li>Notas 1 e 2 têm peso 2</li>
+                      <li>Notas 3 e 4 têm peso 3</li>
+                    </>
+                  ) : (
+                    <>
+                      <li>Digite as 2 notas da disciplina semestral</li>
+                      <li>Nota 1 tem peso 2</li>
+                      <li>Nota 2 tem peso 3</li>
+                    </>
+                  )}
+                  <li>Notas devem estar entre 0 e 100</li>
+                  <li>
+                    Deixe uma nota em branco para ver quanto precisa tirar para
+                    passar
+                  </li>
+                  <li>Média mínima para aprovação: 60</li>
+                </ul>
+              </div>
             </div>
           </CardContent>
         </Card>

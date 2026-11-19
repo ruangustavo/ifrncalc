@@ -151,7 +151,13 @@ const CredenzaFooter = ({ className, children, ...props }: CredenzaProps) => {
   const Footer = isDesktop ? DialogFooter : DrawerFooter
 
   return (
-    <Footer className={className} {...props}>
+    <Footer
+      className={cn(
+        "p-0 [&>button]:text-base md:[&>button]:text-sm",
+        className,
+      )}
+      {...props}
+    >
       {children}
     </Footer>
   )

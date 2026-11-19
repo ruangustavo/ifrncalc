@@ -18,9 +18,9 @@ export function GradeLabel({ grade, passingGrade, isAvailable }: Stage) {
       className={cn(
         "text-xl font-medium tabular-nums md:text-base",
         hasPassingGrade && {
-          "text-green-500": passingGrade <= 40,
-          "text-yellow-500": passingGrade > 40 && passingGrade <= 90,
-          "text-red-500": passingGrade > 90,
+          "text-success": passingGrade <= 40,
+          "text-warning": passingGrade > 40 && passingGrade <= 90,
+          "text-danger": passingGrade > 90,
         },
       )}
     >

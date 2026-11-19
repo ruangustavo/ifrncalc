@@ -18,7 +18,7 @@ export function ClearEditedGradesButton() {
     toast({
       description: (
         <div className="flex items-center gap-2">
-          <CheckCircle className="size-4 text-green-500" />
+          <CheckCircle className="size-4 text-success" />
           <span className="font-medium">
             As notas editadas foram limpas com sucesso!
           </span>

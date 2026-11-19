@@ -35,8 +35,8 @@ export function MaintenanceNotice() {
   }
 
   return (
-    <Alert className="border-muted bg-muted text-xs text-muted-foreground">
-      <AlertDescription className="text-xs">
+    <Alert variant="muted">
+      <AlertDescription>
         <p>
           fala, galera! me chamo Ruan. o IFRN Calc ficou fora pq o SUAP mexeu
           umas rotas e eu nem vi (saí do IF faz 2 anos e não acompanho mais). já
