@@ -45,7 +45,8 @@ export function Hero() {
               icon={SquareLock02Icon}
               className="size-4 shrink-0"
             />
-            Login na página oficial do SUAP. Sem cadastro.
+            Você entra pela página oficial do SUAP. Sua senha não passa pela
+            gente.
           </p>
         </div>
         <div className="lg:col-span-5 lg:col-start-8">

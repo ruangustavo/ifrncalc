@@ -1,7 +1,7 @@
 export const FAQ_ITEMS = [
   {
     question: "Quanto custa?",
-    answer: "Nada. O IFRN Calc é gratuito e de código aberto.",
+    answer: "Nada. O IFRN Calc é gratuito.",
   },
   {
     question: "É um site oficial do IFRN?",

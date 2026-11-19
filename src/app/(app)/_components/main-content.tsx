@@ -6,7 +6,6 @@ import { FinalCta } from "./final-cta/final-cta"
 import { handFont } from "./hand-font"
 import { Hero } from "./hero/hero"
 import { HowItWorks } from "./how-it-works"
-import { Privacy } from "./privacy"
 import { Reach } from "./reach/reach"
 import { SiteFooter } from "./site-footer"
 import { SiteHeader } from "./site-header"
@@ -34,7 +33,6 @@ export function MainContent() {
         <Tiers />
         <Reach />
         <HowItWorks />
-        <Privacy />
         <Story />
         <Faq />
         <FinalCta />
