@@ -22,3 +22,11 @@ CREATE TABLE IF NOT EXISTS events (
 
 CREATE INDEX IF NOT EXISTS events_occurred_at ON events(occurred_at);
 CREATE INDEX IF NOT EXISTS events_student_id ON events(student_id, occurred_at);
+
+CREATE TABLE IF NOT EXISTS campuses (
+  code  TEXT PRIMARY KEY,
+  name  TEXT NOT NULL,
+  city  TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS campuses_city ON campuses(city);
