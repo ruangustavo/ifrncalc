@@ -19,7 +19,7 @@ export function MapFrame({ children }: { children: ReactNode }) {
         element.dataset.pins = "dropped"
         observer.disconnect()
       },
-      { threshold: 0.35 },
+      { threshold: 1 },
     )
 
     observer.observe(element)
