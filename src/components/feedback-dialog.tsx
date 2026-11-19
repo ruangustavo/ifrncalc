@@ -3,6 +3,7 @@
 import { motion } from "framer-motion"
 import { Check, Loader2, MessageCircle } from "lucide-react"
 import { useState } from "react"
+
 import { sendFeedback } from "@/actions/send-feedback"
 import { Button } from "@/components/ui/button"
 import {
@@ -34,6 +35,7 @@ export function FeedbackDialog({ user }: FeedbackDialogProps) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+
     if (!feedback.trim()) return
 
     setIsSubmitting(true)

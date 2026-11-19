@@ -1,5 +1,6 @@
 import type { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
+
 import { isSuapMock, MOCK_ACCESS_TOKEN, MOCK_USER } from "@/lib/suap/mock"
 
 interface Profile {
@@ -28,6 +29,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       session.user.id = token.sub
       session.accessToken = token.accessToken as string
+
       return session
     },
     async jwt({ token, account }) {

@@ -1,4 +1,5 @@
 import { getServerSession } from "next-auth"
+
 import { authOptions } from "@/lib/auth"
 import { isSuapMock, mockSuapResponse } from "@/lib/suap/mock"
 
@@ -15,6 +16,7 @@ export const suapFetch = async <T>(
 
   const headers = new Headers(options?.headers)
   headers.set("Content-Type", "application/json")
+
   if (accessToken) {
     headers.set("Authorization", `Bearer ${accessToken}`)
   }

@@ -9,6 +9,7 @@ import {
   useReducedMotion,
 } from "motion/react"
 import { type ReactNode, useEffect, useRef, useState } from "react"
+
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
@@ -23,6 +24,7 @@ const GAP_PX = 4
 const STEPS = [
   300, 1600, 1200, 2200, 900, 2000, 1600, 2400, 1600, 2200, 900,
 ] as const
+
 const SOLVED_AT = 8
 
 const BIMESTERS = [
@@ -97,6 +99,7 @@ function useTimeline(stepDurations: readonly number[]) {
   useEffect(() => {
     if (!inView || done) return
     const id = setTimeout(() => setStep((s) => s + 1), stepDurations[step])
+
     return () => clearTimeout(id)
   }, [inView, done, step, stepDurations])
 
@@ -110,6 +113,7 @@ function useTimeline(stepDurations: readonly number[]) {
 
 function Caption({ step }: { step: number }) {
   const reduce = useReducedMotion()
+
   return (
     <div className="mt-4 grid min-h-10 place-items-center text-center text-sm">
       <AnimatePresence mode="wait" initial={false}>
@@ -138,7 +142,7 @@ type GroupProps = { b: Bimester; step: number }
 // Opaque tints, so the merged block sliding over a copy doesn't stack two translucent layers.
 function chipClass(b: Bimester) {
   return cn(
-    "grid place-items-center rounded-md border-2 font-medium text-xs tabular-nums",
+    "grid place-items-center rounded-md border-2 text-xs font-medium tabular-nums",
     b.known
       ? "border-[color-mix(in_oklab,var(--color-primary)_30%,var(--color-background))] bg-[color-mix(in_oklab,var(--color-primary)_25%,var(--color-background))] text-foreground"
       : "border-primary bg-primary text-primary-foreground",
@@ -147,6 +151,7 @@ function chipClass(b: Bimester) {
 
 function DashedSlots({ b, step }: GroupProps) {
   const filled = step >= b.at
+
   return (
     <div className="absolute inset-0 flex gap-1">
       {Array.from({ length: b.weight }, (_, k) => (
@@ -170,6 +175,7 @@ function Copies({ b, step }: GroupProps) {
   const shown = step >= b.at
   const merged = step >= b.mergeAt
   const rest = "translateX(0px) translateY(0px) scale(1)"
+
   const hidden = {
     opacity: 0,
     transform: reduce ? rest : "translateX(0px) translateY(-8px) scale(0.95)",
@@ -179,6 +185,7 @@ function Copies({ b, step }: GroupProps) {
     <div className="absolute inset-0 flex gap-1">
       {Array.from({ length: b.weight }, (_, k) => {
         const toCenter = (b.weight - 1) / 2 - k
+
         return (
           <motion.div
             key={`${b.label}-copy-${k}`}
@@ -252,9 +259,12 @@ function Evaluate({ b, delay }: { b: Bimester; delay: number }) {
 // The merged block opens from the center (clip-path) while the copies converge under it.
 function MergedBlock({ b, step }: GroupProps) {
   const reduce = useReducedMotion()
+
   if (step < b.mergeAt) return null
+
   const inset = (x: number) =>
     `inset(0% calc(50% * ${x}) 0% calc(50% * ${x}) round 6px)`
+
   return (
     <motion.div
       className={cn(chipClass(b), "absolute inset-0")}
@@ -272,6 +282,7 @@ function MergedBlock({ b, step }: GroupProps) {
 export function CalcExplainer() {
   const { ref, step, done, run, replay } = useTimeline(STEPS)
   const reduce = useReducedMotion()
+
   const hidden = {
     opacity: 0,
     transform: reduce ? "translateY(0px)" : "translateY(8px)",
@@ -299,7 +310,7 @@ export function CalcExplainer() {
                 <Copies b={b} step={step} />
                 <MergedBlock b={b} step={step} />
               </div>
-              <div className="flex flex-col items-center border-muted-foreground/40 border-t pt-1 text-xs leading-tight">
+              <div className="flex flex-col items-center border-t border-muted-foreground/40 pt-1 text-xs leading-tight">
                 <span className="text-muted-foreground">{b.label}</span>
                 <span
                   className={cn(

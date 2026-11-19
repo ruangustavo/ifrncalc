@@ -13,8 +13,10 @@ async function getStarCount(): Promise<number | null> {
         next: { revalidate: 60 * 60 },
       },
     )
+
     if (!response.ok) return null
     const data = (await response.json()) as GithubRepo
+
     return data.stargazers_count
   } catch {
     return null
@@ -23,6 +25,7 @@ async function getStarCount(): Promise<number | null> {
 
 export async function GithubStarCount() {
   const stars = await getStarCount()
+
   if (stars === null) return null
 
   return (

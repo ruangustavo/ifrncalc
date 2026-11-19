@@ -2,6 +2,7 @@
 
 import { ExternalLink } from "lucide-react"
 import { signIn } from "next-auth/react"
+
 import { Button } from "@/components/ui/button"
 
 export function SignInButton() {

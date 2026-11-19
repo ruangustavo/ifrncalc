@@ -2,6 +2,7 @@
 
 import { Pencil } from "lucide-react"
 import { useMemo, useState } from "react"
+
 import type { Discipline } from "@/actions/get-grades"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -9,6 +10,7 @@ import { cn } from "@/lib/utils"
 import { useGradesStore } from "@/store/grades"
 import { recalculateGrades } from "@/utils/grade-calculation"
 import { mockDisciplineGrades } from "@/utils/mock-utils"
+
 import { EditGradeModal } from "./edit-grade-modal"
 
 export interface Stage {
@@ -27,7 +29,7 @@ export function GradeLabel({ grade, passingGrade, isAvailable }: Stage) {
   return (
     <span
       className={cn(
-        "font-medium text-xl tabular-nums md:text-base",
+        "text-xl font-medium tabular-nums md:text-base",
         hasPassingGrade && {
           "text-green-500": passingGrade <= 40,
           "text-yellow-500": passingGrade > 40 && passingGrade <= 90,
@@ -89,7 +91,7 @@ export function CellTable({
     const tileBody = (
       <>
         {shortLabel && (
-          <span className="text-muted-foreground text-xs">{shortLabel}</span>
+          <span className="text-xs text-muted-foreground">{shortLabel}</span>
         )}
         <GradeLabel {...currentStage} grade={displayGrade} />
       </>
@@ -141,7 +143,7 @@ export function CellTable({
       )}
 
       {editedDisciplineGrades[stageKey] !== undefined && (
-        <Badge variant="secondary" className="animate-in font-medium">
+        <Badge variant="secondary" className="font-medium animate-in">
           Editada
         </Badge>
       )}

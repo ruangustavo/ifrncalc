@@ -1,6 +1,7 @@
 "use server"
 
 import { getServerSession } from "next-auth"
+
 import { authOptions } from "@/lib/auth"
 import { notifyError } from "@/lib/notify"
 import { meuBoletim, meusPeriodosLetivos } from "@/lib/suap/generated/client"
@@ -75,6 +76,7 @@ const getWeight = (
   numberOfAssessments: number,
 ): number => {
   const isSemester = numberOfAssessments === 2
+
   return isSemester
     ? currentIndex === 0
       ? 2
@@ -108,6 +110,7 @@ function calculatePassingGrade(
   const gradeNeededToPass =
     (60 * weightAccordingToNumberOfAssessments - sumOfGradesNotNull) /
     totalWeightNull
+
   return gradeNeededToPass < 0 ? 0 : Math.round(gradeNeededToPass)
 }
 
@@ -137,11 +140,13 @@ export async function getGrades(): Promise<GetGradesResponse> {
 
     if (periodsResponse.status !== 200) {
       console.error(`Failed to fetch periods: ${periodsResponse.status}`)
+
       if (periodsResponse.status !== 401) {
         notifyError("get-grades / meusPeriodosLetivos", {
           code: `HTTP ${periodsResponse.status}`,
         })
       }
+
       return {
         success: false,
         message:
@@ -173,11 +178,13 @@ export async function getGrades(): Promise<GetGradesResponse> {
 
     if (gradesResponse.status !== 200) {
       console.error(`Failed to fetch grades: ${gradesResponse.status}`)
+
       if (gradesResponse.status !== 401) {
         notifyError("get-grades / meuBoletim", {
           code: `HTTP ${gradesResponse.status}`,
         })
       }
+
       return {
         success: false,
         message:
@@ -236,6 +243,7 @@ export async function getGrades(): Promise<GetGradesResponse> {
     notifyError("get-grades / getGrades", {
       message: error instanceof Error ? error.message : String(error),
     })
+
     return {
       success: false,
       message:

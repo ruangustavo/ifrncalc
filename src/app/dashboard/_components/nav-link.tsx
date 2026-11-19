@@ -2,6 +2,7 @@
 
 import Link, { type LinkProps } from "next/link"
 import { usePathname } from "next/navigation"
+
 import { cn } from "@/lib/utils"
 
 interface NavLinkProps extends LinkProps {
@@ -16,7 +17,7 @@ export function NavLink({ className, children, ...props }: NavLinkProps) {
   return (
     <Link
       className={cn(
-        "font-semibold text-muted-foreground text-sm transition-colors hover:text-primary",
+        "text-sm font-semibold text-muted-foreground transition-colors hover:text-primary",
         isActive && "text-primary",
         className,
       )}

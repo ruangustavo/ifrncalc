@@ -20,12 +20,15 @@ const HTTP_METHODS = [
 function collectRefs(node: unknown, acc: Set<string>): void {
   if (Array.isArray(node)) {
     for (const item of node) collectRefs(item, acc)
+
     return
   }
+
   if (node !== null && typeof node === "object") {
     for (const [key, value] of Object.entries(node)) {
       if (key === "$ref" && typeof value === "string") {
         const match = value.match(/^#\/components\/schemas\/(.+)$/)
+
         if (match) acc.add(match[1])
       } else {
         collectRefs(value, acc)
@@ -43,15 +46,19 @@ export default defineConfig({
         transformer: (spec) => {
           // 1. Keep only the operations we use; drop paths left with no methods.
           const paths = spec.paths ?? {}
+
           for (const [route, pathItem] of Object.entries(paths)) {
             if (!pathItem) continue
+
             for (const method of HTTP_METHODS) {
               const operation = pathItem[method]
               const operationId = operation?.operationId
+
               if (operation && !(operationId && KEPT_OP_IDS.has(operationId))) {
                 delete pathItem[method]
               }
             }
+
             if (!HTTP_METHODS.some((method) => pathItem[method])) {
               delete paths[route]
             }
@@ -63,13 +70,17 @@ export default defineConfig({
           const needed = new Set<string>()
           collectRefs(paths, needed)
           const queue = [...needed]
+
           while (queue.length > 0) {
             const name = queue.pop()
+
             if (name === undefined) continue
             const schema = schemas[name]
+
             if (!schema) continue
             const refs = new Set<string>()
             collectRefs(schema, refs)
+
             for (const ref of refs) {
               if (!needed.has(ref)) {
                 needed.add(ref)

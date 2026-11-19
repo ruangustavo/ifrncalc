@@ -1,11 +1,14 @@
-import { DM_Sans } from "next/font/google"
-import "./globals.css"
 import { Analytics } from "@vercel/analytics/react"
+
+import "./globals.css"
 import type { Metadata } from "next"
+import { DM_Sans } from "next/font/google"
 import Script from "next/script"
+
 import { Toaster } from "@/components/ui/toaster"
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
+
 import { Providers } from "./providers"
 
 const dmSans = DM_Sans({ subsets: ["latin"] })

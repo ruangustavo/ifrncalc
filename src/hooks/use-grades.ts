@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+
 import { type Discipline, getGrades } from "@/actions/get-grades"
 
 export function useGrades() {
@@ -11,6 +12,7 @@ export function useGrades() {
       setIsLoading(true)
       setError(null)
       const { grades } = await getGrades()
+
       if (grades) {
         setGrades(grades)
       }

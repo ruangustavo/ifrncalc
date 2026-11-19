@@ -1,6 +1,7 @@
 "use server"
 
 import { getServerSession } from "next-auth"
+
 import { authOptions } from "@/lib/auth"
 import { notifyError } from "@/lib/notify"
 import { meusDadosAluno } from "@/lib/suap/generated/client"
@@ -52,5 +53,6 @@ ${escapeHtml(feedback)}
 🕐 ${new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })}`
 
   const ok = await sendTelegramMessage(message)
+
   return { ok }
 }

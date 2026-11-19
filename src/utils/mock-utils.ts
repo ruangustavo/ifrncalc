@@ -17,6 +17,7 @@ export function mockDisciplineGrades(discipline: Discipline): Discipline {
               ? MOCKED_GRADE
               : currentStage.grade,
         }
+
         return acc
       },
       {} as Record<

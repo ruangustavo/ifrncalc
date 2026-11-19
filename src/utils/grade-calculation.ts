@@ -7,6 +7,7 @@ export function getWeight(
   numberOfAssessments: number,
 ): number {
   const isSemester = numberOfAssessments === 2
+
   return isSemester
     ? currentIndex === 0
       ? 2
@@ -19,6 +20,7 @@ export function recalculateGrades(
   editedGrades: Record<string, number> = {},
 ) {
   const stages = ["E1", "E2", "E3", "E4"] as const
+
   const numberOfAssessments = stages.reduce(
     (count, stage) => (discipline[stage].passingGrade >= 0 ? count + 1 : count),
     0,

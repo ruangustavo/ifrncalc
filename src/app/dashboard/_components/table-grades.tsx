@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import { ChevronDown, ExternalLink } from "lucide-react"
 import { signIn } from "next-auth/react"
 import { Suspense, useState } from "react"
+
 import type { Discipline, GetGradesResponse } from "@/actions/get-grades"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
@@ -45,8 +46,10 @@ function GradeCard({ grade }: { grade: Discipline }) {
   const calculatePartialAverage = (grade: Discipline) => {
     const stages = [grade.E1, grade.E2, grade.E3, grade.E4]
     const filled = stages.filter((s) => s.grade !== null)
+
     if (filled.length === 0) return null
     const sum = filled.reduce((acc, s) => acc + (s.grade ?? 0), 0)
+
     return Math.round(sum / filled.length)
   }
 
@@ -72,8 +75,8 @@ function GradeCard({ grade }: { grade: Discipline }) {
           )}
         />
         <div className="min-w-0 flex-1 text-left">
-          <h3 className="font-semibold leading-tight">{grade.name}</h3>
-          <p className="mt-0.5 text-muted-foreground text-sm">
+          <h3 className="leading-tight font-semibold">{grade.name}</h3>
+          <p className="mt-0.5 text-sm text-muted-foreground">
             {grade.hours}h
             {partialAverage !== null && ` • Média parcial: ${partialAverage}`}
           </p>
