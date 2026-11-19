@@ -2,16 +2,15 @@ import { Analytics } from "@vercel/analytics/react"
 
 import "./globals.css"
 import type { Metadata } from "next"
-import { DM_Sans } from "next/font/google"
+import { Inter } from "next/font/google"
 import Script from "next/script"
 
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster } from "@/components/ui/sonner"
 import { siteConfig } from "@/config/site"
-import { cn } from "@/lib/utils"
 
 import { Providers } from "./providers"
 
-const dmSans = DM_Sans({ subsets: ["latin"] })
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -163,7 +162,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
+    <html lang="pt-BR" suppressHydrationWarning className={inter.variable}>
       <head>
         <meta
           name="viewport"
@@ -186,12 +185,7 @@ export default function RootLayout({
           />
         )}
       </head>
-      <body
-        className={cn(
-          dmSans.className,
-          "flex min-h-dvh flex-col bg-muted/40 antialiased",
-        )}
-      >
+      <body className="flex min-h-dvh flex-col bg-muted/40 antialiased">
         <Providers>{children}</Providers>
         <Analytics />
         <Toaster />

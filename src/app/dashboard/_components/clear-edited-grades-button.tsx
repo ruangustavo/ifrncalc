@@ -1,9 +1,8 @@
 "use client"
 
 import { AnimatePresence, motion } from "framer-motion"
-import { CheckCircle } from "lucide-react"
+import { toast } from "sonner"
 
-import { useToast } from "@/components/ui/use-toast"
 import { useGradesStore } from "@/store/grades"
 
 import { ClearButton } from "./clear-button"
@@ -11,20 +10,10 @@ import { ClearButton } from "./clear-button"
 export function ClearEditedGradesButton() {
   const { clearEditedGrades, editedGrades } = useGradesStore()
   const isEmptyGrades = Object.keys(editedGrades).length === 0
-  const { toast } = useToast()
 
   const handleClearEditedGrades = () => {
     clearEditedGrades()
-    toast({
-      description: (
-        <div className="flex items-center gap-2">
-          <CheckCircle className="size-4 text-success" />
-          <span className="font-medium">
-            As notas editadas foram limpas com sucesso!
-          </span>
-        </div>
-      ),
-    })
+    toast.success("As notas editadas foram limpas com sucesso!")
   }
 
   return (

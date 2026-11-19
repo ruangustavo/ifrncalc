@@ -1,8 +1,9 @@
 import { Trash2 } from "lucide-react"
+import type { ComponentProps } from "react"
 
-import { Button, type ButtonProps } from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 
-export function ClearButton(props: ButtonProps) {
+export function ClearButton(props: ComponentProps<typeof Button>) {
   return (
     <Button size="xs" variant="outline" className={props.className} {...props}>
       <span className="flex items-center gap-1.5">

@@ -172,7 +172,7 @@ export default function Calculadora() {
     if (result.kind === "empty") return null
 
     return (
-      <div className="rounded-xl border bg-muted/30 p-5 duration-200 animate-in fade-in slide-in-from-bottom-1 motion-reduce:animate-none">
+      <div className="animate-in rounded-xl border bg-muted/30 p-5 duration-200 fade-in slide-in-from-bottom-1 motion-reduce:animate-none">
         {result.kind === "partial" && (
           <div className="space-y-1.5 text-center">
             <p className="text-xs text-muted-foreground">
