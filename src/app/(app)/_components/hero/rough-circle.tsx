@@ -23,14 +23,33 @@ export function RoughCircle({ children }: { children: ReactNode }) {
       animationDuration: 700,
     })
 
-    let current = true
+    let ready = false
+    let visible = false
+
+    const draw = () => {
+      if (!ready || !visible) return
+
+      annotation.show()
+      observer.disconnect()
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting
+        draw()
+      },
+      { threshold: 1 },
+    )
+
+    observer.observe(element)
 
     document.fonts.ready.then(() => {
-      if (current) annotation.show()
+      ready = true
+      draw()
     })
 
     return () => {
-      current = false
+      observer.disconnect()
       annotation.remove()
     }
   }, [])
