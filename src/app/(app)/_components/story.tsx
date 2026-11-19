@@ -39,10 +39,10 @@ export function Story() {
           </h2>
           <div className="mt-8 space-y-5 text-lg leading-relaxed text-pretty sm:text-xl">
             <p>
-              Eu fiz o ensino médio com Informática no campus Pau dos Ferros.
-              Toda vez que saía nota no SUAP eu fazia a mesma coisa: pegava a
-              calculadora e refazia a média, matéria por matéria. Era chato, e
-              eu repetia tudo de novo na nota seguinte.
+              Quando eu fazia o ensino médio em Pau dos Ferros, sempre que saía
+              uma nota no SUAP eu fazia a mesma coisa: pegava a calculadora e
+              refazia a média, matéria por matéria. Era chato, e eu repetia tudo
+              de novo na nota seguinte.
             </p>
             <p>
               Mas eu não conseguia deixar de fazer. Quando ia mal numa prova,
