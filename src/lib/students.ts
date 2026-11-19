@@ -26,7 +26,7 @@ export const StudentIdentitySchema = z
     userType: user.userType ?? null,
   }))
 
-export type StudentIdentity = z.output<typeof StudentIdentitySchema>
+type StudentIdentity = z.output<typeof StudentIdentitySchema>
 
 export interface StudentProfile extends StudentIdentity {
   academic: AcademicProfile | null
