@@ -1,12 +1,6 @@
 import { create } from "zustand"
 
-export interface EditedGrade {
-  disciplineName: string
-  stage: "E1" | "E2" | "E3" | "E4"
-  grade: number
-}
-
-export interface EditedGrades {
+interface EditedGrades {
   [disciplineName: string]: {
     [stage: string]: number
   }
