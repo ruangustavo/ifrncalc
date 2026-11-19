@@ -140,7 +140,10 @@ export const metadata: Metadata = {
     creator: "@ruangustavoo",
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "32x32" },
+    ],
     shortcut: "/favicon-32x32.png",
     apple: "/apple-icon-180x180.png",
   },

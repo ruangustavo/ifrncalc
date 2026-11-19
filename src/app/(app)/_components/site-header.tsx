@@ -19,7 +19,7 @@ export function SiteHeader() {
           href="/"
           className="flex items-center gap-2 font-display text-lg font-bold tracking-tight"
         >
-          <BrandMark className="size-4 text-lime" />
+          <BrandMark className="size-5 text-lime" />
           {siteConfig.name}
         </Link>
 
