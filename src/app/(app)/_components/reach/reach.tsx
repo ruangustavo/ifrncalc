@@ -1,9 +1,5 @@
-import { RnMap } from "./rn-map"
-import { RN_CAMPUS_CITIES } from "./rn-outline"
-
-const CITIES = RN_CAMPUS_CITIES.map((city) => city.name).toSorted((a, b) =>
-  a.localeCompare(b, "pt-BR"),
-)
+import { CampusExplorer } from "./campus-explorer"
+import { RnBase } from "./rn-base"
 
 export function Reach() {
   return (
@@ -25,17 +21,9 @@ export function Reach() {
         </div>
 
         <div className="lg:col-span-7">
-          <RnMap />
-          <ul className="mt-8 flex flex-wrap gap-2">
-            {CITIES.map((city) => (
-              <li
-                key={city}
-                className="rounded-full border border-cream/20 px-3 py-1 text-sm text-cream/80"
-              >
-                {city}
-              </li>
-            ))}
-          </ul>
+          <CampusExplorer>
+            <RnBase />
+          </CampusExplorer>
         </div>
       </div>
     </section>
