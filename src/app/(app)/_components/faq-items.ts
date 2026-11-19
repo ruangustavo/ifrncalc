@@ -17,7 +17,7 @@ export const FAQ_ITEMS = [
   {
     question: "Saiu nota e ela não apareceu aqui. Por quê?",
     answer:
-      "O IFRN Calc mostra o que está no SUAP. Se a nota não aparece, ou o professor ainda não lançou, ou o IFRN Calc ainda não atualizou, o que pode levar algumas horas.",
+      "O IFRN Calc mostra o que está no SUAP. Se a nota não aparece, o professor ainda não lançou ou o IFRN Calc ainda não atualizou, o que pode levar um tempinho.",
   },
   {
     question: "Dá pra simular uma nota?",
