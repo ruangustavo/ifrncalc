@@ -40,17 +40,19 @@ export function Story() {
           <div className="mt-8 space-y-5 text-lg leading-relaxed text-pretty sm:text-xl">
             <p>
               No ensino médio, toda vez que saía uma nota no SUAP eu pegava a
-              calculadora pra refazer a média de cada disciplina e descobrir
-              quanto faltava. Como o 3º e o 4º bimestre pesam mais, a conta
-              nunca era óbvia. Eu errava, refazia, e repetia tudo no bimestre
-              seguinte.
+              calculadora pra refazer a média de cada disciplina. A conta não
+              era difícil, só era chata: uma matéria de cada vez, todo bimestre.
+            </p>
+            <p>
+              E quando eu ia mal numa prova, ficava ansioso pra saber logo se
+              precisava estudar mais e quais matérias priorizar.
             </p>
             <p>
               Um dia resolvi automatizar.{" "}
               <RoughHighlight>
                 Hoje o IFRN Calc faz essa conta pra mais de 10 mil alunos,
               </RoughHighlight>{" "}
-              no instante em que a nota sai no SUAP.
+              toda vez que sai nota no SUAP.
             </p>
           </div>
 
