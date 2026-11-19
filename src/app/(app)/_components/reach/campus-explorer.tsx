@@ -10,6 +10,7 @@ import { RN_CAMPUS_AREAS } from "./rn-areas"
 import { RN_CAMPUS_CITIES, RN_HEIGHT } from "./rn-outline"
 
 const MAP_WIDTH = 1000
+const MOBILE_PREVIEW = 5
 const PIN_ROOM = 48
 const PIN_HEIGHT = 44
 const VIEW_HEIGHT = RN_HEIGHT * MAP_WIDTH + PIN_ROOM
@@ -33,6 +34,7 @@ function anchorOf(city: City) {
 export function CampusExplorer({ children }: { children: ReactNode }) {
   const [active, setActive] = useState<City | null>(null)
   const [shown, setShown] = useState<City>(RN_CAMPUS_CITIES[0])
+  const [expanded, setExpanded] = useState(false)
 
   const enter = (city: City) => {
     setActive(city)
@@ -108,8 +110,13 @@ export function CampusExplorer({ children }: { children: ReactNode }) {
       </MapFrame>
 
       <ul className="mt-8 flex flex-wrap gap-2">
-        {CHIPS.map((city) => (
-          <li key={city.name}>
+        {CHIPS.map((city, index) => (
+          <li
+            key={city.name}
+            className={cn(
+              !expanded && index >= MOBILE_PREVIEW && "max-sm:hidden",
+            )}
+          >
             <button
               type="button"
               onPointerEnter={hover(city)}
@@ -128,6 +135,18 @@ export function CampusExplorer({ children }: { children: ReactNode }) {
             </button>
           </li>
         ))}
+        <li className="sm:hidden">
+          <button
+            type="button"
+            aria-expanded={expanded}
+            onClick={() => setExpanded(!expanded)}
+            className="rounded-full border border-lime px-3 py-1 text-sm font-semibold text-lime outline-none focus-visible:ring-2 focus-visible:ring-lime"
+          >
+            {expanded
+              ? "ver menos"
+              : `+${CHIPS.length - MOBILE_PREVIEW} cidades`}
+          </button>
+        </li>
       </ul>
     </>
   )
