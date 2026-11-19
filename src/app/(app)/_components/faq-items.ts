@@ -15,6 +15,11 @@ export const FAQ_ITEMS = [
       "Os bimestres têm pesos diferentes: 2, 2, 3 e 3 nas disciplinas anuais, e 2 e 3 nas semestrais. O IFRN Calc calcula quanto você precisa tirar nos que faltam pra média chegar a 60.",
   },
   {
+    question: "E se eu não fechar 60?",
+    answer:
+      "Você faz a prova final, e a nota dela entra numa nova média, que também precisa chegar a 60. O IFRN Calc não faz essa conta: ele vai só até o último bimestre.",
+  },
+  {
     question: "Saiu nota e ela não apareceu aqui. Por quê?",
     answer:
       "O IFRN Calc mostra o que está no SUAP. Se a nota não aparece, o professor ainda não lançou ou o IFRN Calc ainda não atualizou, o que pode levar um tempinho.",
