@@ -39,13 +39,15 @@ export function Story() {
           </h2>
           <div className="mt-8 space-y-5 text-lg leading-relaxed text-pretty sm:text-xl">
             <p>
-              No ensino médio, toda vez que saía uma nota no SUAP eu pegava a
-              calculadora pra refazer a média de cada disciplina. A conta não
-              era difícil, só era chata: uma matéria de cada vez, todo bimestre.
+              Eu fiz o ensino médio com Informática no campus Pau dos Ferros.
+              Toda vez que saía nota no SUAP eu fazia a mesma coisa: pegava a
+              calculadora e refazia a média, matéria por matéria. Era chato, e
+              eu repetia tudo de novo na nota seguinte.
             </p>
             <p>
-              E quando eu ia mal numa prova, ficava ansioso pra saber logo se
-              precisava estudar mais e quais matérias priorizar.
+              Mas eu não conseguia deixar de fazer. Quando ia mal numa prova,
+              precisava saber se dava pra recuperar e em quais matérias eu tinha
+              que focar.
             </p>
             <p>
               Um dia resolvi automatizar.{" "}
