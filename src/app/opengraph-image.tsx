@@ -1,21 +1,40 @@
+import { readFile } from "node:fs/promises"
+import { join } from "node:path"
+
 import { ImageResponse } from "next/og"
 
+import {
+  RN_CAMPUS_CITIES,
+  RN_HEIGHT,
+  RN_OUTLINE,
+} from "./(app)/_components/reach/rn-outline"
+
 export const alt =
-  "IFRN Calc: descubra quanto você precisa tirar pra passar no IFRN"
+  "IFRN Calc: mais de 10 mil alunos do IFRN já sabem quanto falta pra passar"
 
 export const size = { width: 1200, height: 630 }
 export const contentType = "image/png"
 
-const PRIMARY = "#16a34a"
+const FOREST = "#0b2519"
+const INK = "#061b10"
+const CREAM = "#f5efd8"
+const LIME = "#97f05d"
+const CORAL = "#ff6955"
+const MUTED = "#a9b8a6"
 
-const TILES = [
-  { label: "1º Bim", value: "72", color: "#09090b" },
-  { label: "2º Bim", value: "65", color: "#09090b" },
-  { label: "3º Bim", value: "54", color: "#eab308" },
-  { label: "4º Bim", value: "54", color: "#eab308" },
-] as const
+const MAP_WIDTH = 520
+const MAP_HEIGHT = RN_HEIGHT * MAP_WIDTH
+const PIN_SCALE = 0.8
+const OUTLINE = RN_OUTLINE.map((value) => value * MAP_WIDTH).join(" ")
+const CITIES = RN_CAMPUS_CITIES.toSorted((a, b) => a.y - b.y)
+const FONT_DIR = join(process.cwd(), "assets/fonts")
 
-export default function OpengraphImage() {
+export default async function OpengraphImage() {
+  const [display, body] = await Promise.all([
+    readFile(join(FONT_DIR, "bricolage-grotesque-800.ttf")),
+    readFile(join(FONT_DIR, "inter-500.ttf")),
+  ])
+
   return new ImageResponse(
     <div
       style={{
@@ -24,109 +43,108 @@ export default function OpengraphImage() {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        padding: "72px",
-        background: "linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%)",
-        color: "#09090b",
+        padding: 72,
+        background: FOREST,
+        color: CREAM,
+        fontFamily: "Body",
       }}
     >
-      <div style={{ display: "flex", flexDirection: "column", width: 600 }}>
-        <div
-          style={{
-            display: "flex",
-            fontSize: 32,
-            fontWeight: 700,
-            color: PRIMARY,
-          }}
-        >
-          IFRN Calc
-        </div>
-        <div
-          style={{
-            display: "flex",
-            marginTop: 28,
-            fontSize: 64,
-            fontWeight: 700,
-            lineHeight: 1.05,
-            letterSpacing: "-0.03em",
-          }}
-        >
-          Quanto você precisa tirar pra passar?
-        </div>
-        <div
-          style={{
-            display: "flex",
-            marginTop: 28,
-            fontSize: 28,
-            color: "#52525b",
-          }}
-        >
-          Notas direto do SUAP. Mais de 10 mil alunos em todo o RN.
-        </div>
-      </div>
-
       <div
         style={{
           display: "flex",
           flexDirection: "column",
-          width: 420,
-          padding: 28,
-          borderRadius: 28,
-          background: "#ffffff",
-          border: "1px solid #e4e4e7",
-          boxShadow: "0 24px 48px rgba(22, 163, 74, 0.15)",
+          justifyContent: "space-between",
+          height: "100%",
+          width: 520,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <svg width={52} height={52} viewBox="0 0 64 64">
+            <rect x={5} y={5} width={25} height={25} rx={6} fill={LIME} />
+            <rect x={34} y={5} width={25} height={25} rx={6} fill={LIME} />
+            <rect x={5} y={34} width={25} height={25} rx={6} fill={LIME} />
+            <circle cx={46.5} cy={46.5} r={12.5} fill={CORAL} />
+            <path
+              d="M11.5 17.5h12M17.5 11.5v12M40.5 17.5h12M13.3 42.3l8.4 8.4M21.7 42.3l-8.4 8.4M41 43.5h11M41 49.5h11"
+              stroke={FOREST}
+              strokeWidth={3.6}
+              strokeLinecap="round"
+              fill="none"
+            />
+          </svg>
           <div
             style={{
               display: "flex",
-              width: 8,
-              height: 48,
-              borderRadius: 4,
-              background: "#22c55e",
+              fontFamily: "Display",
+              fontSize: 40,
+              letterSpacing: "-0.02em",
             }}
-          />
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <div style={{ display: "flex", fontSize: 28, fontWeight: 700 }}>
-              Matemática
-            </div>
-            <div style={{ display: "flex", fontSize: 20, color: "#71717a" }}>
-              120h • Média parcial: 69
-            </div>
+          >
+            IFRN Calc
           </div>
         </div>
-        <div style={{ display: "flex", gap: 10, marginTop: 24 }}>
-          {TILES.map((tile) => (
-            <div
-              key={tile.label}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                flex: 1,
-                padding: "12px 0",
-                borderRadius: 14,
-                border: "1px solid #e4e4e7",
-              }}
-            >
-              <div style={{ display: "flex", fontSize: 16, color: "#71717a" }}>
-                {tile.label}
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  fontSize: 34,
-                  fontWeight: 600,
-                  color: tile.color,
-                }}
-              >
-                {tile.value}
-              </div>
-            </div>
-          ))}
+
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <div
+            style={{
+              display: "flex",
+              fontFamily: "Display",
+              fontSize: 136,
+              whiteSpace: "nowrap",
+              lineHeight: 0.85,
+              letterSpacing: "-0.03em",
+              color: LIME,
+            }}
+          >
+            +10 mil
+          </div>
+          <div
+            style={{
+              display: "flex",
+              marginTop: 22,
+              fontFamily: "Display",
+              fontSize: 42,
+              lineHeight: 1.1,
+            }}
+          >
+            alunos do IFRN já sabem quanto falta pra passar.
+          </div>
+        </div>
+
+        <div style={{ display: "flex", fontSize: 26, color: MUTED }}>
+          Suas notas direto do SUAP
         </div>
       </div>
+
+      <svg
+        width={MAP_WIDTH}
+        height={MAP_HEIGHT + 50}
+        viewBox={`-10 -50 ${MAP_WIDTH + 40} ${MAP_HEIGHT + 50}`}
+      >
+        <polygon points={OUTLINE} fill={LIME} stroke={INK} strokeWidth={3} />
+        {CITIES.map((city) => (
+          <g
+            key={city.name}
+            transform={`translate(${city.x * MAP_WIDTH} ${city.y * MAP_WIDTH}) scale(${PIN_SCALE})`}
+          >
+            <path
+              d="M0 0C-6-13-15-21-15-31a15 15 0 1 1 30 0C15-21 6-13 0 0Z"
+              fill={CORAL}
+              stroke={INK}
+              strokeWidth={3 / PIN_SCALE}
+              strokeLinejoin="round"
+            />
+            <circle cx={0} cy={-31} r={5.5} fill={INK} />
+          </g>
+        ))}
+      </svg>
     </div>,
-    size,
+    {
+      ...size,
+      fonts: [
+        { name: "Display", data: display, weight: 800 },
+        { name: "Body", data: body, weight: 500 },
+      ],
+    },
   )
 }
