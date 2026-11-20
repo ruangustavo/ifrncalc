@@ -12,7 +12,7 @@ export function FinalCta() {
           </h2>
           <p className="mt-6 max-w-md text-lg text-pretty text-ink/75">
             Entre com o SUAP e suas notas aparecem calculadas. Leva menos de um
-            minuto.
+            minuto, e dá pra instalar no celular como app.
           </p>
         </div>
         <SignInButton className="w-full bg-ink text-cream hover:bg-ink/85 sm:w-auto" />

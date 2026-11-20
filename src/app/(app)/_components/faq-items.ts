@@ -31,6 +31,11 @@ export const FAQ_ITEMS = [
       "Sim. Edite a nota de um bimestre em aberto e o IFRN Calc recalcula quanto falta nos outros.",
   },
   {
+    question: "Dá pra instalar como app?",
+    answer:
+      "Dá. No iPhone, abra no Safari, toque em Compartilhar e depois em Adicionar à Tela de Início. No Android, o Chrome mostra a opção Instalar app. Depois é só abrir pelo ícone, direto no seu boletim.",
+  },
+  {
     question: "Funciona pro meu curso?",
     answer: "Sim. Integrado, subsequente ou superior, em qualquer campus.",
   },
