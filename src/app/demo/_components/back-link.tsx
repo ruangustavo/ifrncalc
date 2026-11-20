@@ -6,7 +6,7 @@ export function BackLink() {
   return (
     <Link
       href="/"
-      className="-my-2 inline-flex h-10 items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors duration-150 ease-out hover:text-foreground"
+      className="-mt-2 mb-2 inline-flex h-10 items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors duration-150 ease-out hover:text-foreground"
     >
       <HugeiconsIcon
         strokeWidth={2}
