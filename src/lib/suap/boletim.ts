@@ -14,6 +14,7 @@ interface Grade {
 }
 
 interface NormalizedDiscipline {
+  codigo_diario?: string
   disciplina: string
   nota_etapa_1: Grade
   nota_etapa_2: Grade
@@ -34,6 +35,7 @@ function normalizeDiscipline(
   if (!boletim.disciplina) return null
 
   return {
+    codigo_diario: boletim.codigo_diario,
     disciplina: boletim.disciplina,
     nota_etapa_1: resolveGrade(boletim.nota_etapa_1),
     nota_etapa_2: resolveGrade(boletim.nota_etapa_2),
@@ -88,14 +90,23 @@ function calculatePassingGrade(
   return gradeNeededToPass < 0 ? 0 : Math.round(gradeNeededToPass)
 }
 
+const CODE_SEPARATOR = " - "
+
 function parseDisciplineName(discipline: string): string {
-  return discipline.substring(11).replace(/\(.*\)/, "")
+  const codeEnd = discipline.indexOf(CODE_SEPARATOR)
+
+  const withoutCode =
+    codeEnd === -1
+      ? discipline
+      : discipline.slice(codeEnd + CODE_SEPARATOR.length)
+
+  return withoutCode.replace(/\(\d{4}\.\d\)$/, "").trim()
 }
 
 export function toDisciplines(results: BoletimSchema[]): Discipline[] {
   return results
     .flatMap((boletim) => normalizeDiscipline(boletim) ?? [])
-    .map((discipline) => {
+    .map((discipline, position) => {
       const gradeToPass = calculatePassingGrade(
         [
           discipline.nota_etapa_1,
@@ -120,6 +131,7 @@ export function toDisciplines(results: BoletimSchema[]): Discipline[] {
       })
 
       return {
+        id: discipline.codigo_diario ?? `${position}:${discipline.disciplina}`,
         name: parseDisciplineName(discipline.disciplina),
         hours: discipline.carga_horaria,
         partialAverage: discipline.media_disciplina,

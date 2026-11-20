@@ -14,6 +14,7 @@ interface StageGrade {
 }
 
 export interface Discipline {
+  id: string
   name: string
   hours: number
   partialAverage: number | null
@@ -28,12 +29,11 @@ export interface SchoolPeriod {
   term: number
 }
 
-export interface GetGradesResponse {
-  success: boolean
-  grades?: Discipline[]
-  period?: SchoolPeriod
-  message?: string
-}
+export type GetGradesFailure = "session" | "unavailable"
+
+export type GetGradesResponse =
+  | { success: true; grades: Discipline[]; period: SchoolPeriod }
+  | { success: false; reason: GetGradesFailure; message: string }
 
 export async function getGrades(): Promise<GetGradesResponse> {
   const session = await getServerSession(authOptions)
@@ -42,6 +42,7 @@ export async function getGrades(): Promise<GetGradesResponse> {
   if (!accessToken) {
     return {
       success: false,
+      reason: "session",
       message:
         "Sua sessão expirou. Por favor, faça login novamente para continuar.",
     }
@@ -66,8 +67,11 @@ export async function getGrades(): Promise<GetGradesResponse> {
 
       return {
         success: false,
+        reason: periodsResponse.status === 401 ? "session" : "unavailable",
         message:
-          "Não foi possível carregar seus dados acadêmicos. Sua sessão pode ter expirado. Por favor, faça login novamente.",
+          periodsResponse.status === 401
+            ? "Não foi possível carregar seus dados acadêmicos. Sua sessão pode ter expirado. Por favor, faça login novamente."
+            : "O SUAP não respondeu agora. Tente de novo em alguns instantes.",
       }
     }
 
@@ -76,6 +80,7 @@ export async function getGrades(): Promise<GetGradesResponse> {
     if (periods.length === 0) {
       return {
         success: false,
+        reason: "session",
         message:
           "Não foi possível carregar seus dados acadêmicos. Sua sessão pode ter expirado. Por favor, faça login novamente.",
       }
@@ -104,6 +109,7 @@ export async function getGrades(): Promise<GetGradesResponse> {
 
       return {
         success: false,
+        reason: gradesResponse.status === 401 ? "session" : "unavailable",
         message:
           gradesResponse.status === 401
             ? "Sua sessão expirou. Por favor, faça login novamente para acessar suas notas."
@@ -126,8 +132,9 @@ export async function getGrades(): Promise<GetGradesResponse> {
 
     return {
       success: false,
+      reason: "unavailable",
       message:
-        "Ocorreu um erro inesperado ao carregar suas notas. Por favor, tente fazer login novamente ou entre em contato com o suporte.",
+        "Ocorreu um erro inesperado ao carregar suas notas. Tente de novo em alguns instantes.",
     }
   }
 }

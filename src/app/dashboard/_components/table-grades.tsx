@@ -2,6 +2,7 @@
 
 import { ExternalLink } from "lucide-react"
 import { signIn } from "next-auth/react"
+import { useRouter } from "next/navigation"
 import { Suspense } from "react"
 
 import type { GetGradesResponse } from "@/actions/get-grades"
@@ -21,6 +22,7 @@ interface TableGradesProps {
 
 export function TableGrades({ gradesResponse }: TableGradesProps) {
   const response = gradesResponse
+  const router = useRouter()
 
   if (!response.success) {
     return (
@@ -30,14 +32,24 @@ export function TableGrades({ gradesResponse }: TableGradesProps) {
           <AlertDescription>
             <div className="space-y-3">
               <p>{response.message}</p>
-              <Button
-                onClick={() => signIn("suap")}
-                variant="outline-destructive"
-                size="sm"
-              >
-                Entrar novamente
-                <ExternalLink className="ml-2 size-4" />
-              </Button>
+              {response.reason === "session" ? (
+                <Button
+                  onClick={() => signIn("suap")}
+                  variant="outline-destructive"
+                  size="sm"
+                >
+                  Entrar novamente
+                  <ExternalLink className="ml-2 size-4" />
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => router.refresh()}
+                  variant="outline-destructive"
+                  size="sm"
+                >
+                  Tentar de novo
+                </Button>
+              )}
             </div>
           </AlertDescription>
         </Alert>
@@ -45,13 +57,15 @@ export function TableGrades({ gradesResponse }: TableGradesProps) {
     )
   }
 
-  if (!response.grades || response.grades.length === 0) {
+  if (response.grades.length === 0) {
     return (
       <div className="space-y-3">
         <ClearEditedGradesButton />
         <Alert>
           <AlertDescription>
-            Nenhuma disciplina encontrada para este período.
+            <p className="text-pretty">
+              Nenhuma disciplina encontrada para este período.
+            </p>
           </AlertDescription>
         </Alert>
       </div>
@@ -66,10 +80,10 @@ export function TableGrades({ gradesResponse }: TableGradesProps) {
       <Suspense fallback={<TableSkeleton />}>
         <ul className="divide-y overflow-hidden rounded-3xl bg-card ring-1 ring-foreground/10 md:hidden">
           {response.grades.map((grade) => (
-            <li key={grade.name} className="px-4 pt-3.5 pb-4">
+            <li key={grade.id} className="@container px-4 pt-3.5 pb-4">
               <h3 className="font-bold">{grade.name}</h3>
               <DisciplineMeta discipline={grade} />
-              <div className="mt-3 grid grid-cols-4 gap-2">
+              <div className="mt-3 grid grid-cols-4 gap-2 @max-[15rem]:grid-cols-2">
                 {STAGES.map(({ key, shortLabel }) => (
                   <CellTable
                     key={key}
@@ -97,7 +111,7 @@ export function TableGrades({ gradesResponse }: TableGradesProps) {
             </thead>
             <tbody>
               {response.grades.map((grade) => (
-                <tr key={grade.name} className="border-b last:border-0">
+                <tr key={grade.id} className="border-b last:border-0">
                   <th scope="row" className="px-6 py-4 text-left">
                     <span className="text-lg leading-tight font-bold">
                       {grade.name}
