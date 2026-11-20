@@ -70,7 +70,7 @@ export function FeedbackDialog({ user }: FeedbackDialogProps) {
     <div className={cn(isEmptyGrades ? "fixed right-4 bottom-4" : "hidden")}>
       <Credenza open={open} onOpenChange={setOpen}>
         <CredenzaTrigger asChild>
-          <Button title="Enviar feedback">
+          <Button title="Enviar feedback" size="lg">
             <MessageCircle className="size-5" />
             Feedback
           </Button>
@@ -97,7 +97,7 @@ export function FeedbackDialog({ user }: FeedbackDialogProps) {
                   damping: 20,
                 }}
               >
-                <Check className="size-12 text-success" />
+                <Check className="size-12 text-primary" />
               </motion.div>
               <p className="text-muted-foreground">
                 Obrigado pelo seu feedback!

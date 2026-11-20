@@ -8,7 +8,6 @@ import {
   Loading03Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useTheme } from "next-themes"
 import type { CSSProperties } from "react"
 import { Toaster as Sonner, type ToasterProps } from "sonner"
 
@@ -20,11 +19,9 @@ const TOAST_VARS: CSSProperties & Record<`--${string}`, string> = {
 }
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  const { resolvedTheme } = useTheme()
-
   return (
     <Sonner
-      theme={resolvedTheme === "dark" ? "dark" : "light"}
+      theme="light"
       className="toaster group"
       icons={{
         success: (

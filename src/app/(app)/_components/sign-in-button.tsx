@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 
 interface SignInButtonProps {
   size?: "sm" | "xl"
-  variant?: "default" | "secondary"
+  variant?: "default" | "chrome"
   className?: string
 }
 

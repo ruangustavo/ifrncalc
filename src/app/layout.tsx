@@ -7,7 +7,10 @@ import Script from "next/script"
 
 import { Toaster } from "@/components/ui/sonner"
 import { siteConfig } from "@/config/site"
+import { cn } from "@/lib/utils"
 
+import { displayFont } from "./(app)/_components/display-font"
+import { handFont } from "./(app)/_components/hand-font"
 import { Providers } from "./providers"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
@@ -156,7 +159,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning className={inter.variable}>
+    <html
+      lang="pt-BR"
+      className={cn(inter.variable, displayFont.variable, handFont.variable)}
+    >
       <head>
         <meta
           name="viewport"
@@ -179,7 +185,7 @@ export default function RootLayout({
           />
         )}
       </head>
-      <body className="flex min-h-dvh flex-col bg-muted/40 antialiased">
+      <body className="flex min-h-dvh flex-col antialiased">
         <Providers>{children}</Providers>
         <Analytics />
         <Toaster />

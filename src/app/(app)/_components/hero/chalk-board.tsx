@@ -8,7 +8,7 @@ const STEPS = [
 
 export function ChalkBoard() {
   return (
-    <figure className="font-[family-name:var(--font-hand)]">
+    <figure className="font-hand">
       <p className="text-2xl leading-none text-cream/45">
         Matemática: 72 e 65. Quanto falta?
       </p>

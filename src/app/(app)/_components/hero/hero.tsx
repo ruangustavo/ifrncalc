@@ -32,7 +32,7 @@ export function Hero() {
             <Button
               variant="outline"
               size="xl"
-              className="w-full border-cream/25 bg-transparent text-cream hover:bg-cream/10 hover:text-cream sm:w-auto"
+              className="w-full border-input bg-input/30 text-cream hover:bg-input/50 hover:text-cream sm:w-auto"
               asChild
             >
               <Link href="/calculadora">Calcular sem login</Link>

@@ -5,7 +5,15 @@ const CUT = {
   fill: "none",
 } as const
 
-export function BrandMark({ className }: { className?: string }) {
+interface BrandMarkProps {
+  className?: string
+  dotClassName?: string
+}
+
+export function BrandMark({
+  className,
+  dotClassName = "fill-coral",
+}: BrandMarkProps) {
   return (
     <svg viewBox="0 0 64 64" aria-hidden className={className}>
       <mask id="brand-mark-cuts">
@@ -19,7 +27,7 @@ export function BrandMark({ className }: { className?: string }) {
         <rect x={5} y={5} width={25} height={25} rx={6} fill="currentColor" />
         <rect x={34} y={5} width={25} height={25} rx={6} fill="currentColor" />
         <rect x={5} y={34} width={25} height={25} rx={6} fill="currentColor" />
-        <circle cx={46.5} cy={46.5} r={12.5} className="fill-coral" />
+        <circle cx={46.5} cy={46.5} r={12.5} className={dotClassName} />
       </g>
     </svg>
   )
