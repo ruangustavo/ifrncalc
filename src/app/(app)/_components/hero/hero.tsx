@@ -12,7 +12,7 @@ export function Hero() {
     <section className="overflow-clip">
       <div className="mx-auto grid max-w-7xl gap-x-12 gap-y-14 px-4 pt-12 pb-20 sm:px-6 lg:grid-cols-12 lg:items-center lg:px-8 lg:pt-20 lg:pb-28">
         <div className="lg:col-span-6">
-          <p className="inline-flex items-center rounded-full bg-sun px-3 py-1 font-display text-sm font-bold text-ink">
+          <p className="inline-flex items-center rounded-full px-3 py-1 text-sm text-cream/75 ring-1 ring-cream/15">
             +10 mil alunos do IFRN já usaram
           </p>
           <h1 className="mt-6 font-display text-[clamp(2.75rem,12vw,4rem)] leading-[0.95] font-extrabold tracking-[-0.035em] lg:text-[clamp(3.75rem,5.4vw,5.25rem)]">
