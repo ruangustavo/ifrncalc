@@ -1,24 +1,39 @@
 "use client"
 
-import { Pencil } from "lucide-react"
+import { PencilEdit02Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { useMemo, useState } from "react"
 
 import type { Discipline } from "@/actions/get-grades"
-import { recordGradeSimulated } from "@/actions/record-event"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 import { useGradesStore } from "@/store/grades"
-import { recalculateGrades } from "@/utils/grade-calculation"
+import { recalculateGrades, type StageKey } from "@/utils/grade-calculation"
+import { gradeTier, TIER_BORDER, TIER_SURFACE } from "@/utils/grade-tier"
 import { mockDisciplineGrades } from "@/utils/mock-utils"
 
 import { EditGradeModal } from "./edit-grade-modal"
-import { GradeLabel } from "./grade-label"
 
 interface CellTableProps {
-  stageKey: `E${number}`
+  stageKey: StageKey
   discipline: Discipline
   compact?: boolean
   shortLabel?: string
+}
+
+type CellView =
+  | { kind: "none" }
+  | { kind: "graded"; value: number }
+  | { kind: "needed"; value: number }
+  | { kind: "simulated"; value: number }
+
+function describe(view: CellView) {
+  if (view.kind === "needed") return `Precisa de ${view.value}`
+
+  if (view.kind === "simulated") return `Nota simulada: ${view.value}`
+
+  if (view.kind === "graded") return `Nota ${view.value}`
+
+  return "Sem nota"
 }
 
 export function CellTable({
@@ -48,11 +63,19 @@ export function CellTable({
   const currentStage =
     recalculatedStages[["E1", "E2", "E3", "E4"].indexOf(stageKey)]
 
-  const displayGrade = editedDisciplineGrades?.[stageKey] ?? currentStage.grade
+  const editedGrade = editedDisciplineGrades?.[stageKey]
+
+  const view: CellView =
+    editedGrade !== undefined
+      ? { kind: "simulated", value: editedGrade }
+      : currentStage.grade !== null
+        ? { kind: "graded", value: currentStage.grade }
+        : currentStage.isAvailable
+          ? { kind: "needed", value: currentStage.passingGrade }
+          : { kind: "none" }
 
   const handleEdit = (newGrade: number) => {
     setGrade(discipline.name, stageKey, newGrade)
-    void recordGradeSimulated()
   }
 
   const hasMultipleAvailableStages =
@@ -60,13 +83,61 @@ export function CellTable({
 
   const canEdit = currentStage.isAvailable && hasMultipleAvailableStages
 
+  const modal = canEdit && (
+    <EditGradeModal
+      isOpen={isEditModalOpen}
+      onClose={() => setIsEditModalOpen(false)}
+      onSubmit={handleEdit}
+      discipline={mockedDiscipline}
+      editedGrades={editedDisciplineGrades ?? {}}
+      stage={stageKey}
+    />
+  )
+
+  const value =
+    view.kind === "none" ? (
+      "—"
+    ) : (
+      <span className="font-bold tabular-nums">{view.value}</span>
+    )
+
   if (compact) {
+    const tile = cn(
+      "flex h-14 flex-col items-center justify-center gap-1 rounded-2xl tabular-nums",
+      view.kind === "needed" &&
+        cn(
+          "ring-1",
+          TIER_SURFACE[gradeTier(view.value)],
+          TIER_BORDER[gradeTier(view.value)],
+        ),
+      view.kind === "simulated" &&
+        "border-2 border-dashed border-foreground/30 bg-card",
+    )
+
     const tileBody = (
       <>
         {shortLabel && (
-          <span className="text-xs text-muted-foreground">{shortLabel}</span>
+          <span className="text-xs leading-none font-medium opacity-70">
+            {shortLabel}
+          </span>
         )}
-        <GradeLabel {...currentStage} grade={displayGrade} />
+        <span
+          className={cn(
+            "flex items-center gap-1 text-lg leading-none",
+            view.kind === "none" ? "text-muted-foreground" : "font-bold",
+            (view.kind === "needed" || view.kind === "simulated") &&
+              "font-extrabold",
+          )}
+        >
+          {view.kind === "none" ? "—" : view.value}
+          {canEdit && (
+            <HugeiconsIcon
+              strokeWidth={2.5}
+              icon={PencilEdit02Icon}
+              className="size-3.5 opacity-60"
+            />
+          )}
+        </span>
       </>
     )
 
@@ -75,59 +146,61 @@ export function CellTable({
         {canEdit ? (
           <button
             type="button"
+            aria-label={`${shortLabel}. ${describe(view)}. Simular nota`}
             onClick={() => setIsEditModalOpen(true)}
-            className="relative flex flex-col items-center gap-1 rounded-lg border p-2 transition-colors hover:bg-muted/50 active:bg-muted"
+            className={cn(
+              tile,
+              "transition-transform duration-150 ease-snap outline-none focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.96]",
+            )}
           >
             {tileBody}
-            <Pencil className="absolute top-1.5 right-1.5 size-3 text-muted-foreground/60" />
           </button>
         ) : (
-          <div className="flex flex-col items-center gap-1 rounded-lg border p-2">
-            {tileBody}
-          </div>
+          <div className={tile}>{tileBody}</div>
         )}
-        <EditGradeModal
-          isOpen={isEditModalOpen}
-          onClose={() => setIsEditModalOpen(false)}
-          onSubmit={handleEdit}
-          disciplineName={discipline.name}
-          stage={stageKey}
-        />
+        {modal}
       </>
     )
   }
 
-  if (!currentStage.isAvailable && currentStage.grade === null) {
-    return <span className="text-muted-foreground">-</span>
+  if (view.kind === "none") {
+    return <span className="text-muted-foreground">—</span>
+  }
+
+  if (view.kind === "graded") {
+    return <span className="text-lg">{value}</span>
+  }
+
+  const pill = cn(
+    "inline-flex h-9 min-w-14 items-center justify-center gap-1.5 rounded-full px-3.5 text-lg",
+    view.kind === "needed"
+      ? TIER_SURFACE[gradeTier(view.value)]
+      : "border border-dashed border-foreground/40",
+  )
+
+  if (!canEdit) {
+    return <span className={pill}>{value}</span>
   }
 
   return (
-    <div className="flex items-center gap-2">
-      <GradeLabel {...currentStage} grade={displayGrade} />
-
-      {canEdit && (
-        <Button
-          variant="ghost-primary"
-          size="icon-sm"
-          onClick={() => setIsEditModalOpen(true)}
-        >
-          <Pencil className="size-4" />
-        </Button>
-      )}
-
-      {editedDisciplineGrades?.[stageKey] !== undefined && (
-        <Badge variant="secondary" weight="medium">
-          Editada
-        </Badge>
-      )}
-
-      <EditGradeModal
-        isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-        onSubmit={handleEdit}
-        disciplineName={discipline.name}
-        stage={stageKey}
-      />
-    </div>
+    <>
+      <button
+        type="button"
+        aria-label={`${describe(view)}. Simular nota`}
+        onClick={() => setIsEditModalOpen(true)}
+        className={cn(
+          pill,
+          "pr-2.5 transition-transform duration-150 ease-snap outline-none hover:scale-[1.04] focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.97]",
+        )}
+      >
+        {value}
+        <HugeiconsIcon
+          strokeWidth={2}
+          icon={PencilEdit02Icon}
+          className="size-3.5 opacity-50"
+        />
+      </button>
+      {modal}
+    </>
   )
 }

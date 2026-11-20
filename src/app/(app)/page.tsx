@@ -3,7 +3,6 @@ import { redirect } from "next/navigation"
 
 import { authOptions } from "@/lib/auth"
 
-import { GithubStarCount } from "./_components/github-star-count"
 import { MainContent } from "./_components/main-content"
 
 export default async function Home() {
@@ -13,5 +12,5 @@ export default async function Home() {
     redirect("/dashboard")
   }
 
-  return <MainContent starCount={<GithubStarCount />} />
+  return <MainContent />
 }

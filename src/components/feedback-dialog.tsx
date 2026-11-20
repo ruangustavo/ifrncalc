@@ -1,23 +1,65 @@
 "use client"
 
-import { motion } from "motion/react"
-import { Check, Loader2, MessageCircle } from "lucide-react"
+import { ArrowLeft01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { AnimatePresence, motion, useReducedMotion } from "motion/react"
 import { useState } from "react"
+import { toast } from "sonner"
 
 import { sendFeedback } from "@/actions/send-feedback"
 import { Button } from "@/components/ui/button"
 import {
   Credenza,
   CredenzaContent,
-  CredenzaFooter,
+  CredenzaDescription,
   CredenzaHeader,
   CredenzaTitle,
-  CredenzaTrigger,
 } from "@/components/ui/credenza"
-import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { cn } from "@/lib/utils"
-import { useGradesStore } from "@/store/grades"
+
+import { FeedbackStep } from "./feedback-step"
+
+export type FeedbackOrigin = "redesign" | "general"
+
+const TOPICS = [
+  {
+    key: "praise",
+    emoji: "💚",
+    label: "Elogio",
+    hint: "Algo que você curtiu",
+    title: "Que bom! O que você curtiu?",
+    placeholder: "Ex.: ver quanto falta em cada matéria me salvou",
+  },
+  {
+    key: "idea",
+    emoji: "💡",
+    label: "Ideia",
+    hint: "Algo que você queria ver",
+    title: "Qual é a ideia?",
+    placeholder: "Ex.: mostrar minhas faltas também",
+  },
+  {
+    key: "problem",
+    emoji: "🐞",
+    label: "Problema",
+    hint: "Algo deu errado",
+    title: "O que aconteceu?",
+    placeholder: "Ex.: a nota do 3º bimestre não apareceu",
+  },
+] as const
+
+type Topic = (typeof TOPICS)[number]
+
+type Stage =
+  | { kind: "pick" }
+  | { kind: "write"; topic: Topic }
+  | { kind: "sending"; topic: Topic }
+  | { kind: "sent" }
+
+const PICK_TITLE: Record<FeedbackOrigin, string> = {
+  redesign: "O que achou do novo visual?",
+  general: "Sobre o que você quer falar?",
+}
 
 interface FeedbackDialogProps {
   user: {
@@ -25,119 +67,165 @@ interface FeedbackDialogProps {
     email?: string | null
     id?: string | null
   }
+  origin: FeedbackOrigin
+  open: boolean
+  onOpenChange: (open: boolean) => void
 }
 
-export function FeedbackDialog({ user }: FeedbackDialogProps) {
-  const [open, setOpen] = useState(false)
-  const [feedback, setFeedback] = useState("")
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [showSuccess, setShowSuccess] = useState(false)
+export function FeedbackDialog({
+  user,
+  origin,
+  open,
+  onOpenChange,
+}: FeedbackDialogProps) {
+  const reduce = useReducedMotion()
+  const [stage, setStage] = useState<Stage>({ kind: "pick" })
+  const [message, setMessage] = useState("")
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-
-    if (!feedback.trim()) return
-
-    setIsSubmitting(true)
-
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-
-      const result = await sendFeedback(feedback, user)
-
-      if (!result.ok) {
-        throw new Error("Failed to send feedback")
-      }
-
-      setFeedback("")
-      setShowSuccess(true)
-      setTimeout(() => {
-        setShowSuccess(false)
-        setOpen(false)
-      }, 1500)
-    } catch (error) {
-      console.error("Error sending feedback:", error)
-      alert("Erro ao enviar feedback. Por favor, tente novamente.")
-    } finally {
-      setIsSubmitting(false)
-    }
+  function close() {
+    onOpenChange(false)
+    setStage({ kind: "pick" })
+    setMessage("")
   }
 
-  const { editedGrades } = useGradesStore()
-  const isEmptyGrades = Object.keys(editedGrades).length === 0
+  async function submit(topic: Topic) {
+    setStage({ kind: "sending", topic })
+
+    const tag =
+      origin === "redesign"
+        ? `[${topic.label} · novo visual]`
+        : `[${topic.label}]`
+
+    const result = await sendFeedback(`${tag} ${message.trim()}`, user)
+
+    if (result.ok) {
+      setStage({ kind: "sent" })
+
+      return
+    }
+
+    setStage({ kind: "write", topic })
+    toast.error("Não deu pra enviar agora. Tenta de novo em instantes.")
+  }
 
   return (
-    <div className={cn(isEmptyGrades ? "fixed right-4 bottom-4" : "hidden")}>
-      <Credenza open={open} onOpenChange={setOpen}>
-        <CredenzaTrigger asChild>
-          <Button title="Enviar feedback">
-            <MessageCircle className="size-5" />
-            Feedback
-          </Button>
-        </CredenzaTrigger>
-        <CredenzaContent className="mx-auto sm:max-w-[425px]">
-          <CredenzaHeader>
-            <CredenzaTitle className="flex items-center">
-              {showSuccess ? "Feedback enviado!" : "Enviar feedback"}
-            </CredenzaTitle>
-          </CredenzaHeader>
-          {isSubmitting ? (
-            <div className="flex flex-col items-center gap-4 p-8">
-              <Loader2 className="size-12 animate-spin text-primary" />
-              <p className="text-muted-foreground">Enviando feedback...</p>
-            </div>
-          ) : showSuccess ? (
-            <div className="flex flex-col items-center gap-4 p-8">
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{
-                  type: "spring",
-                  stiffness: 260,
-                  damping: 20,
+    <Credenza
+      open={open}
+      onOpenChange={(next) => (next ? onOpenChange(true) : close())}
+    >
+      <CredenzaContent className="mx-auto sm:max-w-md">
+        <AnimatePresence mode="wait" initial={false}>
+          {stage.kind === "pick" && (
+            <FeedbackStep key="pick">
+              <CredenzaHeader>
+                <CredenzaTitle>{PICK_TITLE[origin]}</CredenzaTitle>
+                <CredenzaDescription>
+                  Escolhe um e escreve rapidinho.
+                </CredenzaDescription>
+              </CredenzaHeader>
+              <div className="grid gap-2 px-4 pt-2 pb-6 md:px-0 md:pb-0">
+                {TOPICS.map((topic) => (
+                  <button
+                    key={topic.key}
+                    type="button"
+                    onClick={() => setStage({ kind: "write", topic })}
+                    className="flex items-center gap-3 rounded-2xl bg-muted p-3 text-left transition-transform duration-150 ease-snap outline-none focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.98]"
+                  >
+                    <span aria-hidden className="text-2xl">
+                      {topic.emoji}
+                    </span>
+                    <span>
+                      <span className="block font-semibold">{topic.label}</span>
+                      <span className="block text-sm text-muted-foreground">
+                        {topic.hint}
+                      </span>
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </FeedbackStep>
+          )}
+          {(stage.kind === "write" || stage.kind === "sending") && (
+            <FeedbackStep key="write">
+              <CredenzaHeader>
+                <CredenzaTitle>
+                  <span aria-hidden className="mr-1.5">
+                    {stage.topic.emoji}
+                  </span>
+                  {stage.topic.title}
+                </CredenzaTitle>
+                <CredenzaDescription>
+                  A gente lê tudo que chega.
+                </CredenzaDescription>
+              </CredenzaHeader>
+              <form
+                className="space-y-4 px-4 pt-2 pb-6 md:px-0 md:pb-0"
+                onSubmit={(event) => {
+                  event.preventDefault()
+
+                  if (message.trim()) void submit(stage.topic)
                 }}
               >
-                <Check className="size-12 text-success" />
-              </motion.div>
-              <p className="text-muted-foreground">
-                Obrigado pelo seu feedback!
-              </p>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="p-4 md:p-0">
-              <div className="grid gap-4 pb-6 md:mb-2 md:py-0">
-                <div className="grid gap-2">
-                  <Label htmlFor="feedback">Mensagem</Label>
-                  <Textarea
-                    id="feedback"
-                    value={feedback}
-                    onChange={(e) => setFeedback(e.target.value)}
-                    placeholder="Algo não funcionou como esperado? Ou tem uma ideia para melhorar?"
-                    className="min-h-[120px]"
-                    disabled={isSubmitting || showSuccess}
-                  />
+                <Textarea
+                  aria-label={stage.topic.title}
+                  value={message}
+                  onChange={(event) => setMessage(event.target.value)}
+                  placeholder={stage.topic.placeholder}
+                  disabled={stage.kind === "sending"}
+                />
+                <div className="flex items-center justify-between gap-2">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    disabled={stage.kind === "sending"}
+                    onClick={() => setStage({ kind: "pick" })}
+                  >
+                    <HugeiconsIcon strokeWidth={2} icon={ArrowLeft01Icon} />
+                    Voltar
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={!message.trim() || stage.kind === "sending"}
+                  >
+                    {stage.kind === "sending" ? "Enviando…" : "Enviar"}
+                  </Button>
                 </div>
-              </div>
-              <CredenzaFooter>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setOpen(false)}
-                  disabled={isSubmitting || showSuccess}
-                >
-                  Cancelar
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={isSubmitting || !feedback.trim() || showSuccess}
-                >
-                  Enviar
-                </Button>
-              </CredenzaFooter>
-            </form>
+              </form>
+            </FeedbackStep>
           )}
-        </CredenzaContent>
-      </Credenza>
-    </div>
+          {stage.kind === "sent" && (
+            <FeedbackStep key="sent">
+              <CredenzaHeader className="sr-only">
+                <CredenzaTitle>Enviado</CredenzaTitle>
+                <CredenzaDescription>
+                  Sua mensagem foi enviada.
+                </CredenzaDescription>
+              </CredenzaHeader>
+              <div className="flex flex-col items-center gap-2 px-4 pt-2 pb-6 text-center md:px-0 md:pb-0">
+                <motion.span
+                  aria-hidden
+                  className="text-5xl"
+                  initial={{
+                    opacity: 0,
+                    transform: reduce ? "none" : "scale(0.9)",
+                  }}
+                  animate={{ opacity: 1, transform: "scale(1)" }}
+                  transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
+                >
+                  💚
+                </motion.span>
+                <p className="text-lg font-bold">Valeu demais!</p>
+                <p className="max-w-xs text-sm text-pretty text-muted-foreground">
+                  Cada mensagem vai direto pra quem faz o IFRN Calc.
+                </p>
+                <Button variant="outline" className="mt-3" onClick={close}>
+                  Fechar
+                </Button>
+              </div>
+            </FeedbackStep>
+          )}
+        </AnimatePresence>
+      </CredenzaContent>
+    </Credenza>
   )
 }

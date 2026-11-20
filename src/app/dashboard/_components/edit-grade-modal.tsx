@@ -1,77 +1,52 @@
 "use client"
 
-import { useState } from "react"
-
-import { Button } from "@/components/ui/button"
+import type { Discipline } from "@/actions/get-grades"
 import {
   Credenza,
   CredenzaContent,
-  CredenzaFooter,
+  CredenzaDescription,
   CredenzaHeader,
   CredenzaTitle,
 } from "@/components/ui/credenza"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import type { StageKey } from "@/utils/grade-calculation"
+
+import { GradeSimulator } from "./grade-simulator"
+import { STAGES } from "./stages"
 
 interface EditGradeModalProps {
   isOpen: boolean
   onClose: () => void
   onSubmit: (grade: number) => void
-  disciplineName: string
-  stage: string
+  discipline: Discipline
+  editedGrades: Record<string, number>
+  stage: StageKey
 }
 
 export function EditGradeModal({
   isOpen,
   onClose,
   onSubmit,
-  disciplineName,
+  discipline,
+  editedGrades,
   stage,
 }: EditGradeModalProps) {
-  const [grade, setGrade] = useState<string>("")
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    const numGrade = Number.parseFloat(grade)
-
-    if (numGrade >= 0 && numGrade <= 100) {
-      onSubmit(numGrade)
-      onClose()
-      setGrade("")
-    }
-  }
-
   return (
     <Credenza open={isOpen} onOpenChange={onClose}>
-      <CredenzaContent className="mx-auto sm:max-w-[425px]">
+      <CredenzaContent className="mx-auto grid-cols-1 sm:max-w-[425px]">
         <CredenzaHeader>
-          <CredenzaTitle>
-            Editar nota - {disciplineName} ({stage})
-          </CredenzaTitle>
+          <CredenzaTitle>Simular nota</CredenzaTitle>
+          <CredenzaDescription>
+            {discipline.name} ·{" "}
+            {STAGES.find(({ key }) => key === stage)?.label ?? stage}
+          </CredenzaDescription>
         </CredenzaHeader>
-        <form onSubmit={handleSubmit} className="p-4 md:p-0">
-          <div className="grid gap-4 py-6 md:mb-2 md:py-0">
-            <div className="grid gap-2">
-              <Label htmlFor="grade">Nota</Label>
-              <Input
-                id="grade"
-                type="number"
-                min="0"
-                max="100"
-                value={grade}
-                onChange={(e) => setGrade(e.target.value)}
-                placeholder="Digite a nota..."
-                className="col-span-3"
-              />
-            </div>
-          </div>
-          <CredenzaFooter>
-            <Button type="button" variant="outline" onClick={onClose}>
-              Cancelar
-            </Button>
-            <Button type="submit">Salvar</Button>
-          </CredenzaFooter>
-        </form>
+        <GradeSimulator
+          discipline={discipline}
+          editedGrades={editedGrades}
+          stage={stage}
+          onSubmit={onSubmit}
+          onClose={onClose}
+        />
       </CredenzaContent>
     </Credenza>
   )

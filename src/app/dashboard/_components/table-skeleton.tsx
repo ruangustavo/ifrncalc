@@ -12,7 +12,7 @@ import { STAGES } from "./stages"
 
 export function TableSkeleton() {
   return (
-    <div className="rounded-md border border-foreground/5 bg-card">
+    <div className="overflow-hidden rounded-3xl bg-card ring-1 ring-foreground/10">
       <Table>
         <TableHeader>
           <TableRow>

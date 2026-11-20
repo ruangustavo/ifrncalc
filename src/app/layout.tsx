@@ -1,21 +1,23 @@
 import "./globals.css"
 import type { Metadata } from "next"
-import { DM_Sans } from "next/font/google"
+import { Inter } from "next/font/google"
 import Script from "next/script"
 
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster } from "@/components/ui/sonner"
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
 
+import { displayFont } from "./(app)/_components/display-font"
+import { handFont } from "./(app)/_components/hand-font"
 import { Providers } from "./providers"
 
-const dmSans = DM_Sans({ subsets: ["latin"] })
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
     template: `%s | ${siteConfig.name}`,
-    default: `${siteConfig.name} - ${siteConfig.description}`,
+    default: siteConfig.title,
   },
   description: siteConfig.description,
   keywords: [
@@ -128,27 +130,21 @@ export const metadata: Metadata = {
     type: "website",
     locale: "pt_BR",
     url: siteConfig.url,
-    title: siteConfig.name,
+    title: siteConfig.title,
     description: siteConfig.description,
     siteName: siteConfig.name,
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: `${siteConfig.name} - Calculadora de médias para estudantes do IFRN`,
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: siteConfig.name,
+    title: siteConfig.title,
     description: siteConfig.description,
     creator: "@ruangustavoo",
-    images: ["/og-image.png"],
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "32x32" },
+    ],
     shortcut: "/favicon-32x32.png",
     apple: "/apple-icon-180x180.png",
   },
@@ -161,7 +157,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
+    <html
+      lang="pt-BR"
+      className={cn(inter.variable, displayFont.variable, handFont.variable)}
+    >
       <head>
         <meta
           name="viewport"
@@ -184,12 +183,7 @@ export default function RootLayout({
           />
         )}
       </head>
-      <body
-        className={cn(
-          dmSans.className,
-          "flex min-h-dvh flex-col bg-muted/40 antialiased",
-        )}
-      >
+      <body className="flex min-h-dvh flex-col antialiased">
         <Providers>{children}</Providers>
         <Toaster />
       </body>

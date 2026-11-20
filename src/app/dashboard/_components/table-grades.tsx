@@ -7,21 +7,13 @@ import { Suspense } from "react"
 import type { GetGradesResponse } from "@/actions/get-grades"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
 
 import { CellTable } from "./cell-table"
 import { ClearEditedGradesButton } from "./clear-edited-grades-button"
-import { GradeCard } from "./grade-card"
+import { DisciplineMeta } from "./discipline-meta"
 import { STAGES } from "./stages"
 import { TableSkeleton } from "./table-skeleton"
+import { TierLegend } from "./tier-legend"
 
 interface TableGradesProps {
   gradesResponse: GetGradesResponse
@@ -67,43 +59,62 @@ export function TableGrades({ gradesResponse }: TableGradesProps) {
   }
 
   return (
-    <div className="space-y-3">
-      <ClearEditedGradesButton />
+    <div className="space-y-4">
+      <div className="flex justify-end empty:hidden">
+        <ClearEditedGradesButton />
+      </div>
       <Suspense fallback={<TableSkeleton />}>
-        <div className="space-y-4 md:hidden">
+        <ul className="divide-y overflow-hidden rounded-3xl bg-card ring-1 ring-foreground/10 md:hidden">
           {response.grades.map((grade) => (
-            <GradeCard key={grade.name} grade={grade} />
-          ))}
-        </div>
-        <div className="hidden rounded-md border border-foreground/5 bg-card md:block">
-          <Table>
-            <TableCaption className="caption-top">
-              As notas coloridas são as médias necessárias para ser aprovado
-            </TableCaption>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[300px]">Disciplina</TableHead>
-                {STAGES.map(({ key, label }) => (
-                  <TableHead key={key}>{label}</TableHead>
+            <li key={grade.name} className="px-4 pt-3.5 pb-4">
+              <h3 className="font-bold">{grade.name}</h3>
+              <DisciplineMeta discipline={grade} />
+              <div className="mt-3 grid grid-cols-4 gap-2">
+                {STAGES.map(({ key, shortLabel }) => (
+                  <CellTable
+                    key={key}
+                    discipline={grade}
+                    stageKey={key}
+                    shortLabel={shortLabel}
+                    compact
+                  />
                 ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
+              </div>
+            </li>
+          ))}
+        </ul>
+        <div className="hidden overflow-hidden rounded-3xl bg-card ring-1 ring-foreground/10 md:block">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b text-left text-xs tracking-wide text-muted-foreground uppercase">
+                <th className="w-1/3 px-6 py-4 font-semibold">Disciplina</th>
+                {STAGES.map(({ key, label }) => (
+                  <th key={key} className="px-6 py-4 font-semibold">
+                    {label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
               {response.grades.map((grade) => (
-                <TableRow key={grade.name}>
-                  <TableCell>
-                    <span className="font-medium">{grade.name}</span>
-                  </TableCell>
+                <tr key={grade.name} className="border-b last:border-0">
+                  <th scope="row" className="px-6 py-4 text-left">
+                    <span className="text-lg leading-tight font-bold">
+                      {grade.name}
+                    </span>
+                    <DisciplineMeta discipline={grade} />
+                  </th>
                   {STAGES.map(({ key }) => (
-                    <TableCell key={key}>
+                    <td key={key} className="px-6 py-4">
                       <CellTable discipline={grade} stageKey={key} />
-                    </TableCell>
+                    </td>
                   ))}
-                </TableRow>
+                </tr>
               ))}
-            </TableBody>
-          </Table>
+            </tbody>
+          </table>
         </div>
+        <TierLegend />
       </Suspense>
     </div>
   )
