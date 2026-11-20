@@ -18,22 +18,35 @@ export function ResultTop({ result }: { result: CalcResult }) {
           view.surface,
         )}
       >
-        <div className="flex min-h-26 flex-col gap-4 @xs:flex-row @xs:items-end @xs:justify-between @xs:gap-6">
-          <div>
-            <p className="text-xs font-semibold tracking-wide uppercase">
-              {view.label}
-            </p>
-            <p className="mt-2 text-7xl leading-none font-extrabold tracking-tighter tabular-nums">
-              {view.number}
-            </p>
-          </div>
-          <div className="@xs:max-w-44 @xs:text-right">
-            <p className="text-lg leading-tight font-bold text-balance">
+        {view.number === null ? (
+          <div className="flex min-h-26 flex-col justify-center">
+            <p className="text-2xl leading-tight font-extrabold tracking-tight text-balance">
               {view.title}
             </p>
-            <p className="mt-1 text-sm text-pretty opacity-75">{view.detail}</p>
+            <p className="mt-2 max-w-sm text-sm text-pretty opacity-75">
+              {view.detail}
+            </p>
           </div>
-        </div>
+        ) : (
+          <div className="flex min-h-26 flex-col gap-4 @xs:flex-row @xs:items-end @xs:justify-between @xs:gap-6">
+            <div>
+              <p className="text-xs font-semibold tracking-wide uppercase">
+                {view.label}
+              </p>
+              <p className="mt-2 text-7xl leading-none font-extrabold tracking-tighter tabular-nums">
+                {view.number}
+              </p>
+            </div>
+            <div className="@xs:max-w-44 @xs:text-right">
+              <p className="text-lg leading-tight font-bold text-balance">
+                {view.title}
+              </p>
+              <p className="mt-1 text-sm text-pretty opacity-75">
+                {view.detail}
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </>
   )

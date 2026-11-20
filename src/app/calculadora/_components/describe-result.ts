@@ -76,17 +76,18 @@ export function describeResult(result: CalcResult) {
   if (result.kind === "invalid")
     return {
       surface: NEUTRAL,
-      label: "Precisa de",
-      number: "—",
+      label: null,
+      number: null,
       title: "As notas vão de 0 a 100",
       detail: "Corrija a nota em vermelho.",
     }
 
   return {
     surface: NEUTRAL,
-    label: "Precisa de",
-    number: "—",
-    title: "Deixe em branco a nota que falta",
-    detail: "Média pra passar: 60.",
+    label: null,
+    number: null,
+    title: "Quanto falta pra passar?",
+    detail:
+      "Digite as notas que você já tem e deixe em branco a que falta. A média pra passar é 60.",
   }
 }
