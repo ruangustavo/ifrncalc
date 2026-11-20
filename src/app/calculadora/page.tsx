@@ -5,7 +5,7 @@ import { useMemo, useState } from "react"
 
 import { SignInButton } from "@/app/(app)/_components/sign-in-button"
 import { Header } from "@/app/dashboard/_components/header"
-import { FeedbackDialog } from "@/components/feedback-dialog"
+import { FeedbackLink } from "@/components/feedback-link"
 
 import { computeResult } from "./_components/calc-result"
 import { DEFAULT_GRADES, type DisciplineType } from "./_components/discipline"
@@ -100,8 +100,14 @@ export default function Calculadora() {
             <SignInButton variant="chrome" className="mt-5 w-full sm:w-auto" />
           </div>
         )}
+
+        {session && (
+          <p className="mt-6 flex items-center justify-center gap-1 text-sm text-muted-foreground">
+            Ideia, problema ou elogio?
+            <FeedbackLink user={session.user} />
+          </p>
+        )}
       </main>
-      {session && <FeedbackDialog user={session.user} />}
     </>
   )
 }

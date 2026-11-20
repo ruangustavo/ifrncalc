@@ -1,9 +1,12 @@
 import { getServerSession } from "next-auth"
+import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 
 import { getGrades } from "@/actions/get-grades"
 import { getStudentData } from "@/actions/get-student-data"
-import { FeedbackDialog } from "@/components/feedback-dialog"
+import { FeedbackBanner } from "@/components/feedback-banner"
+import { FeedbackCard } from "@/components/feedback-card"
+import { FEEDBACK_DISMISSED_COOKIE } from "@/components/feedback-cookie"
 import { authOptions } from "@/lib/auth"
 
 import { IraCard } from "./_components/ira-card"
@@ -18,10 +21,13 @@ export default async function Dashboard() {
     redirect("/")
   }
 
-  const [gradesResponse, studentData] = await Promise.all([
+  const [gradesResponse, studentData, cookieStore] = await Promise.all([
     getGrades(),
     getStudentData(),
+    cookies(),
   ])
+
+  const feedbackDismissed = cookieStore.has(FEEDBACK_DISMISSED_COOKIE)
 
   return (
     <div className="space-y-6 pt-6 pb-28 lg:pt-10">
@@ -35,9 +41,10 @@ export default async function Dashboard() {
           <IraCard ira={studentData.ira} />
         )}
       </div>
+      {!feedbackDismissed && <FeedbackBanner user={session.user} />}
       <TableGrades gradesResponse={gradesResponse} />
+      <FeedbackCard user={session.user} />
       <MaintenanceNotice />
-      <FeedbackDialog user={session.user} />
     </div>
   )
 }
