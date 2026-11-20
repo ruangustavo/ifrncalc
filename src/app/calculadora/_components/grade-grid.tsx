@@ -7,6 +7,7 @@ import {
   isGradeOutOfRange,
 } from "./calc-result"
 import type { DisciplineType } from "./discipline"
+import { shake } from "./shake"
 import { TypeToggle } from "./type-toggle"
 import { WeightStepper } from "./weight-stepper"
 
@@ -63,8 +64,14 @@ export function GradeGrid({
               value={grade.value}
               aria-invalid={isGradeOutOfRange(grade.value)}
               onChange={(event) => {
-                if (isGradeDraft(event.target.value))
-                  onGradeChange(index, event.target.value)
+                const next = event.target.value
+
+                if (!isGradeDraft(next)) return
+
+                if (!isGradeOutOfRange(grade.value) && isGradeOutOfRange(next))
+                  shake(event.currentTarget)
+
+                onGradeChange(index, next)
               }}
               className="w-full min-w-0 bg-transparent text-4xl leading-none font-extrabold tracking-tight tabular-nums transition-colors duration-150 ease-out outline-none aria-invalid:text-destructive"
             />
