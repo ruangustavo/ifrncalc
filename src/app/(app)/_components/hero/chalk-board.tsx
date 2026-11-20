@@ -1,4 +1,9 @@
-import { RoughCircle } from "./rough-circle"
+"use client"
+
+import { useRef } from "react"
+
+import { ChalkPencil } from "./chalk-pencil"
+import { useChalkWriter } from "./use-chalk-writer"
 
 const STEPS = [
   { note: "o que eu já tenho", line: "72 × 2 + 65 × 2 = 274" },
@@ -7,33 +12,51 @@ const STEPS = [
 ] as const
 
 export function ChalkBoard() {
+  const board = useRef<HTMLElement>(null)
+  const pencil = useRef<HTMLDivElement>(null)
+
+  useChalkWriter(board, pencil)
+
   return (
-    <figure className="font-hand">
+    <figure ref={board} className="chalk-board relative font-hand">
       <p className="text-2xl leading-none text-cream/45">
-        Matemática: 72 e 65. Quanto falta?
+        <span data-write className="inline-block">
+          Matemática: 72 e 65. Quanto falta?
+        </span>
       </p>
       <ol className="mt-4 space-y-2">
         {STEPS.map((step) => (
           <li key={step.line} className="flex items-baseline gap-5">
-            <span className="text-3xl leading-none text-cream/55">
+            <span data-write className="text-3xl leading-none text-cream/55">
               {step.line}
             </span>
-            <span className="text-lg leading-none text-cream/35 max-sm:hidden">
+            <span
+              data-write
+              className="text-lg leading-none text-cream/35 max-sm:hidden"
+            >
               {step.note}
             </span>
           </li>
         ))}
       </ol>
       <p className="mt-7 flex items-center gap-8 text-3xl leading-none text-cream/70">
-        preciso de
+        <span data-write>preciso de</span>
         <span className="text-6xl font-bold">
-          <RoughCircle>54</RoughCircle>
+          <span data-write="circle" className="inline-block px-2 text-lime">
+            54
+          </span>
         </span>
       </p>
-      <figcaption className="mt-8 max-w-sm font-sans text-sm text-pretty text-cream/70">
+      <figcaption
+        data-reveal
+        className="mt-8 max-w-sm font-sans text-sm text-pretty text-cream/70"
+      >
         Essa é a conta de uma disciplina. O IFRN Calc faz em todas, toda vez que
         sai nota.
       </figcaption>
+      <div ref={pencil} aria-hidden className="chalk-pencil">
+        <ChalkPencil />
+      </div>
     </figure>
   )
 }
