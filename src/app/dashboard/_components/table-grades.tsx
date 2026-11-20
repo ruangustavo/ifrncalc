@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button"
 import { CellTable } from "./cell-table"
 import { ClearEditedGradesButton } from "./clear-edited-grades-button"
 import { DisciplineMeta } from "./discipline-meta"
-import { GradeCard } from "./grade-card"
 import { STAGES } from "./stages"
 import { TableSkeleton } from "./table-skeleton"
 import { TierLegend } from "./tier-legend"
@@ -66,11 +65,25 @@ export function TableGrades({ gradesResponse }: TableGradesProps) {
         <ClearEditedGradesButton />
       </div>
       <Suspense fallback={<TableSkeleton />}>
-        <div className="space-y-3 md:hidden">
+        <ul className="divide-y overflow-hidden rounded-3xl bg-card ring-1 ring-foreground/10 md:hidden">
           {response.grades.map((grade) => (
-            <GradeCard key={grade.name} grade={grade} />
+            <li key={grade.name} className="px-4 pt-3.5 pb-4">
+              <h3 className="font-bold">{grade.name}</h3>
+              <DisciplineMeta discipline={grade} />
+              <div className="mt-3 grid grid-cols-4 gap-2">
+                {STAGES.map(({ key, shortLabel }) => (
+                  <CellTable
+                    key={key}
+                    discipline={grade}
+                    stageKey={key}
+                    shortLabel={shortLabel}
+                    compact
+                  />
+                ))}
+              </div>
+            </li>
           ))}
-        </div>
+        </ul>
         <div className="hidden overflow-hidden rounded-3xl bg-card ring-1 ring-foreground/10 md:block">
           <table className="w-full">
             <thead>

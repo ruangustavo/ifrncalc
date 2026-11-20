@@ -97,41 +97,42 @@ export function CellTable({
     view.kind === "none" ? (
       "—"
     ) : (
-      <span
-        className={cn(
-          "tabular-nums",
-          view.kind === "simulated"
-            ? "font-bold"
-            : "font-bold",
-        )}
-      >
-        {view.value}
-      </span>
+      <span className="font-bold tabular-nums">{view.value}</span>
     )
 
   if (compact) {
     const tile = cn(
-      "relative flex min-h-18 flex-col items-center justify-center gap-1 rounded-2xl px-1 py-2.5 text-2xl",
-      view.kind === "none" &&
-        "border border-dashed border-foreground/15 text-muted-foreground",
-      view.kind === "graded" && "bg-muted",
-      view.kind === "needed" && TIER_SURFACE[gradeTier(view.value)],
-      view.kind === "simulated" && "border border-dashed border-foreground/40",
+      "flex h-14 flex-col items-center justify-center gap-1 rounded-2xl tabular-nums",
+      view.kind === "needed" &&
+        cn(TIER_SURFACE[gradeTier(view.value)], "ring-1 ring-foreground/10"),
+      view.kind === "simulated" &&
+        "border-2 border-dashed border-foreground/30 bg-card",
     )
 
     const tileBody = (
       <>
         {shortLabel && (
-          <span
-            className={cn(
-              "text-xs",
-              view.kind === "needed" ? "text-foreground/70" : "text-muted-foreground",
-            )}
-          >
+          <span className="text-xs leading-none font-medium opacity-70">
             {shortLabel}
           </span>
         )}
-        <span className="flex h-7 items-center">{value}</span>
+        <span
+          className={cn(
+            "flex items-center gap-1 text-lg leading-none",
+            view.kind === "none" ? "text-muted-foreground" : "font-bold",
+            (view.kind === "needed" || view.kind === "simulated") &&
+              "font-extrabold",
+          )}
+        >
+          {view.kind === "none" ? "—" : view.value}
+          {canEdit && (
+            <HugeiconsIcon
+              strokeWidth={2.5}
+              icon={PencilEdit02Icon}
+              className="size-3.5 opacity-60"
+            />
+          )}
+        </span>
       </>
     )
 
@@ -144,15 +145,10 @@ export function CellTable({
             onClick={() => setIsEditModalOpen(true)}
             className={cn(
               tile,
-              "transition-transform duration-150 ease-snap outline-none focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.97]",
+              "transition-transform duration-150 ease-snap outline-none focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.96]",
             )}
           >
             {tileBody}
-            <HugeiconsIcon
-              strokeWidth={2}
-              icon={PencilEdit02Icon}
-              className="absolute top-1.5 right-1.5 size-3 opacity-50"
-            />
           </button>
         ) : (
           <div className={tile}>{tileBody}</div>
