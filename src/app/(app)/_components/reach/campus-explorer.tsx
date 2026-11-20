@@ -121,7 +121,7 @@ export function CampusExplorer({ children }: { children: ReactNode }) {
               !expanded && index >= MOBILE_PREVIEW && "max-sm:hidden",
               expanded &&
                 index >= MOBILE_PREVIEW &&
-                "transition-[opacity,scale] duration-200 ease-snap max-sm:starting:scale-95 max-sm:starting:opacity-0 motion-reduce:starting:scale-100",
+                "transition-[opacity,scale] duration-200 ease-snap motion-reduce:starting:scale-100 max-sm:starting:scale-95 max-sm:starting:opacity-0",
             )}
             style={
               expanded && index >= MOBILE_PREVIEW
