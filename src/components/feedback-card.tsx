@@ -14,7 +14,7 @@ export function FeedbackCard({ user }: { user: FeedbackUser }) {
   const [open, setOpen] = useState(false)
 
   return (
-    <section className="flex flex-col gap-4 rounded-3xl bg-muted p-5 sm:flex-row sm:items-center sm:justify-between">
+    <section className="flex flex-col gap-4 rounded-4xl bg-muted p-5 sm:flex-row sm:items-center sm:justify-between">
       <div>
         <h2 className="font-bold">Ideia, problema ou elogio?</h2>
         <p className="mt-1 text-sm text-pretty text-muted-foreground">
@@ -26,7 +26,11 @@ export function FeedbackCard({ user }: { user: FeedbackUser }) {
         className="h-auto min-h-9 shrink-0 py-2 whitespace-normal"
         onClick={() => setOpen(true)}
       >
-        <HugeiconsIcon strokeWidth={2} icon={BubbleChatIcon} />
+        <HugeiconsIcon
+          data-icon="inline-start"
+          strokeWidth={2}
+          icon={BubbleChatIcon}
+        />
         Falar com a gente
       </Button>
       <FeedbackDialog
