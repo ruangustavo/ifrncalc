@@ -32,13 +32,13 @@ export function ClearEditedGradesButton() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ type: "spring", stiffness: 260, damping: 20 }}
-            className="fixed inset-x-4 bottom-20 z-10 md:hidden"
+            className="fixed inset-x-0 bottom-20 z-10 mx-auto w-fit rounded-full shadow-lg md:hidden"
           >
             <ClearButton
-              size="xl"
-              variant="default"
+              size="lg"
               onClick={handleClearEditedGrades}
-              className="w-full"
+              // oxlint-disable-next-line shadcn/no-restyle -- floats right above the pill-shaped tab bar, so it takes the same pill shape
+              className="rounded-full"
             />
           </motion.div>
         )}
