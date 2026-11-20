@@ -60,8 +60,7 @@ export function TableGrades({ gradesResponse }: TableGradesProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex min-h-8 flex-wrap items-center gap-x-4 gap-y-2">
-        <TierLegend />
+      <div className="flex justify-end empty:hidden">
         <ClearEditedGradesButton />
       </div>
       <Suspense fallback={<TableSkeleton />}>
@@ -115,6 +114,7 @@ export function TableGrades({ gradesResponse }: TableGradesProps) {
             </tbody>
           </table>
         </div>
+        <TierLegend />
       </Suspense>
     </div>
   )

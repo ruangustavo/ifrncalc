@@ -28,9 +28,15 @@ export interface Discipline {
   E4: StageGrade
 }
 
+export interface SchoolPeriod {
+  year: number
+  term: number
+}
+
 export interface GetGradesResponse {
   success: boolean
   grades?: Discipline[]
+  period?: SchoolPeriod
   message?: string
 }
 
@@ -237,6 +243,7 @@ export async function getGrades(): Promise<GetGradesResponse> {
     return {
       success: true,
       grades,
+      period: { year: anoLetivo, term: periodoLetivo },
     }
   } catch (error) {
     console.error("Error in getGrades:", error)

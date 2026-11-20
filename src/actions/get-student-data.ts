@@ -9,6 +9,8 @@ import { meusDadosAluno } from "@/lib/suap/generated/client"
 export interface GetStudentDataResponse {
   success: boolean
   ira?: string
+  course?: string
+  courseStage?: number
   message?: string
 }
 
@@ -50,6 +52,8 @@ export async function getStudentData(): Promise<GetStudentDataResponse> {
     return {
       success: true,
       ira: response.data.ira,
+      course: response.data.curso,
+      courseStage: response.data.periodo_referencia,
     }
   } catch (error) {
     console.error("Error in getStudentData:", error)

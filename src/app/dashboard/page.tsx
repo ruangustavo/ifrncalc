@@ -8,6 +8,7 @@ import { authOptions } from "@/lib/auth"
 
 import { IraCard } from "./_components/ira-card"
 import { MaintenanceNotice } from "./_components/maintenance-notice"
+import { ReportHeading } from "./_components/report-heading"
 import { TableGrades } from "./_components/table-grades"
 
 export default async function Dashboard() {
@@ -23,17 +24,13 @@ export default async function Dashboard() {
   ])
 
   return (
-    <div className="space-y-8 pt-8 pb-28 lg:pt-12">
-      <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-6">
-        <div>
-          <h1 className="text-headline font-extrabold text-balance">
-            Quanto falta em cada disciplina.
-          </h1>
-          <p className="mt-4 max-w-xl text-pretty text-muted-foreground sm:text-lg">
-            A nota colorida é a que você precisa tirar em cada bimestre em
-            aberto pra fechar com média 60. Toque nela pra simular outra nota.
-          </p>
-        </div>
+    <div className="space-y-6 pt-6 pb-28 lg:pt-10">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <ReportHeading
+          period={gradesResponse.period}
+          course={studentData.course}
+          courseStage={studentData.courseStage}
+        />
         {studentData.success && studentData.ira?.trim() && (
           <IraCard ira={studentData.ira} />
         )}

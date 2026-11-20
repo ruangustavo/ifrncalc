@@ -14,8 +14,8 @@ export const TIER_SURFACE: Record<GradeTier, string> = {
   hard: "bg-grade-hard text-foreground",
 }
 
-export const TIER_RANGE: Record<GradeTier, string> = {
-  easy: "até 40",
-  reachable: "de 41 a 90",
-  hard: "acima de 90",
+export const TIER_BORDER: Record<GradeTier, string> = {
+  easy: "ring-grade-easy-border",
+  reachable: "ring-grade-reachable-border",
+  hard: "ring-grade-hard-border",
 }
