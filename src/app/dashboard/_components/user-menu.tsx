@@ -14,6 +14,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
+import { InstallMenuItem } from "./install/install-menu-item"
+
 function initialsOf(name: string) {
   return name
     .split(" ")
@@ -60,6 +62,7 @@ export function UserMenu() {
           )}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
+        <InstallMenuItem />
         <DropdownMenuItem variant="destructive" onSelect={() => signOut()}>
           <HugeiconsIcon strokeWidth={2} icon={Logout03Icon} />
           Sair

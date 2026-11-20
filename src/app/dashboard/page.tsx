@@ -11,15 +11,40 @@ import { FeedbackCard } from "@/components/feedback-card"
 import { FEEDBACK_DISMISSED_COOKIE } from "@/components/feedback-cookie"
 import { authOptions } from "@/lib/auth"
 import { db } from "@/lib/db"
+import { visitedOnEarlierDay } from "@/lib/events"
 import { notifyError } from "@/lib/notify"
 import { StudentIdentitySchema, upsertStudent } from "@/lib/students"
 import { GradesProvider } from "@/store/grades"
 
+import { InstallBanner } from "./_components/install/install-banner"
+import {
+  DEV_SHOW_INSTALL_BANNER_COOKIE,
+  INSTALL_BANNER_DISMISSED_COOKIE,
+} from "./_components/install/install-cookie"
 import { IraCard } from "./_components/ira-card"
 import { MaintenanceNotice } from "./_components/maintenance-notice"
 import { ReportHeading } from "./_components/report-heading"
+import { StandaloneRefresh } from "./_components/standalone-refresh"
 import { TableGrades } from "./_components/table-grades"
 import { VisitRecorder } from "./_components/visit-recorder"
+
+async function isReturningStudent(
+  enrollmentId: string | undefined,
+): Promise<boolean> {
+  if (!db || !enrollmentId) {
+    return false
+  }
+
+  try {
+    return await visitedOnEarlierDay(db, enrollmentId)
+  } catch (error) {
+    notifyError("dashboard / install banner", {
+      message: error instanceof Error ? error.message : String(error),
+    })
+
+    return false
+  }
+}
 
 export default async function Dashboard() {
   const session = await getServerSession(authOptions)
@@ -28,13 +53,25 @@ export default async function Dashboard() {
     redirect("/")
   }
 
-  const [gradesResponse, studentData, cookieStore] = await Promise.all([
-    getGrades(),
-    getStudentData(),
-    cookies(),
-  ])
+  const [gradesResponse, studentData, cookieStore, returning] =
+    await Promise.all([
+      getGrades(),
+      getStudentData(),
+      cookies(),
+      isReturningStudent(session.user.id),
+    ])
 
   const feedbackDismissed = cookieStore.has(FEEDBACK_DISMISSED_COOKIE)
+
+  const devShowsInstallBanner =
+    process.env.NODE_ENV === "development" &&
+    cookieStore.get(DEV_SHOW_INSTALL_BANNER_COOKIE)?.value === "1"
+
+  const showInstallBanner =
+    devShowsInstallBanner ||
+    (feedbackDismissed &&
+      !cookieStore.has(INSTALL_BANNER_DISMISSED_COOKIE) &&
+      returning)
 
   after(async () => {
     const identity = StudentIdentitySchema.safeParse(session)
@@ -66,6 +103,7 @@ export default async function Dashboard() {
         {studentData.ira !== undefined && <IraCard ira={studentData.ira} />}
       </div>
       {!feedbackDismissed && <FeedbackBanner user={session.user} />}
+      {showInstallBanner && <InstallBanner />}
       <GradesProvider
         scope={{ kind: "student", onGradeSimulated: recordGradeSimulated }}
       >
@@ -74,6 +112,7 @@ export default async function Dashboard() {
       <FeedbackCard user={session.user} />
       <MaintenanceNotice />
       <VisitRecorder />
+      <StandaloneRefresh />
     </div>
   )
 }

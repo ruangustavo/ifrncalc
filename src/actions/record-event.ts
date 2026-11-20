@@ -11,6 +11,7 @@ import {
   type AppEvent,
   DISPLAY_MODES,
   type DisplayMode,
+  type InstallGuideSource,
   recordEvent,
 } from "@/lib/events"
 import { notifyError } from "@/lib/notify"
@@ -59,4 +60,27 @@ export async function recordVisit(requested: DisplayMode): Promise<void> {
 
 export async function recordGradeSimulated(): Promise<void> {
   await recordForCurrentStudent({ type: "grade_simulated" })
+}
+
+const InstallGuideSourceSchema = z.enum(["banner", "menu"])
+
+export async function recordInstallGuideOpened(
+  requested: InstallGuideSource,
+): Promise<void> {
+  const source = InstallGuideSourceSchema.safeParse(requested)
+
+  if (!source.success) {
+    return
+  }
+
+  await recordForCurrentStudent({
+    type:
+      source.data === "banner"
+        ? "install_guide_opened_banner"
+        : "install_guide_opened_menu",
+  })
+}
+
+export async function recordAppInstalled(): Promise<void> {
+  await recordForCurrentStudent({ type: "app_installed" })
 }

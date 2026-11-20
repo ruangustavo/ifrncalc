@@ -5,6 +5,8 @@ import { SignInButton } from "@/app/(app)/_components/sign-in-button"
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
 
+import { InstallGuide } from "./install/install-guide"
+import { InstallScenarioPicker } from "./install/install-scenario-picker"
 import { MobileTabBar } from "./mobile-tab-bar"
 import { NavLink } from "./nav-link"
 import { UserMenu } from "./user-menu"
@@ -14,7 +16,7 @@ type Viewer = "member" | "guest" | "pending"
 export function Header({ viewer = "member" }: { viewer?: Viewer }) {
   return (
     <>
-      <header className="sticky top-0 z-50 bg-chrome text-chrome-foreground">
+      <header className="sticky top-0 z-50 bleed-safe-top bg-chrome text-chrome-foreground">
         <div className="mx-auto flex h-14 max-w-7xl items-stretch gap-2 px-4 sm:px-6 md:grid md:grid-cols-3 lg:h-16 lg:px-8">
           <Link
             href="/"
@@ -49,7 +51,13 @@ export function Header({ viewer = "member" }: { viewer?: Viewer }) {
           )}
         </div>
       </header>
-      {viewer === "member" && <MobileTabBar />}
+      {viewer === "member" && (
+        <>
+          <MobileTabBar />
+          <InstallGuide />
+          {process.env.NODE_ENV === "development" && <InstallScenarioPicker />}
+        </>
+      )}
     </>
   )
 }
