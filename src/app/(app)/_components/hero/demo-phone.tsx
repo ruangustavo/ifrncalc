@@ -150,23 +150,25 @@ export function DemoPhone({ onFrame }: { onFrame: (frame: Frame) => void }) {
               >
                 <span className="absolute top-[11px] left-1/2 z-20 h-[37px] w-[125px] -translate-x-1/2 rounded-full bg-black" />
                 <span className="absolute bottom-2 left-1/2 z-20 h-[5px] w-[134px] -translate-x-1/2 rounded-full bg-foreground" />
-                <StatusBar />
-                <div className="flex h-14 items-center justify-between bg-chrome px-4 text-chrome-foreground">
-                  <span className="flex items-center gap-2 text-lg font-bold tracking-tight">
-                    <BrandMark
-                      className="size-5"
-                      dotClassName="fill-grade-hard"
-                    />
-                    IFRN Calc
-                  </span>
-                  <span className="flex h-8 items-center gap-1 rounded-[10px] bg-chrome-foreground px-2.5 text-sm font-medium text-chrome">
-                    Entrar
-                    <HugeiconsIcon
-                      strokeWidth={2}
-                      icon={ArrowRight02Icon}
-                      className="size-4"
-                    />
-                  </span>
+                <div className="bg-chrome">
+                  <StatusBar />
+                  <div className="flex h-14 items-center justify-between bg-chrome px-4 text-chrome-foreground">
+                    <span className="flex items-center gap-2 text-lg font-bold tracking-tight">
+                      <BrandMark
+                        className="size-5"
+                        dotClassName="fill-grade-hard"
+                      />
+                      IFRN Calc
+                    </span>
+                    <span className="flex h-8 items-center gap-1 rounded-[10px] bg-chrome-foreground px-2.5 text-sm font-medium text-chrome">
+                      Entrar
+                      <HugeiconsIcon
+                        strokeWidth={2}
+                        icon={ArrowRight02Icon}
+                        className="size-4"
+                      />
+                    </span>
+                  </div>
                 </div>
 
                 <div className="space-y-6 px-4 pt-6">

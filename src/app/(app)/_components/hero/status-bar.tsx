@@ -1,6 +1,6 @@
 export function StatusBar() {
   return (
-    <div className="flex h-[54px] items-end justify-between bg-chrome px-8 pb-2.5 text-chrome-foreground">
+    <div className="flex h-[54px] items-end justify-between px-8 pb-2.5 text-chrome-foreground">
       <span className="w-[54px] text-center text-[17px] leading-none font-semibold tracking-tight">
         9:41
       </span>
