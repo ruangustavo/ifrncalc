@@ -44,6 +44,8 @@ export function GradeRuler({
   const scroller = useRef<HTMLDivElement>(null)
   const drag = useRef<{ x: number; left: number } | null>(null)
   const initialValue = useRef(value)
+  const scrollingTo = useRef<number | null>(null)
+  const reported = useRef(value)
 
   useEffect(() => {
     const node = scroller.current
@@ -54,8 +56,14 @@ export function GradeRuler({
   useEffect(() => {
     const node = scroller.current
 
-    if (!node || Math.round(node.scrollLeft / STEP) === value) return
+    if (
+      !node ||
+      value === reported.current ||
+      Math.round(node.scrollLeft / STEP) === value
+    )
+      return
 
+    scrollingTo.current = value
     node.scrollTo({ left: value * STEP, behavior: scrollBehavior() })
   }, [value])
 
@@ -74,7 +82,16 @@ export function GradeRuler({
         onScroll={(event) => {
           const next = clamp(Math.round(event.currentTarget.scrollLeft / STEP))
 
-          if (next !== value) onChange(next)
+          if (scrollingTo.current !== null) {
+            if (next === scrollingTo.current) scrollingTo.current = null
+
+            return
+          }
+
+          if (next === value) return
+
+          reported.current = next
+          onChange(next)
         }}
         onKeyDown={(event) => {
           const delta = KEY_DELTAS.get(event.key)
@@ -84,7 +101,12 @@ export function GradeRuler({
           event.preventDefault()
           onChange(clamp(value + delta))
         }}
+        onWheel={() => {
+          scrollingTo.current = null
+        }}
         onPointerDown={(event) => {
+          scrollingTo.current = null
+
           if (event.pointerType !== "mouse") return
 
           event.currentTarget.setPointerCapture(event.pointerId)
