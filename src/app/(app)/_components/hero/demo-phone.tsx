@@ -7,7 +7,7 @@ import {
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import Link from "next/link"
-import { useRef } from "react"
+import { useEffect, useRef } from "react"
 
 import { DisciplineMeta } from "@/app/dashboard/_components/discipline-meta"
 import { toDisciplines } from "@/lib/suap/boletim"
@@ -21,7 +21,7 @@ import { neededAt, recalculateGrades } from "@/utils/grade-calculation"
 import { gradeTier, TIER_BORDER, TIER_SURFACE } from "@/utils/grade-tier"
 
 import { BrandMark } from "../brand-mark"
-import { useDemoStory } from "./use-demo-story"
+import { type Frame, useDemoStory } from "./use-demo-story"
 
 const SCREEN = { width: 390, height: 800, scale: 304 / 390 }
 const DISCIPLINES = toDisciplines(DEMO_BOLETIM).slice(0, 4)
@@ -65,13 +65,18 @@ function tileBody(label: string, value: number, editable: boolean) {
 const tile =
   "flex h-14 flex-col items-center justify-center gap-1 rounded-2xl tabular-nums transition-[background-color,box-shadow,transform] duration-200 ease-out"
 
-export function DemoPhone() {
+export function DemoPhone({ onFrame }: { onFrame: (frame: Frame) => void }) {
   const screen = useRef<HTMLDivElement>(null)
-  const { phase, value } = useDemoStory(screen, TODAY, TARGET)
+  const frame = useDemoStory(screen, TODAY, TARGET)
+  const { phase, value } = frame
 
   const sheetOpen = phase === "sheet" || phase === "saving"
   const saved = phase === "saved"
   const fourth = fourthAfter(value)
+
+  useEffect(() => {
+    onFrame(frame)
+  }, [onFrame, frame])
 
   return (
     <figure className="flex flex-col items-center">
@@ -172,6 +177,7 @@ export function DemoPhone() {
                           </span>
                         </div>
                         <div
+                          data-anchor={isMath ? "third" : undefined}
                           className={cn(
                             "relative",
                             tile,
@@ -193,7 +199,10 @@ export function DemoPhone() {
                             />
                           )}
                         </div>
-                        <div className={cn(tile, tierTile(fourthNeeded))}>
+                        <div
+                          data-anchor={isMath ? "fourth" : undefined}
+                          className={cn(tile, tierTile(fourthNeeded))}
+                        >
                           {tileBody("4º Bim", fourthNeeded, true)}
                         </div>
                       </div>
@@ -227,7 +236,10 @@ export function DemoPhone() {
               <p className="mt-6 text-center text-sm text-muted-foreground">
                 Se tirar no 3º
               </p>
-              <p className="mt-1 text-center text-7xl leading-none font-extrabold tracking-tighter tabular-nums">
+              <p
+                data-anchor="value"
+                className="mt-1 text-center text-7xl leading-none font-extrabold tracking-tighter tabular-nums"
+              >
                 {value}
               </p>
 
