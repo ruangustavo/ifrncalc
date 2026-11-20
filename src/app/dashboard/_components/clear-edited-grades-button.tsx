@@ -13,16 +13,17 @@ export function ClearEditedGradesButton() {
 
   const handleClearEditedGrades = () => {
     clearEditedGrades()
-    toast.success("As notas editadas foram limpas com sucesso!")
+    toast.success("As notas simuladas foram limpas.")
   }
 
   return (
     <>
-      <ClearButton
-        onClick={handleClearEditedGrades}
-        disabled={isEmptyGrades}
-        className="ml-auto hidden md:flex"
-      />
+      {!isEmptyGrades && (
+        <ClearButton
+          onClick={handleClearEditedGrades}
+          className="ml-auto hidden md:flex"
+        />
+      )}
 
       <AnimatePresence>
         {!isEmptyGrades && (
@@ -31,11 +32,13 @@ export function ClearEditedGradesButton() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ type: "spring", stiffness: 260, damping: 20 }}
-            className="fixed right-0 bottom-4 left-0 z-10 mx-auto w-full max-w-[calc(100%-2rem)] px-4 md:hidden"
+            className="fixed inset-x-4 bottom-4 z-10 md:hidden"
           >
             <ClearButton
+              size="xl"
+              variant="default"
               onClick={handleClearEditedGrades}
-              className="w-full justify-center"
+              className="w-full"
             />
           </motion.div>
         )}

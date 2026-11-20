@@ -6,12 +6,15 @@ import { Button } from "@/components/ui/button"
 import {
   Credenza,
   CredenzaContent,
+  CredenzaDescription,
   CredenzaFooter,
   CredenzaHeader,
   CredenzaTitle,
 } from "@/components/ui/credenza"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+
+import { STAGES } from "./stages"
 
 interface EditGradeModalProps {
   isOpen: boolean
@@ -45,9 +48,11 @@ export function EditGradeModal({
     <Credenza open={isOpen} onOpenChange={onClose}>
       <CredenzaContent className="mx-auto sm:max-w-[425px]">
         <CredenzaHeader>
-          <CredenzaTitle>
-            Editar nota - {disciplineName} ({stage})
-          </CredenzaTitle>
+          <CredenzaTitle>Simular nota</CredenzaTitle>
+          <CredenzaDescription>
+            {disciplineName} ·{" "}
+            {STAGES.find(({ key }) => key === stage)?.label ?? stage}
+          </CredenzaDescription>
         </CredenzaHeader>
         <form onSubmit={handleSubmit} className="p-4 md:p-0">
           <div className="grid gap-4 py-6 md:mb-2 md:py-0">
@@ -56,11 +61,12 @@ export function EditGradeModal({
               <Input
                 id="grade"
                 type="number"
+                inputMode="decimal"
                 min="0"
                 max="100"
                 value={grade}
                 onChange={(e) => setGrade(e.target.value)}
-                placeholder="Digite a nota..."
+                placeholder="0 a 100"
                 className="col-span-3"
               />
             </div>

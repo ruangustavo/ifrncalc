@@ -16,9 +16,10 @@ export function NavLink({ className, children, ...props }: NavLinkProps) {
 
   return (
     <Link
+      aria-current={isActive ? "page" : undefined}
       className={cn(
-        "text-sm font-semibold text-muted-foreground transition-colors hover:text-primary",
-        isActive && "text-primary",
+        "rounded-full px-3 py-1.5 text-sm font-medium text-chrome-foreground/70 transition-colors duration-150 hover:text-chrome-foreground",
+        isActive && "bg-chrome-foreground/10 text-chrome-foreground",
         className,
       )}
       {...props}

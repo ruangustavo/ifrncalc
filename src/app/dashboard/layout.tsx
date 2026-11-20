@@ -13,7 +13,9 @@ export default function DashboardLayout({
   return (
     <>
       <Header />
-      <main className="container flex-1 pt-4 md:pt-0">{children}</main>
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 sm:px-6 lg:px-8">
+        {children}
+      </main>
     </>
   )
 }
