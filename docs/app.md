@@ -20,6 +20,7 @@ Light theme only, palette **Folha**: cream surfaces, green text and actions. Tok
 | `grade-easy` | Cell or badge for a needed grade up to 40 |
 | `grade-reachable` | Needed grade from 41 to 90 |
 | `grade-hard` | Needed grade above 90 |
+| `grade-*-border` | Outline of a tile painted with the matching `grade-*` |
 
 Text on any `grade-*` surface uses `text-foreground`. The tier logic lives in `src/utils/grade-tier.ts`; reach for its helpers instead of choosing a `grade-*` class by hand.
 

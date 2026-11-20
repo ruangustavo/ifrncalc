@@ -54,6 +54,9 @@
   --color-grade-easy: var(--grade-easy);
   --color-grade-reachable: var(--grade-reachable);
   --color-grade-hard: var(--grade-hard);
+  --color-grade-easy-border: var(--grade-easy-border);
+  --color-grade-reachable-border: var(--grade-reachable-border);
+  --color-grade-hard-border: var(--grade-hard-border);
   --color-highlight: var(--highlight);
   --font-heading: var(--font-sans);
   --font-display: var(--font-display-face, var(--font-sans));
@@ -124,6 +127,9 @@
   --grade-easy: oklch(0.88 0.13 140);
   --grade-reachable: oklch(0.9 0.12 95);
   --grade-hard: oklch(0.8 0.1 30);
+  --grade-easy-border: oklch(0.78 0.14 140);
+  --grade-reachable-border: oklch(0.8 0.13 90);
+  --grade-hard-border: oklch(0.7 0.12 30);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);

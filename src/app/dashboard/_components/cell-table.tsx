@@ -8,7 +8,7 @@ import type { Discipline } from "@/actions/get-grades"
 import { cn } from "@/lib/utils"
 import { useGradesStore } from "@/store/grades"
 import { recalculateGrades } from "@/utils/grade-calculation"
-import { gradeTier, TIER_SURFACE } from "@/utils/grade-tier"
+import { gradeTier, TIER_BORDER, TIER_SURFACE } from "@/utils/grade-tier"
 import { mockDisciplineGrades } from "@/utils/mock-utils"
 
 import { EditGradeModal } from "./edit-grade-modal"
@@ -104,7 +104,11 @@ export function CellTable({
     const tile = cn(
       "flex h-14 flex-col items-center justify-center gap-1 rounded-2xl tabular-nums",
       view.kind === "needed" &&
-        cn(TIER_SURFACE[gradeTier(view.value)], "ring-1 ring-foreground/10"),
+        cn(
+          "ring-1",
+          TIER_SURFACE[gradeTier(view.value)],
+          TIER_BORDER[gradeTier(view.value)],
+        ),
       view.kind === "simulated" &&
         "border-2 border-dashed border-foreground/30 bg-card",
     )
