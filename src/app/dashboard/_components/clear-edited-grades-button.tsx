@@ -32,7 +32,7 @@ export function ClearEditedGradesButton() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ type: "spring", stiffness: 260, damping: 20 }}
-            className="fixed inset-x-4 bottom-4 z-10 md:hidden"
+            className="fixed inset-x-4 bottom-20 z-10 md:hidden"
           >
             <ClearButton
               size="xl"

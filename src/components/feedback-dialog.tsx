@@ -67,7 +67,7 @@ export function FeedbackDialog({ user }: FeedbackDialogProps) {
   const isEmptyGrades = Object.keys(editedGrades).length === 0
 
   return (
-    <div className={cn(isEmptyGrades ? "fixed right-4 bottom-4" : "hidden")}>
+    <div className={cn(isEmptyGrades ? "fixed right-4 bottom-20 md:bottom-4" : "hidden")}>
       <Credenza open={open} onOpenChange={setOpen}>
         <CredenzaTrigger asChild>
           <Button title="Enviar feedback" size="lg">
