@@ -179,6 +179,14 @@ export default function ProvaFinal() {
               Organização Didática do IFRN, Art. 335, § 1º
             </footer>
           </blockquote>
+          <p className={P}>
+            A frequência mínima conta pelo total do período, somando todas as
+            disciplinas. Veja{" "}
+            <Link href="/faltas" className={LINK}>
+              como funcionam as faltas no IFRN
+            </Link>
+            .
+          </p>
 
           <h2 className={H2}>Como a média final é calculada?</h2>
           <p className={P}>

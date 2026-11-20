@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next"
 
 import { siteConfig } from "@/config/site"
 
+import { GUIDE as ATTENDANCE_GUIDE } from "./faltas/guide"
 import { GUIDE } from "./prova-final/guide"
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -23,6 +24,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: `${baseUrl}${GUIDE.path}`,
       lastModified: GUIDE.modified,
+    },
+    {
+      url: `${baseUrl}${ATTENDANCE_GUIDE.path}`,
+      lastModified: ATTENDANCE_GUIDE.modified,
     },
     {
       url: `${baseUrl}/dashboard`,
