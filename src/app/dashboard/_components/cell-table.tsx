@@ -5,6 +5,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { useMemo, useState } from "react"
 
 import type { Discipline } from "@/actions/get-grades"
+import { recordGradeSimulated } from "@/actions/record-event"
 import { cn } from "@/lib/utils"
 import { useGradesStore } from "@/store/grades"
 import { recalculateGrades, type StageKey } from "@/utils/grade-calculation"
@@ -76,6 +77,7 @@ export function CellTable({
 
   const handleEdit = (newGrade: number) => {
     setGrade(discipline.name, stageKey, newGrade)
+    void recordGradeSimulated()
   }
 
   const hasMultipleAvailableStages =

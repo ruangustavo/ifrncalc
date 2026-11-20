@@ -4,13 +4,13 @@ import { getServerSession } from "next-auth"
 
 import { authOptions } from "@/lib/auth"
 import { notifyError } from "@/lib/notify"
+import type { AcademicProfile } from "@/lib/students"
 import { meusDadosAluno } from "@/lib/suap/generated/client"
 
 export interface GetStudentDataResponse {
   success: boolean
   ira?: string
-  course?: string
-  courseStage?: number
+  academic?: AcademicProfile
   message?: string
 }
 
@@ -52,8 +52,12 @@ export async function getStudentData(): Promise<GetStudentDataResponse> {
     return {
       success: true,
       ira: response.data.ira,
-      course: response.data.curso,
-      courseStage: response.data.periodo_referencia,
+      academic: {
+        course: response.data.curso,
+        entryTerm: response.data.ingresso,
+        currentPeriod: response.data.periodo_referencia,
+        enrollmentStatus: response.data.situacao,
+      },
     }
   } catch (error) {
     console.error("Error in getStudentData:", error)

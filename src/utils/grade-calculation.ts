@@ -2,10 +2,7 @@ import type { Discipline } from "@/actions/get-grades"
 
 const BIMESTER_WEIGHTS = [2, 2, 3, 3]
 
-export function getWeight(
-  currentIndex: number,
-  numberOfAssessments: number,
-): number {
+function getWeight(currentIndex: number, numberOfAssessments: number): number {
   const isSemester = numberOfAssessments === 2
 
   return isSemester

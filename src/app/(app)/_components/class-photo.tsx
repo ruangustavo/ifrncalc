@@ -7,7 +7,7 @@ import {
   useSpring,
   useTransform,
   useVelocity,
-} from "framer-motion"
+} from "motion/react"
 import Image from "next/image"
 import { type PointerEvent, type ReactNode, useRef } from "react"
 

@@ -1,5 +1,3 @@
-import { Analytics } from "@vercel/analytics/react"
-
 import "./globals.css"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
@@ -187,7 +185,6 @@ export default function RootLayout({
       </head>
       <body className="flex min-h-dvh flex-col antialiased">
         <Providers>{children}</Providers>
-        <Analytics />
         <Toaster />
       </body>
     </html>
