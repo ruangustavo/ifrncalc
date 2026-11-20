@@ -67,3 +67,70 @@ export function recalculateGrades(
         : -1,
   }))
 }
+
+export type StageKey = "E1" | "E2" | "E3" | "E4"
+
+export const STAGE_KEYS: StageKey[] = ["E1", "E2", "E3", "E4"]
+
+export type SimulationOutcome =
+  | { kind: "needed"; needed: number; stages: StageKey[] }
+  | { kind: "secured"; stages: StageKey[] }
+  | { kind: "impossible"; needed: number; stages: StageKey[] }
+  | { kind: "final"; average: number }
+
+export function neededAt(
+  discipline: Discipline,
+  editedGrades: Record<string, number>,
+  stage: StageKey,
+) {
+  const { [stage]: _ignored, ...others } = editedGrades
+
+  return recalculateGrades(discipline, others)[STAGE_KEYS.indexOf(stage)]
+    .passingGrade
+}
+
+export function simulateGrade(
+  discipline: Discipline,
+  editedGrades: Record<string, number>,
+  stage: StageKey,
+  grade: number,
+): SimulationOutcome {
+  const next = { ...editedGrades, [stage]: grade }
+  const recalculated = recalculateGrades(discipline, next)
+
+  const open = STAGE_KEYS.filter(
+    (key, index) =>
+      next[key] === undefined &&
+      discipline[key].grade === null &&
+      recalculated[index].passingGrade >= 0,
+  )
+
+  if (open.length === 0) {
+    const assessed = STAGE_KEYS.filter(
+      (_, index) => recalculated[index].passingGrade >= 0,
+    )
+
+    const weights = assessed.map((_, index) =>
+      getWeight(index, assessed.length),
+    )
+
+    const total = assessed.reduce(
+      (sum, key, index) =>
+        sum + (next[key] ?? discipline[key].grade ?? 0) * weights[index],
+      0,
+    )
+
+    return {
+      kind: "final",
+      average: total / weights.reduce((a, b) => a + b, 0),
+    }
+  }
+
+  const needed = recalculated[STAGE_KEYS.indexOf(open[0])].passingGrade
+
+  if (needed === 0) return { kind: "secured", stages: open }
+
+  if (needed > 100) return { kind: "impossible", needed, stages: open }
+
+  return { kind: "needed", needed, stages: open }
+}

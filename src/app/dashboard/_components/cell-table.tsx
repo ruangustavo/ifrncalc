@@ -7,14 +7,14 @@ import { useMemo, useState } from "react"
 import type { Discipline } from "@/actions/get-grades"
 import { cn } from "@/lib/utils"
 import { useGradesStore } from "@/store/grades"
-import { recalculateGrades } from "@/utils/grade-calculation"
+import { recalculateGrades, type StageKey } from "@/utils/grade-calculation"
 import { gradeTier, TIER_BORDER, TIER_SURFACE } from "@/utils/grade-tier"
 import { mockDisciplineGrades } from "@/utils/mock-utils"
 
 import { EditGradeModal } from "./edit-grade-modal"
 
 interface CellTableProps {
-  stageKey: `E${number}`
+  stageKey: StageKey
   discipline: Discipline
   compact?: boolean
   shortLabel?: string
@@ -88,7 +88,8 @@ export function CellTable({
       isOpen={isEditModalOpen}
       onClose={() => setIsEditModalOpen(false)}
       onSubmit={handleEdit}
-      disciplineName={discipline.name}
+      discipline={mockedDiscipline}
+      editedGrades={editedDisciplineGrades ?? {}}
       stage={stageKey}
     />
   )
