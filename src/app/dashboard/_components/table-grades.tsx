@@ -10,6 +10,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { disciplineOutlook, type FinalExamOutlook } from "@/utils/final-exam"
 
+import { AttendanceMeter } from "./attendance-meter"
+import { AttendanceSummary } from "./attendance-summary"
 import { CellTable } from "./cell-table"
 import { ClearEditedGradesButton } from "./clear-edited-grades-button"
 import { DisciplineMeta } from "./discipline-meta"
@@ -91,7 +93,10 @@ export function TableGrades({ gradesResponse }: TableGradesProps) {
         <ul className="divide-y overflow-hidden rounded-3xl bg-card ring-1 ring-foreground/10 md:hidden">
           {rows.map(({ grade, outlook }) => (
             <li key={grade.id} className="@container px-4 pt-3.5 pb-4">
-              <h3 className="font-bold">{grade.name}</h3>
+              <div className="flex items-baseline justify-between gap-3">
+                <h3 className="font-bold">{grade.name}</h3>
+                <AttendanceSummary attendance={grade.attendance} />
+              </div>
               <DisciplineMeta discipline={grade} />
               <div className="mt-3 grid grid-cols-4 gap-2 @max-[15rem]:grid-cols-2">
                 {STAGES.map(({ key, shortLabel }) => (
@@ -118,6 +123,7 @@ export function TableGrades({ gradesResponse }: TableGradesProps) {
                     {label}
                   </th>
                 ))}
+                <th className="w-64 px-6 py-4 font-semibold">Frequência</th>
               </tr>
             </thead>
             <tbody>
@@ -135,6 +141,9 @@ export function TableGrades({ gradesResponse }: TableGradesProps) {
                       <CellTable discipline={grade} stageKey={key} />
                     </td>
                   ))}
+                  <td className="px-6 py-4">
+                    <AttendanceMeter attendance={grade.attendance} />
+                  </td>
                 </tr>
               ))}
             </tbody>

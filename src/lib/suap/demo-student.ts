@@ -15,6 +15,11 @@ export const DEMO_PERIOD: MeuPeriodoSchema = {
   periodo_letivo: 1,
 }
 
+interface DemoAttendance {
+  classesHeld: number
+  absences: number
+}
+
 function discipline(
   code: string,
   name: string,
@@ -22,6 +27,7 @@ function discipline(
   grades:
     | [number | null, number | null]
     | [number | null, number | null, number | null, number | null],
+  { classesHeld, absences }: DemoAttendance,
   average: number | null = null,
 ): BoletimSchema {
   const [e1, e2, e3, e4] = grades
@@ -29,6 +35,10 @@ function discipline(
   return {
     disciplina: `${code} - ${name}(${DEMO_PERIOD.ano_letivo}.${DEMO_PERIOD.periodo_letivo})`,
     carga_horaria: hours,
+    carga_horaria_cumprida: classesHeld,
+    numero_faltas: absences,
+    percentual_carga_horaria_frequentada:
+      ((classesHeld - absences) / classesHeld) * 100,
     quantidade_avaliacoes: grades.length,
     nota_etapa_1: { nota: e1, faltas: 0 },
     nota_etapa_2: { nota: e2, faltas: 0 },
@@ -39,19 +49,45 @@ function discipline(
 }
 
 export const DEMO_BOLETIM: BoletimSchema[] = [
-  discipline("TEC.1402", "Matemática II", 120, [72, 65, null, null]),
-  discipline("TEC.1401", "Língua Portuguesa e Literatura II", 120, [
-    88,
-    79,
-    null,
-    null,
-  ]),
-  discipline("TEC.1405", "Física I", 90, [38, 45, null, null]),
-  discipline("TEC.1406", "Química II", 90, [10, 12, null, null]),
-  discipline("TEC.1409", "Geografia II", 60, [98, 96, null, null]),
-  discipline("TEC.1411", "Inglês II", 60, [95, 92, null, null]),
-  discipline("TEC.1431", "Programação Orientada a Objetos", 120, [85, null]),
-  discipline("TEC.1433", "Autoria Web", 60, [70, 82], 77),
+  discipline("TEC.1402", "Matemática II", 120, [72, 65, null, null], {
+    classesHeld: 64,
+    absences: 4,
+  }),
+  discipline(
+    "TEC.1401",
+    "Língua Portuguesa e Literatura II",
+    120,
+    [88, 79, null, null],
+    { classesHeld: 64, absences: 2 },
+  ),
+  discipline("TEC.1405", "Física I", 90, [38, 45, null, null], {
+    classesHeld: 48,
+    absences: 6,
+  }),
+  discipline("TEC.1406", "Química II", 90, [10, 12, null, null], {
+    classesHeld: 48,
+    absences: 11,
+  }),
+  discipline("TEC.1409", "Geografia II", 60, [98, 96, null, null], {
+    classesHeld: 32,
+    absences: 0,
+  }),
+  discipline("TEC.1411", "Inglês II", 60, [95, 92, null, null], {
+    classesHeld: 32,
+    absences: 2,
+  }),
+  discipline("TEC.1431", "Programação Orientada a Objetos", 120, [85, null], {
+    classesHeld: 72,
+    absences: 8,
+  }),
+  discipline(
+    "TEC.1433",
+    "Autoria Web",
+    60,
+    [70, 82],
+    { classesHeld: 60, absences: 4 },
+    77,
+  ),
 ]
 
 export const DEMO_STUDENT_DATA: MeusDadosAluno = {

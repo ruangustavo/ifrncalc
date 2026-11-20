@@ -81,6 +81,7 @@ const discipline = (
   name: "Matemática III",
   hours: 120,
   partialAverage: null,
+  attendance: null,
   finalExamGrade,
   E1: stage(grades[0] ?? null, grades.length > 0),
   E2: stage(grades[1] ?? null, grades.length > 1),
