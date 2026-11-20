@@ -1,5 +1,5 @@
 import "./globals.css"
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
 import Script from "next/script"
 
@@ -154,6 +154,13 @@ export const metadata: Metadata = {
   },
 }
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#115629",
+}
+
 export default function RootLayout({
   children,
 }: {
@@ -165,10 +172,6 @@ export default function RootLayout({
       className={cn(inter.variable, displayFont.variable, handFont.variable)}
     >
       <head>
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, viewport-fit=cover"
-        />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta
           name="apple-mobile-web-app-status-bar-style"
@@ -176,7 +179,6 @@ export default function RootLayout({
         />
         <meta name="apple-mobile-web-app-title" content="IFRN Calc" />
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="theme-color" content="#16a34a" />
         <meta name="msapplication-TileColor" content="#16a34a" />
         {process.env.NODE_ENV === "development" && (
           <Script

@@ -7,9 +7,9 @@ export default function manifest(): MetadataRoute.Manifest {
     description:
       "Calculadora de médias para estudantes do Instituto Federal do Rio Grande do Norte",
     start_url: "/",
-    display: "fullscreen",
+    display: "standalone",
     background_color: "#0b2519",
-    theme_color: "#0b2519",
+    theme_color: "#115629",
     orientation: "portrait-primary",
     categories: ["education", "productivity", "utilities"],
     lang: "pt-BR",

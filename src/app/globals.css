@@ -2,6 +2,11 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+@utility bleed-safe-top {
+  margin-top: calc(-1 * env(safe-area-inset-top));
+  padding-top: env(safe-area-inset-top);
+}
+
 @utility container {
   margin-inline: auto;
   padding-inline: 1rem;
@@ -22,6 +27,23 @@
   }
   html {
     @apply font-sans;
+    -webkit-tap-highlight-color: transparent;
+  }
+  a,
+  button,
+  input,
+  label,
+  select,
+  textarea,
+  [role="button"],
+  [role="tab"] {
+    touch-action: manipulation;
+  }
+}
+
+@media (display-mode: standalone), (display-mode: fullscreen) {
+  html {
+    overscroll-behavior-y: none;
   }
 }
 
