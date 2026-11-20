@@ -33,6 +33,10 @@
       "name": "anti-slop",
       "specifier": "./tools/oxlint/anti-slop/index.ts"
     },
+    {
+      "name": "design-system",
+      "specifier": "./tools/oxlint/design-system/index.ts"
+    },
     "@shadcn/lint"
   ],
   "rules": {
@@ -77,7 +81,8 @@
       }
     ],
     "shadcn/no-inline-styles": "error",
-    "shadcn/require-static-classes": "error"
+    "shadcn/require-static-classes": "error",
+    "design-system/no-landing-tokens": "error"
   },
   "overrides": [
     {
@@ -96,7 +101,8 @@
         "shadcn/no-raw-colors": "off",
         "shadcn/no-restyle": "off",
         "shadcn/no-inline-styles": "off",
-        "shadcn/require-static-classes": "off"
+        "shadcn/require-static-classes": "off",
+        "design-system/no-landing-tokens": "off"
       }
     },
     {
