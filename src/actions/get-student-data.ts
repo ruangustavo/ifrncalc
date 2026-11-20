@@ -3,13 +3,14 @@
 import { getServerSession } from "next-auth"
 
 import { authOptions } from "@/lib/auth"
+import { parseIra } from "@/lib/ira"
 import { notifyError } from "@/lib/notify"
 import type { AcademicProfile } from "@/lib/students"
 import { meusDadosAluno } from "@/lib/suap/generated/client"
 
 export interface GetStudentDataResponse {
   success: boolean
-  ira?: string
+  ira?: number
   academic?: AcademicProfile
   message?: string
 }
@@ -51,7 +52,7 @@ export async function getStudentData(): Promise<GetStudentDataResponse> {
 
     return {
       success: true,
-      ira: response.data.ira,
+      ira: parseIra(response.data.ira) ?? undefined,
       academic: {
         course: response.data.curso,
         entryTerm: response.data.ingresso,

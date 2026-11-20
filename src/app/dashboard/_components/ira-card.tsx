@@ -8,12 +8,15 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { formatIra } from "@/lib/ira"
 
-export function IraCard({ ira }: { ira: string }) {
+export function IraCard({ ira }: { ira: number }) {
   return (
     <p className="flex items-center gap-1 text-sm text-muted-foreground">
       IRA
-      <span className="font-semibold text-foreground tabular-nums">{ira}</span>
+      <span className="font-semibold text-foreground tabular-nums">
+        {formatIra(ira)}
+      </span>
       <Tooltip>
         <TooltipTrigger asChild>
           <button

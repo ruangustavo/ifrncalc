@@ -1,6 +1,7 @@
 import { IraCard } from "@/app/dashboard/_components/ira-card"
 import { ReportHeading } from "@/app/dashboard/_components/report-heading"
 import { TableGrades } from "@/app/dashboard/_components/table-grades"
+import { parseIra } from "@/lib/ira"
 import { toDisciplines } from "@/lib/suap/boletim"
 import {
   DEMO_BOLETIM,
@@ -18,6 +19,8 @@ const period = {
   term: DEMO_PERIOD.periodo_letivo,
 }
 
+const demoIra = parseIra(DEMO_STUDENT_DATA.ira)
+
 export default function Demo() {
   return (
     <div className="space-y-6 pt-6 pb-28 lg:pt-10">
@@ -29,7 +32,7 @@ export default function Demo() {
           course={DEMO_STUDENT_DATA.curso}
           courseStage={DEMO_STUDENT_DATA.periodo_referencia}
         />
-        <IraCard ira={DEMO_STUDENT_DATA.ira} />
+        {demoIra !== null && <IraCard ira={demoIra} />}
       </div>
       <GradesProvider scope={{ kind: "demo" }}>
         <TableGrades
