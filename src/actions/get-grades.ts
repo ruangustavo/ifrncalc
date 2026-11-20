@@ -18,6 +18,7 @@ export interface Discipline {
   name: string
   hours: number
   partialAverage: number | null
+  finalExamGrade: number | null
   E1: StageGrade
   E2: StageGrade
   E3: StageGrade

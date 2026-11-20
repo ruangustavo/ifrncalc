@@ -33,7 +33,7 @@ export function isGradeOutOfRange(value: string) {
   return Number.isNaN(parsed) || parsed < 0 || parsed > MAX_GRADE
 }
 
-function parseGrade(value: string): number | null {
+export function parseGrade(value: string): number | null {
   if (value.trim() === "") return null
 
   return Number(value.replace(",", "."))

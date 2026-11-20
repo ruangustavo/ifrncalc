@@ -23,6 +23,7 @@ interface NormalizedDiscipline {
   quantidade_avaliacoes: number
   carga_horaria: number
   media_disciplina: number | null
+  nota_avaliacao_final: number | null
 }
 
 function resolveGrade(nota: NotaBoletimSchema | undefined): Grade {
@@ -44,6 +45,7 @@ function normalizeDiscipline(
     quantidade_avaliacoes: boletim.quantidade_avaliacoes ?? 0,
     carga_horaria: boletim.carga_horaria ?? 0,
     media_disciplina: boletim.media_disciplina ?? null,
+    nota_avaliacao_final: boletim.nota_avaliacao_final?.nota ?? null,
   }
 }
 
@@ -135,6 +137,7 @@ export function toDisciplines(results: BoletimSchema[]): Discipline[] {
         name: parseDisciplineName(discipline.disciplina),
         hours: discipline.carga_horaria,
         partialAverage: discipline.media_disciplina,
+        finalExamGrade: discipline.nota_avaliacao_final,
         E1: createStageGrade(discipline.nota_etapa_1, 1),
         E2: createStageGrade(discipline.nota_etapa_2, 2),
         E3: createStageGrade(discipline.nota_etapa_3, 3),

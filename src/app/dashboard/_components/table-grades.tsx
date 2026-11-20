@@ -8,16 +8,22 @@ import { Suspense } from "react"
 import type { GetGradesResponse } from "@/actions/get-grades"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
+import { disciplineOutlook, type FinalExamOutlook } from "@/utils/final-exam"
 
 import { CellTable } from "./cell-table"
 import { ClearEditedGradesButton } from "./clear-edited-grades-button"
 import { DisciplineMeta } from "./discipline-meta"
+import { FinalExamBand } from "./final-exam-band"
 import { STAGES } from "./stages"
 import { TableSkeleton } from "./table-skeleton"
 import { TierLegend } from "./tier-legend"
 
 interface TableGradesProps {
   gradesResponse: GetGradesResponse
+}
+
+function examRank(outlook: FinalExamOutlook | null) {
+  return outlook?.kind === "exam" ? outlook.needed : Number.POSITIVE_INFINITY
 }
 
 export function TableGrades({ gradesResponse }: TableGradesProps) {
@@ -72,6 +78,10 @@ export function TableGrades({ gradesResponse }: TableGradesProps) {
     )
   }
 
+  const rows = response.grades
+    .map((grade) => ({ grade, outlook: disciplineOutlook(grade) }))
+    .toSorted((a, b) => examRank(a.outlook) - examRank(b.outlook))
+
   return (
     <div className="space-y-4">
       <div className="flex justify-end empty:hidden">
@@ -79,7 +89,7 @@ export function TableGrades({ gradesResponse }: TableGradesProps) {
       </div>
       <Suspense fallback={<TableSkeleton />}>
         <ul className="divide-y overflow-hidden rounded-3xl bg-card ring-1 ring-foreground/10 md:hidden">
-          {response.grades.map((grade) => (
+          {rows.map(({ grade, outlook }) => (
             <li key={grade.id} className="@container px-4 pt-3.5 pb-4">
               <h3 className="font-bold">{grade.name}</h3>
               <DisciplineMeta discipline={grade} />
@@ -94,6 +104,7 @@ export function TableGrades({ gradesResponse }: TableGradesProps) {
                   />
                 ))}
               </div>
+              {outlook && <FinalExamBand outlook={outlook} />}
             </li>
           ))}
         </ul>
@@ -110,13 +121,14 @@ export function TableGrades({ gradesResponse }: TableGradesProps) {
               </tr>
             </thead>
             <tbody>
-              {response.grades.map((grade) => (
+              {rows.map(({ grade, outlook }) => (
                 <tr key={grade.id} className="border-b last:border-0">
                   <th scope="row" className="px-6 py-4 text-left">
                     <span className="text-lg leading-tight font-bold">
                       {grade.name}
                     </span>
                     <DisciplineMeta discipline={grade} />
+                    {outlook && <FinalExamBand outlook={outlook} />}
                   </th>
                   {STAGES.map(({ key }) => (
                     <td key={key} className="px-6 py-4">

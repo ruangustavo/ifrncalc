@@ -17,7 +17,8 @@ export const FAQ_ITEMS = [
   {
     question: "E se eu não fechar 60?",
     answer:
-      "Você faz a prova final, e a nota dela entra numa nova média, que também precisa chegar a 60. O IFRN Calc não faz essa conta: ele vai só até o último bimestre.",
+      "Você faz a prova final, e a nota dela entra numa nova média, que também precisa chegar a 60. Na página da prova final você descobre quanto precisa tirar.",
+    link: { href: "/prova-final", label: "Calcular a prova final" },
   },
   {
     question: "Saiu nota e ela não apareceu aqui. Por quê?",
