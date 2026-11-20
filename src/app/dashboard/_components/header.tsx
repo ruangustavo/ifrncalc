@@ -6,14 +6,14 @@ import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
 
 import { NavLink } from "./nav-link"
-import { SignOutButton } from "./sign-out-button"
+import { UserMenu } from "./user-menu"
 
 type Viewer = "member" | "guest" | "pending"
 
 export function Header({ viewer = "member" }: { viewer?: Viewer }) {
   return (
-    <header className="sticky top-0 z-50 border-b border-chrome-foreground/10 bg-chrome text-chrome-foreground">
-      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:h-16 lg:px-8">
+    <header className="sticky top-0 z-50 bg-chrome text-chrome-foreground">
+      <div className="mx-auto flex h-14 max-w-7xl items-stretch gap-2 px-4 sm:px-6 md:grid md:grid-cols-3 lg:h-16 lg:px-8">
         <Link
           href="/"
           aria-label={siteConfig.name}
@@ -26,15 +26,22 @@ export function Header({ viewer = "member" }: { viewer?: Viewer }) {
         </Link>
 
         {viewer === "member" && (
-          <nav className="flex items-center gap-1">
-            <NavLink href="/dashboard">Boletim</NavLink>
-            <NavLink href="/calculadora">Calculadora</NavLink>
-            <SignOutButton />
-          </nav>
+          <>
+            <nav
+              aria-label="Principal"
+              className="flex items-stretch md:justify-self-center"
+            >
+              <NavLink href="/dashboard">Boletim</NavLink>
+              <NavLink href="/calculadora">Calculadora</NavLink>
+            </nav>
+            <div className="ml-auto flex items-center md:col-start-3 md:justify-self-end">
+              <UserMenu />
+            </div>
+          </>
         )}
 
         {viewer === "guest" && (
-          <div className="flex items-center gap-1">
+          <div className="ml-auto flex items-center md:col-start-3 md:justify-self-end">
             <SignInButton size="sm" variant="chrome" />
           </div>
         )}
