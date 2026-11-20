@@ -4,14 +4,14 @@ import { createContext, type ReactNode, useContext, useState } from "react"
 import { createStore, type StoreApi, useStore } from "zustand"
 
 interface EditedGrades {
-  [disciplineName: string]: {
+  [disciplineId: string]: {
     [stage: string]: number
   }
 }
 
 interface GradesStore {
   editedGrades: EditedGrades
-  setGrade: (disciplineName: string, stage: string, grade: number) => void
+  setGrade: (disciplineId: string, stage: string, grade: number) => void
   clearEditedGrades: () => void
 }
 
@@ -22,12 +22,12 @@ export type GradesScope =
 function createGradesStore() {
   return createStore<GradesStore>((set) => ({
     editedGrades: {},
-    setGrade: (disciplineName, stage, grade) =>
+    setGrade: (disciplineId, stage, grade) =>
       set((state) => ({
         editedGrades: {
           ...state.editedGrades,
-          [disciplineName]: {
-            ...state.editedGrades[disciplineName],
+          [disciplineId]: {
+            ...state.editedGrades[disciplineId],
             [stage]: grade,
           },
         },
@@ -71,8 +71,8 @@ export function useGradesStore(): GradesStore {
 
   return {
     ...grades,
-    setGrade: (disciplineName, stage, grade) => {
-      grades.setGrade(disciplineName, stage, grade)
+    setGrade: (disciplineId, stage, grade) => {
+      grades.setGrade(disciplineId, stage, grade)
 
       if (scope.kind === "student") {
         void scope.onGradeSimulated()

@@ -8,6 +8,7 @@ import type { Discipline } from "@/actions/get-grades"
 import { cn } from "@/lib/utils"
 import { useGradesStore } from "@/store/grades"
 import { recalculateGrades, type StageKey } from "@/utils/grade-calculation"
+import { formatGrade } from "@/utils/grade-format"
 import { gradeTier, TIER_BORDER, TIER_SURFACE } from "@/utils/grade-tier"
 import { mockDisciplineGrades } from "@/utils/mock-utils"
 
@@ -53,7 +54,7 @@ export function CellTable({
     [discipline],
   )
 
-  const editedDisciplineGrades = editedGrades[discipline.name]
+  const editedDisciplineGrades = editedGrades[discipline.id]
 
   const recalculatedStages = useMemo(
     () => recalculateGrades(mockedDiscipline, editedDisciplineGrades),
@@ -75,7 +76,7 @@ export function CellTable({
           : { kind: "none" }
 
   const handleEdit = (newGrade: number) => {
-    setGrade(discipline.name, stageKey, newGrade)
+    setGrade(discipline.id, stageKey, newGrade)
   }
 
   const hasMultipleAvailableStages =
@@ -94,22 +95,21 @@ export function CellTable({
     />
   )
 
+  const label = view.kind === "none" ? "—" : formatGrade(view.value)
+
+  const tier = view.kind === "needed" ? gradeTier(view.value) : null
+
   const value =
     view.kind === "none" ? (
       "—"
     ) : (
-      <span className="font-bold tabular-nums">{view.value}</span>
+      <span className="font-bold tabular-nums">{label}</span>
     )
 
   if (compact) {
     const tile = cn(
-      "flex h-14 flex-col items-center justify-center gap-1 rounded-2xl tabular-nums",
-      view.kind === "needed" &&
-        cn(
-          "ring-1",
-          TIER_SURFACE[gradeTier(view.value)],
-          TIER_BORDER[gradeTier(view.value)],
-        ),
+      "flex min-h-14 flex-col items-center justify-center gap-1 rounded-2xl px-1 py-2 tabular-nums",
+      tier && cn("ring-1", TIER_SURFACE[tier], TIER_BORDER[tier]),
       view.kind === "simulated" &&
         "border-2 border-dashed border-foreground/30 bg-card",
     )
@@ -123,13 +123,12 @@ export function CellTable({
         )}
         <span
           className={cn(
-            "flex items-center gap-1 text-lg leading-none",
+            "flex flex-wrap items-center justify-center gap-1 text-lg leading-none",
             view.kind === "none" ? "text-muted-foreground" : "font-bold",
-            (view.kind === "needed" || view.kind === "simulated") &&
-              "font-extrabold",
+            view.kind !== "none" && view.kind !== "graded" && "font-extrabold",
           )}
         >
-          {view.kind === "none" ? "—" : view.value}
+          {label}
           {canEdit && (
             <HugeiconsIcon
               strokeWidth={2.5}
@@ -172,10 +171,8 @@ export function CellTable({
   }
 
   const pill = cn(
-    "inline-flex h-9 min-w-14 items-center justify-center gap-1.5 rounded-full px-3.5 text-lg",
-    view.kind === "needed"
-      ? TIER_SURFACE[gradeTier(view.value)]
-      : "border border-dashed border-foreground/40",
+    "inline-flex h-9 min-w-14 items-center justify-center gap-1.5 rounded-full px-3.5 text-lg whitespace-nowrap",
+    tier ? TIER_SURFACE[tier] : "border border-dashed border-foreground/40",
   )
 
   if (!canEdit) {

@@ -59,13 +59,11 @@ export default async function Dashboard() {
     <div className="space-y-6 pt-6 pb-28 lg:pt-10">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <ReportHeading
-          period={gradesResponse.period}
+          period={gradesResponse.success ? gradesResponse.period : undefined}
           course={studentData.academic?.course}
           courseStage={studentData.academic?.currentPeriod}
         />
-        {studentData.success && studentData.ira?.trim() && (
-          <IraCard ira={studentData.ira} />
-        )}
+        {studentData.ira !== undefined && <IraCard ira={studentData.ira} />}
       </div>
       {!feedbackDismissed && <FeedbackBanner user={session.user} />}
       <GradesProvider

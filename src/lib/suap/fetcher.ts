@@ -1,6 +1,8 @@
 import { getServerSession } from "next-auth"
+import { cookies } from "next/headers"
 
 import { authOptions } from "@/lib/auth"
+import { parseSuapFixture, SUAP_FIXTURE_COOKIE } from "@/lib/suap/fixtures"
 import { isSuapMock, mockSuapResponse } from "@/lib/suap/mock"
 
 export const suapFetch = async <T>(
@@ -8,8 +10,12 @@ export const suapFetch = async <T>(
   options?: RequestInit,
 ): Promise<T> => {
   if (isSuapMock()) {
+    const fixture = parseSuapFixture(
+      (await cookies()).get(SUAP_FIXTURE_COOKIE)?.value,
+    )
+
     // SAFETY: mockSuapResponse returns fixtures shaped like the SUAP responses orval types as T.
-    return { ...mockSuapResponse(url), headers: new Headers() } as T
+    return { ...mockSuapResponse(url, fixture), headers: new Headers() } as T
   }
 
   const session = await getServerSession(authOptions)

@@ -21,7 +21,11 @@ export function FeedbackCard({ user }: { user: FeedbackUser }) {
           Conta pra gente. O IFRN Calc melhora com o que a galera manda.
         </p>
       </div>
-      <Button className="shrink-0" onClick={() => setOpen(true)}>
+      <Button
+        // oxlint-disable-next-line shadcn/no-restyle -- the label wraps under large text sizes, so the button grows with it instead of overflowing the page
+        className="h-auto min-h-9 shrink-0 py-2 whitespace-normal"
+        onClick={() => setOpen(true)}
+      >
         <HugeiconsIcon strokeWidth={2} icon={BubbleChatIcon} />
         Falar com a gente
       </Button>
