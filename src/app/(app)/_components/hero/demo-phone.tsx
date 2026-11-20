@@ -7,7 +7,7 @@ import {
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import Link from "next/link"
-import { useEffect, useRef, useSyncExternalStore, ViewTransition } from "react"
+import { useEffect, useRef, ViewTransition } from "react"
 
 import { DisciplineMeta } from "@/app/dashboard/_components/discipline-meta"
 import { toDisciplines } from "@/lib/suap/boletim"
@@ -27,35 +27,8 @@ import { type Frame, useDemoStory } from "./use-demo-story"
 
 const WIDTH = 390
 const HEIGHT = 844
-const BEZEL = 10
-const SCREEN_RADIUS = 55
-const MAX_SCALE = 304 / WIDTH
-const HEADER = 56
-const NOTE = 112
-const CAPTION = 40
-const BREATH = 32
-
-function subscribeViewport(onChange: () => void) {
-  window.addEventListener("resize", onChange)
-
-  return () => window.removeEventListener("resize", onChange)
-}
-
-function useScreenScale() {
-  const [width, height] = useSyncExternalStore(
-    subscribeViewport,
-    () => `${window.innerWidth}x${window.innerHeight}`,
-    () => "390x844",
-  )
-    .split("x")
-    .map(Number)
-
-  return Math.min(
-    MAX_SCALE,
-    (width - 32 - 2 * BEZEL) / WIDTH,
-    (height - HEADER - NOTE - CAPTION - BREATH - 2 * BEZEL) / HEIGHT,
-  )
-}
+const SCALE = "var(--phone-scale)"
+const RADIUS = `calc(55px * ${SCALE})`
 
 const DISCIPLINES = toDisciplines(DEMO_BOLETIM).slice(0, 4)
 const [MATH] = DISCIPLINES
@@ -100,8 +73,6 @@ const tile =
 
 export function DemoPhone({ onFrame }: { onFrame: (frame: Frame) => void }) {
   const screen = useRef<HTMLDivElement>(null)
-  const scale = useScreenScale()
-  const radius = SCREEN_RADIUS * scale
   const frame = useDemoStory(screen, TODAY, TARGET)
   const { phase, value } = frame
 
@@ -119,25 +90,25 @@ export function DemoPhone({ onFrame }: { onFrame: (frame: Frame) => void }) {
         href="/demo"
         aria-label={`Abrir o boletim de exemplo da ${FIRST_NAME}`}
         className={cn(
-          "relative block p-[3px] shadow-[0_40px_80px_-24px_rgb(0_0_0/0.7)] ring-1 ring-black/70 transition-transform duration-150 ease-snap outline-none focus-visible:ring-4 focus-visible:ring-lime/60 motion-safe:active:scale-[0.99]",
+          "demo-phone relative block p-[3px] shadow-[0_40px_80px_-24px_rgb(0_0_0/0.7)] ring-1 ring-black/70 transition-transform duration-150 ease-snap outline-none focus-visible:ring-4 focus-visible:ring-lime/60 motion-safe:active:scale-[0.99]",
           TITANIUM,
         )}
-        style={{ borderRadius: radius + BEZEL }}
+        style={{ borderRadius: `calc(${RADIUS} + 10px)` }}
       >
         <SideButtons />
         <ViewTransition name="demo-boletim" share="morph" default="none">
           <div
             className="bg-black p-[7px]"
-            style={{ borderRadius: radius + 7 }}
+            style={{ borderRadius: `calc(${RADIUS} + 7px)` }}
           >
             <div
               ref={screen}
               aria-hidden
               className="relative overflow-hidden"
               style={{
-                width: WIDTH * scale,
-                height: HEIGHT * scale,
-                borderRadius: radius,
+                width: `calc(${WIDTH}px * ${SCALE})`,
+                height: `calc(${HEIGHT}px * ${SCALE})`,
+                borderRadius: RADIUS,
               }}
             >
               <div
@@ -145,7 +116,7 @@ export function DemoPhone({ onFrame }: { onFrame: (frame: Frame) => void }) {
                 style={{
                   width: WIDTH,
                   height: HEIGHT,
-                  transform: `scale(${scale})`,
+                  transform: `scale(${SCALE})`,
                 }}
               >
                 <span className="absolute top-[11px] left-1/2 z-20 h-[37px] w-[125px] -translate-x-1/2 rounded-full bg-black" />

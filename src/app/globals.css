@@ -223,6 +223,167 @@ html:has(.landing) body {
   }
 }
 
+.demo-phone {
+  --phone-fit-h: 0.28;
+  --phone-fit-w: 0.779;
+  --phone-scale: min(var(--phone-fit-h), var(--phone-fit-w));
+}
+
+@media (height >= 500px) {
+  .demo-phone {
+    --phone-fit-h: 0.284;
+  }
+}
+
+@media (height >= 520px) {
+  .demo-phone {
+    --phone-fit-h: 0.308;
+  }
+}
+
+@media (height >= 540px) {
+  .demo-phone {
+    --phone-fit-h: 0.331;
+  }
+}
+
+@media (height >= 560px) {
+  .demo-phone {
+    --phone-fit-h: 0.355;
+  }
+}
+
+@media (height >= 580px) {
+  .demo-phone {
+    --phone-fit-h: 0.379;
+  }
+}
+
+@media (height >= 600px) {
+  .demo-phone {
+    --phone-fit-h: 0.402;
+  }
+}
+
+@media (height >= 620px) {
+  .demo-phone {
+    --phone-fit-h: 0.426;
+  }
+}
+
+@media (height >= 640px) {
+  .demo-phone {
+    --phone-fit-h: 0.45;
+  }
+}
+
+@media (height >= 660px) {
+  .demo-phone {
+    --phone-fit-h: 0.473;
+  }
+}
+
+@media (height >= 680px) {
+  .demo-phone {
+    --phone-fit-h: 0.497;
+  }
+}
+
+@media (height >= 700px) {
+  .demo-phone {
+    --phone-fit-h: 0.521;
+  }
+}
+
+@media (height >= 720px) {
+  .demo-phone {
+    --phone-fit-h: 0.545;
+  }
+}
+
+@media (height >= 740px) {
+  .demo-phone {
+    --phone-fit-h: 0.568;
+  }
+}
+
+@media (height >= 760px) {
+  .demo-phone {
+    --phone-fit-h: 0.592;
+  }
+}
+
+@media (height >= 780px) {
+  .demo-phone {
+    --phone-fit-h: 0.616;
+  }
+}
+
+@media (height >= 800px) {
+  .demo-phone {
+    --phone-fit-h: 0.639;
+  }
+}
+
+@media (height >= 820px) {
+  .demo-phone {
+    --phone-fit-h: 0.663;
+  }
+}
+
+@media (height >= 840px) {
+  .demo-phone {
+    --phone-fit-h: 0.687;
+  }
+}
+
+@media (height >= 860px) {
+  .demo-phone {
+    --phone-fit-h: 0.71;
+  }
+}
+
+@media (height >= 880px) {
+  .demo-phone {
+    --phone-fit-h: 0.734;
+  }
+}
+
+@media (height >= 900px) {
+  .demo-phone {
+    --phone-fit-h: 0.758;
+  }
+}
+
+@media (height >= 920px) {
+  .demo-phone {
+    --phone-fit-h: 0.779;
+  }
+}
+
+@media (height >= 940px) {
+  .demo-phone {
+    --phone-fit-h: 0.779;
+  }
+}
+
+@media (width < 356px) {
+  .demo-phone {
+    --phone-fit-w: 0.738;
+  }
+}
+
+@media (width < 340px) {
+  .demo-phone {
+    --phone-fit-w: 0.687;
+  }
+}
+
+@media (width < 320px) {
+  .demo-phone {
+    --phone-fit-w: 0.6;
+  }
+}
 .hand-arrow [data-stroke] {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
