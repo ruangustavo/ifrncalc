@@ -9,7 +9,7 @@ const TIERS: { tier: GradeTier; label: string }[] = [
 
 export function TierLegend() {
   return (
-    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 px-1 text-xs text-muted-foreground">
+    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
       <span>Cor da nota que falta:</span>
       <ul
         aria-label="Cores da nota que falta"

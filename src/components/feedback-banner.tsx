@@ -28,7 +28,11 @@ export function FeedbackBanner({ user }: { user: FeedbackUser }) {
         className="shrink-0"
         onClick={() => setOpen(true)}
       >
-        <HugeiconsIcon strokeWidth={2} icon={BubbleChatIcon} />
+        <HugeiconsIcon
+          data-icon="inline-start"
+          strokeWidth={2}
+          icon={BubbleChatIcon}
+        />
         Opinar
       </Button>
       <Button
