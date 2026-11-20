@@ -279,6 +279,38 @@ html:has(.landing) body {
   }
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .sun-rays-turn {
+    animation: sun-rays-turn 14s linear infinite;
+  }
+
+  .sun-rays-turn-back {
+    animation: sun-rays-turn-back 23s linear infinite;
+  }
+
+  .sun-rays-glow {
+    animation: sun-rays-breathe 6s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes sun-rays-turn {
+  to {
+    transform: rotate(9deg);
+  }
+}
+
+@keyframes sun-rays-turn-back {
+  to {
+    transform: rotate(-13deg);
+  }
+}
+
+@keyframes sun-rays-breathe {
+  from {
+    opacity: 0.75;
+  }
+}
+
 ::view-transition-group(.morph) {
   animation-duration: 450ms;
   animation-timing-function: var(--ease-glide);
