@@ -102,7 +102,8 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-:root {
+:root,
+.app-preview {
   --background: oklch(0.955 0.02 95);
   --foreground: oklch(0.22 0.035 160);
   --card: oklch(0.985 0.008 95);
