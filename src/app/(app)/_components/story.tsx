@@ -17,20 +17,20 @@ export function Story() {
         <span
           aria-hidden
           className={cn(
-            "absolute inset-0 rotate-[2.5deg] bg-[oklch(0.87_0.035_95)]",
+            "absolute inset-0 rotate-[2.5deg] bg-[oklch(0.87_0.035_95)] max-sm:inset-x-4 max-sm:translate-y-4 max-sm:rotate-[0.6deg]",
             SHEET_SHADOW,
           )}
         />
         <span
           aria-hidden
           className={cn(
-            "absolute inset-0 -rotate-[2.2deg] bg-[oklch(0.91_0.032_95)]",
+            "absolute inset-0 -rotate-[2.2deg] bg-[oklch(0.91_0.032_95)] max-sm:inset-x-2 max-sm:translate-y-2 max-sm:-rotate-[0.4deg]",
             SHEET_SHADOW,
           )}
         />
         <article
           className={cn(
-            "relative -rotate-[0.5deg] bg-cream px-6 py-12 text-ink sm:px-14 sm:py-16",
+            "relative -rotate-[0.5deg] bg-cream px-6 py-12 text-ink max-sm:px-5 max-sm:py-9 sm:px-14 sm:py-16",
             SHEET_SHADOW,
           )}
         >
@@ -38,7 +38,7 @@ export function Story() {
           <h2 className="font-display text-[clamp(2.25rem,9vw,3.25rem)] leading-[0.95] font-extrabold tracking-[-0.035em] text-balance">
             Nasceu de uma conta que eu fazia na mão.
           </h2>
-          <div className="mt-8 space-y-5 text-lg leading-relaxed text-pretty sm:text-xl">
+          <div className="mt-8 space-y-5 text-lg leading-relaxed text-pretty max-sm:mt-6 max-sm:space-y-4 max-sm:text-base sm:text-xl">
             <p className="relative">
               Quando eu fazia o{" "}
               <ClassPhoto>ensino médio em Pau dos Ferros</ClassPhoto>, sempre
