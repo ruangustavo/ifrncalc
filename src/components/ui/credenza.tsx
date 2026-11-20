@@ -61,7 +61,10 @@ const Credenza = ({ children, ...props }: RootCredenzaProps) => {
 
   return (
     <CredenzaContext.Provider value={{ isDesktop }}>
-      <Root {...props} {...(!isDesktop && { autoFocus: true })}>
+      <Root
+        {...props}
+        {...(!isDesktop && { autoFocus: true, repositionInputs: false })}
+      >
         {children}
       </Root>
     </CredenzaContext.Provider>

@@ -82,10 +82,19 @@ export function FeedbackDialog({
   const [stage, setStage] = useState<Stage>({ kind: "pick" })
   const [message, setMessage] = useState("")
 
+  const [wasOpen, setWasOpen] = useState(open)
+
+  if (open !== wasOpen) {
+    setWasOpen(open)
+
+    if (open) {
+      setStage({ kind: "pick" })
+      setMessage("")
+    }
+  }
+
   function close() {
     onOpenChange(false)
-    setStage({ kind: "pick" })
-    setMessage("")
   }
 
   async function submit(topic: Topic) {
@@ -109,10 +118,7 @@ export function FeedbackDialog({
   }
 
   return (
-    <Credenza
-      open={open}
-      onOpenChange={(next) => (next ? onOpenChange(true) : close())}
-    >
+    <Credenza open={open} onOpenChange={onOpenChange}>
       <CredenzaContent className="mx-auto sm:max-w-md">
         <AnimatePresence mode="wait" initial={false}>
           {stage.kind === "pick" && (
