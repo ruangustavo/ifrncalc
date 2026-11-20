@@ -123,7 +123,7 @@ export function FeedbackDialog({
                   Escolhe um e escreve rapidinho.
                 </CredenzaDescription>
               </CredenzaHeader>
-              <div className="grid gap-2 px-4 pt-2 pb-6 md:px-0">
+              <div className="grid gap-2 px-4 pt-2 pb-6 md:px-0 md:pb-0">
                 {TOPICS.map((topic) => (
                   <button
                     key={topic.key}
@@ -159,7 +159,7 @@ export function FeedbackDialog({
                 </CredenzaDescription>
               </CredenzaHeader>
               <form
-                className="space-y-4 px-4 pt-2 pb-6 md:px-0"
+                className="space-y-4 px-4 pt-2 pb-6 md:px-0 md:pb-0"
                 onSubmit={(event) => {
                   event.preventDefault()
 
@@ -201,7 +201,7 @@ export function FeedbackDialog({
                   Sua mensagem foi enviada.
                 </CredenzaDescription>
               </CredenzaHeader>
-              <div className="flex flex-col items-center gap-2 px-4 pt-2 pb-6 text-center md:px-0">
+              <div className="flex flex-col items-center gap-2 px-4 pt-2 pb-6 text-center md:px-0 md:pb-0">
                 <motion.span
                   aria-hidden
                   className="text-5xl"
