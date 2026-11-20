@@ -149,6 +149,9 @@ export const metadata: Metadata = {
     apple: "/apple-icon-180x180.png",
   },
   category: "education",
+  verification: {
+    google: "BVfmaCqtTgD3x0wwwLmzCHL_HswcvUpIzIqobY0CSMo",
+  },
 }
 
 export default function RootLayout({
