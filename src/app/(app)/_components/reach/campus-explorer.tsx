@@ -1,5 +1,7 @@
 "use client"
 
+import { ArrowDown01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { type PointerEvent, type ReactNode, useState } from "react"
 
 import { cn } from "@/lib/utils"
@@ -11,6 +13,8 @@ import { RN_CAMPUS_CITIES, RN_HEIGHT } from "./rn-outline"
 
 const MAP_WIDTH = 1000
 const MOBILE_PREVIEW = 5
+const REVEAL_STAGGER_MS = 20
+const REVEAL_STAGGER_CAP = 10
 const PIN_ROOM = 48
 const PIN_HEIGHT = 44
 const VIEW_HEIGHT = RN_HEIGHT * MAP_WIDTH + PIN_ROOM
@@ -115,7 +119,17 @@ export function CampusExplorer({ children }: { children: ReactNode }) {
             key={city.name}
             className={cn(
               !expanded && index >= MOBILE_PREVIEW && "max-sm:hidden",
+              expanded &&
+                index >= MOBILE_PREVIEW &&
+                "transition-[opacity,scale] duration-200 ease-snap max-sm:starting:scale-95 max-sm:starting:opacity-0 motion-reduce:starting:scale-100",
             )}
+            style={
+              expanded && index >= MOBILE_PREVIEW
+                ? {
+                    transitionDelay: `${Math.min(index - MOBILE_PREVIEW, REVEAL_STAGGER_CAP) * REVEAL_STAGGER_MS}ms`,
+                  }
+                : undefined
+            }
           >
             <button
               type="button"
@@ -140,11 +154,19 @@ export function CampusExplorer({ children }: { children: ReactNode }) {
             type="button"
             aria-expanded={expanded}
             onClick={() => setExpanded(!expanded)}
-            className="rounded-full border border-lime px-3 py-1 text-sm font-semibold text-lime outline-none focus-visible:ring-2 focus-visible:ring-lime"
+            className="flex items-center gap-1 rounded-full border border-lime py-1 pr-2 pl-3 text-sm font-semibold text-lime outline-none focus-visible:ring-2 focus-visible:ring-lime"
           >
             {expanded
               ? "ver menos"
               : `+${CHIPS.length - MOBILE_PREVIEW} cidades`}
+            <HugeiconsIcon
+              strokeWidth={2.5}
+              icon={ArrowDown01Icon}
+              className={cn(
+                "size-4 transition-transform duration-200 ease-snap motion-reduce:transition-none",
+                expanded && "rotate-180",
+              )}
+            />
           </button>
         </li>
       </ul>
