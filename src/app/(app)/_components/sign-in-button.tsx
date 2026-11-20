@@ -22,7 +22,7 @@ export function SignInButton({
       size={size}
       variant={variant}
       className={className}
-      onClick={() => signIn("suap")}
+      onClick={() => signIn("suap", { callbackUrl: "/dashboard" })}
     >
       {size === "xl" ? "Conectar com SUAP" : "Entrar"}
       <HugeiconsIcon strokeWidth={2} icon={ArrowRight02Icon} />
