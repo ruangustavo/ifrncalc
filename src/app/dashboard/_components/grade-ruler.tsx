@@ -45,6 +45,7 @@ export function GradeRuler({
   const drag = useRef<{ x: number; left: number } | null>(null)
   const initialValue = useRef(value)
   const scrollingTo = useRef<number | null>(null)
+  const reported = useRef(value)
 
   useEffect(() => {
     const node = scroller.current
@@ -55,7 +56,12 @@ export function GradeRuler({
   useEffect(() => {
     const node = scroller.current
 
-    if (!node || Math.round(node.scrollLeft / STEP) === value) return
+    if (
+      !node ||
+      value === reported.current ||
+      Math.round(node.scrollLeft / STEP) === value
+    )
+      return
 
     scrollingTo.current = value
     node.scrollTo({ left: value * STEP, behavior: scrollBehavior() })
@@ -82,7 +88,10 @@ export function GradeRuler({
             return
           }
 
-          if (next !== value) onChange(next)
+          if (next === value) return
+
+          reported.current = next
+          onChange(next)
         }}
         onKeyDown={(event) => {
           const delta = KEY_DELTAS.get(event.key)
