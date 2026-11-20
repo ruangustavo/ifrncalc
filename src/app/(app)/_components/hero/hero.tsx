@@ -5,7 +5,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
 import { SignInButton } from "../sign-in-button"
-import { ChalkBoard } from "./chalk-board"
+import { DemoPhone } from "./demo-phone"
 
 export function Hero() {
   return (
@@ -50,7 +50,7 @@ export function Hero() {
           </p>
         </div>
         <div className="lg:col-span-5 lg:col-start-8">
-          <ChalkBoard />
+          <DemoPhone />
         </div>
       </div>
     </section>
