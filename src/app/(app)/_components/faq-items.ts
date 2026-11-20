@@ -33,7 +33,7 @@ export const FAQ_ITEMS = [
   {
     question: "Dá pra instalar como app?",
     answer:
-      "Dá. No iPhone, abra no Safari, toque em Compartilhar e depois em Adicionar à Tela de Início. No Android, o Chrome mostra a opção Instalar app. Depois é só abrir pelo ícone, direto no seu boletim.",
+      "Dá. No iPhone, abra no Safari e toque em Compartilhar, Ver mais e Adicionar à Tela de Início. No Android, o Chrome mostra a opção Instalar app. Depois é só abrir pelo ícone, direto no seu boletim.",
   },
   {
     question: "Funciona pro meu curso?",

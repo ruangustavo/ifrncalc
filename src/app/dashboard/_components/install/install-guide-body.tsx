@@ -2,8 +2,11 @@ import { BrowserBarArt } from "./browser-bar-art"
 import { ConfirmArt } from "./confirm-art"
 import { CopyLinkButton } from "./copy-link-button"
 import { InstallSteps } from "./install-steps"
+import { IosConfirmArt } from "./ios-confirm-art"
+import { IosToolbarArt } from "./ios-toolbar-art"
 import { MenuArt } from "./menu-art"
 import { PromptInstallButton } from "./prompt-install-button"
+import { ShareActionsArt } from "./share-actions-art"
 import type { InstallContext } from "./use-install-context"
 
 export function InstallGuideBody({ context }: { context: InstallContext }) {
@@ -15,36 +18,42 @@ export function InstallGuideBody({ context }: { context: InstallContext }) {
             {
               text: (
                 <>
-                  Toque em <strong>Compartilhar</strong>. No iOS 26 ele fica
-                  dentro do <strong>⋯</strong> ao lado do endereço.
+                  Toque em <strong>Compartilhar</strong> na barra do Safari.
                 </>
               ),
-              art: <BrowserBarArt os="ios" />,
+              art: <IosToolbarArt />,
             },
             {
               text: (
                 <>
-                  Role a lista e toque em{" "}
-                  <strong>Adicionar à Tela de Início</strong>. Se não aparecer,
-                  abra o site no Safari primeiro.
+                  Toque em <strong>Ver mais</strong>.
+                </>
+              ),
+              art: <ShareActionsArt />,
+            },
+            {
+              text: (
+                <>
+                  Toque em <strong>Adicionar à Tela de Início</strong>. Se não
+                  aparecer, abra o site no Safari primeiro.
                 </>
               ),
               art: (
                 <MenuArt
-                  above="Copiar"
+                  above="Buscar na Página"
                   target="Adicionar à Tela de Início"
-                  below="Adicionar aos Favoritos"
+                  below="Marcação"
                 />
               ),
             },
             {
               text: (
                 <>
-                  Toque em <strong>Adicionar</strong>. O IFRN Calc aparece na
-                  sua tela inicial.
+                  Deixe <strong>Abrir como App Web</strong> ligado e toque em{" "}
+                  <strong>Adicionar</strong>.
                 </>
               ),
-              art: <ConfirmArt action="Adicionar" />,
+              art: <IosConfirmArt />,
             },
           ]}
         />
@@ -59,7 +68,7 @@ export function InstallGuideBody({ context }: { context: InstallContext }) {
                   Toque no <strong>⋮</strong> do navegador.
                 </>
               ),
-              art: <BrowserBarArt os="android" />,
+              art: <BrowserBarArt />,
             },
             {
               text: (
