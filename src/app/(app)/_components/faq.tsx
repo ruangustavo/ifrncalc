@@ -1,5 +1,6 @@
 import { PlusSignIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import Link from "next/link"
 
 import { StructuredData } from "@/components/structured-data"
 
@@ -42,6 +43,17 @@ export function Faq() {
               </summary>
               <p className="max-w-2xl pb-6 text-pretty text-ink/75">
                 {item.answer}
+                {"link" in item && (
+                  <>
+                    {" "}
+                    <Link
+                      href={item.link.href}
+                      className="font-semibold text-ink underline underline-offset-4"
+                    >
+                      {item.link.label}
+                    </Link>
+                  </>
+                )}
               </p>
             </details>
           ))}

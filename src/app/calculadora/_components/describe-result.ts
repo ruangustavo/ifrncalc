@@ -11,7 +11,7 @@ function format(value: number) {
   return value.toLocaleString("pt-BR", { maximumFractionDigits: 1 })
 }
 
-function formatAverage(value: number) {
+export function formatAverage(value: number) {
   return format(Math.floor(value * 10 + FLOAT_NOISE) / 10)
 }
 

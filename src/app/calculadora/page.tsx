@@ -1,6 +1,7 @@
 "use client"
 
 import { useSession } from "next-auth/react"
+import Link from "next/link"
 import { useMemo, useState } from "react"
 
 import { SignInButton } from "@/app/(app)/_components/sign-in-button"
@@ -87,6 +88,16 @@ export default function Calculadora() {
           onClear={clearGrades}
           result={result}
         />
+
+        <p className="mt-4 text-center text-sm text-muted-foreground">
+          Não fechou 60?{" "}
+          <Link
+            href="/prova-final"
+            className="font-medium text-primary underline underline-offset-4"
+          >
+            Veja quanto precisa na prova final
+          </Link>
+        </p>
 
         {status === "unauthenticated" && (
           <div className="mt-3 rounded-3xl bg-chrome p-6 text-chrome-foreground sm:p-8">
