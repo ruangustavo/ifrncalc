@@ -32,7 +32,7 @@ export function EditGradeModal({
 }: EditGradeModalProps) {
   return (
     <Credenza open={isOpen} onOpenChange={onClose}>
-      <CredenzaContent className="mx-auto sm:max-w-[425px]">
+      <CredenzaContent className="mx-auto grid-cols-1 sm:max-w-[425px]">
         <CredenzaHeader>
           <CredenzaTitle>Simular nota</CredenzaTitle>
           <CredenzaDescription>
