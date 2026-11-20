@@ -17,8 +17,8 @@ export function FeedbackBanner({ user }: { user: FeedbackUser }) {
   const [open, setOpen] = useState(false)
 
   return (
-    <section className="flex items-center gap-3 rounded-2xl bg-chrome p-3 pl-4 text-chrome-foreground">
-      <p className="min-w-0 flex-1 text-sm text-pretty">
+    <section className="flex flex-wrap items-center gap-3 rounded-2xl bg-chrome p-3 pl-4 text-chrome-foreground">
+      <p className="min-w-0 flex-1 basis-28 text-sm text-pretty">
         <span className="font-semibold">Novo visual!</span> Conta pra gente o
         que achou.
       </p>
