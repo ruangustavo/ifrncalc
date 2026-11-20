@@ -8,7 +8,6 @@ import { Header } from "@/app/dashboard/_components/header"
 import { FeedbackDialog } from "@/components/feedback-dialog"
 
 import { computeResult } from "./_components/calc-result"
-import { DevDataToggle } from "./_components/dev-data-toggle"
 import { DEFAULT_GRADES, type DisciplineType } from "./_components/discipline"
 import { GradeGrid } from "./_components/grade-grid"
 import { ResultTop } from "./_components/result-top"
@@ -102,14 +101,6 @@ export default function Calculadora() {
           </div>
         )}
       </main>
-      {process.env.NODE_ENV === "development" && (
-        <DevDataToggle
-          onPick={(fixture) => {
-            setDisciplineType(fixture.disciplineType)
-            setGrades(fixture.grades)
-          }}
-        />
-      )}
       {session && <FeedbackDialog user={session.user} />}
     </>
   )
