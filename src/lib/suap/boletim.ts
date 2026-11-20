@@ -3,6 +3,7 @@ import type {
   BoletimSchema,
   NotaBoletimSchema,
 } from "@/lib/suap/generated/models"
+import { type Attendance, toAttendance } from "@/utils/attendance"
 
 const BIMESTER_WEIGHTS = [2, 2, 3, 3]
 
@@ -24,6 +25,7 @@ interface NormalizedDiscipline {
   carga_horaria: number
   media_disciplina: number | null
   nota_avaliacao_final: number | null
+  attendance: Attendance | null
 }
 
 function resolveGrade(nota: NotaBoletimSchema | undefined): Grade {
@@ -46,6 +48,7 @@ function normalizeDiscipline(
     carga_horaria: boletim.carga_horaria ?? 0,
     media_disciplina: boletim.media_disciplina ?? null,
     nota_avaliacao_final: boletim.nota_avaliacao_final?.nota ?? null,
+    attendance: toAttendance(boletim),
   }
 }
 
@@ -138,6 +141,7 @@ export function toDisciplines(results: BoletimSchema[]): Discipline[] {
         hours: discipline.carga_horaria,
         partialAverage: discipline.media_disciplina,
         finalExamGrade: discipline.nota_avaliacao_final,
+        attendance: discipline.attendance,
         E1: createStageGrade(discipline.nota_etapa_1, 1),
         E2: createStageGrade(discipline.nota_etapa_2, 2),
         E3: createStageGrade(discipline.nota_etapa_3, 3),

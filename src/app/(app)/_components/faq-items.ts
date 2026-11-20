@@ -31,6 +31,12 @@ export const FAQ_ITEMS = [
       "Sim. Edite a nota de um bimestre em aberto e o IFRN Calc recalcula quanto falta nos outros.",
   },
   {
+    question: "Dá pra ver minhas faltas?",
+    answer:
+      "Dá. Cada disciplina mostra quantas faltas você tem e sua frequência, do jeito que está no SUAP. Pra passar, você precisa de 75% de frequência somando todas as disciplinas do período, e não em cada uma.",
+    link: { href: "/faltas", label: "Entender a regra de faltas" },
+  },
+  {
     question: "Dá pra instalar como app?",
     answer:
       "Dá. No iPhone, abra no Safari e toque em Compartilhar, Ver mais e Adicionar à Tela de Início. No Android, o Chrome mostra a opção Instalar app. Depois é só abrir pelo ícone, direto no seu boletim.",

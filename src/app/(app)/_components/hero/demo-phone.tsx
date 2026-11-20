@@ -9,6 +9,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import Link from "next/link"
 import { useEffect, useRef, ViewTransition } from "react"
 
+import { AttendanceSummary } from "@/app/dashboard/_components/attendance-summary"
 import { DisciplineMeta } from "@/app/dashboard/_components/discipline-meta"
 import { toDisciplines } from "@/lib/suap/boletim"
 import {
@@ -182,7 +183,12 @@ export function DemoPhone({ onFrame }: { onFrame: (frame: Frame) => void }) {
 
                       return (
                         <li key={discipline.name} className="px-4 pt-3.5 pb-4">
-                          <p className="font-bold">{discipline.name}</p>
+                          <div className="flex items-baseline justify-between gap-3">
+                            <p className="font-bold">{discipline.name}</p>
+                            <AttendanceSummary
+                              attendance={discipline.attendance}
+                            />
+                          </div>
                           <DisciplineMeta discipline={discipline} />
                           <div className="mt-3 grid grid-cols-4 gap-2">
                             <div className={tile}>

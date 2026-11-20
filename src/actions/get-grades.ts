@@ -6,6 +6,7 @@ import { authOptions } from "@/lib/auth"
 import { notifyError } from "@/lib/notify"
 import { toDisciplines } from "@/lib/suap/boletim"
 import { meuBoletim, meusPeriodosLetivos } from "@/lib/suap/generated/client"
+import type { Attendance } from "@/utils/attendance"
 
 interface StageGrade {
   grade: number | null
@@ -19,6 +20,7 @@ export interface Discipline {
   hours: number
   partialAverage: number | null
   finalExamGrade: number | null
+  attendance: Attendance | null
   E1: StageGrade
   E2: StageGrade
   E3: StageGrade
