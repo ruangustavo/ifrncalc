@@ -34,11 +34,13 @@ export function UserMenu() {
         <Button
           variant="ghost-chrome"
           aria-label={name ? `Conta de ${name}` : "Conta"}
+          // oxlint-disable-next-line shadcn/no-restyle -- the account chip wraps a round avatar, so its hover shape follows it
+          className="rounded-full pl-1"
         >
           <span className="flex size-7 items-center justify-center rounded-full bg-chrome-foreground text-xs font-bold text-chrome">
             {initialsOf(name)}
           </span>
-          <span className="max-sm:hidden">{name.split(" ")[0]}</span>
+          <span>{name.split(" ")[0]}</span>
           <HugeiconsIcon
             strokeWidth={2}
             icon={ArrowDown01Icon}

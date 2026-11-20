@@ -3,6 +3,7 @@ import Link from "next/link"
 import { BrandMark } from "@/app/(app)/_components/brand-mark"
 import { SignInButton } from "@/app/(app)/_components/sign-in-button"
 import { siteConfig } from "@/config/site"
+import { cn } from "@/lib/utils"
 
 import { MobileTabBar } from "./mobile-tab-bar"
 import { NavLink } from "./nav-link"
@@ -21,7 +22,9 @@ export function Header({ viewer = "member" }: { viewer?: Viewer }) {
             className="flex items-center gap-2 text-lg font-bold tracking-tight"
           >
             <BrandMark className="size-5" dotClassName="fill-grade-hard" />
-            <span>{siteConfig.name}</span>
+            <span className={cn(viewer === "member" && "max-md:hidden")}>
+              {siteConfig.name}
+            </span>
           </Link>
 
           {viewer === "member" && (
