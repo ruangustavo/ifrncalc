@@ -9,6 +9,7 @@ import {
 } from "@/lib/suap/demo-student"
 import { GradesProvider } from "@/store/grades"
 
+import { BackLink } from "./_components/back-link"
 import { DemoCta } from "./_components/demo-cta"
 import { DemoNotice } from "./_components/demo-notice"
 
@@ -20,6 +21,7 @@ const period = {
 export default function Demo() {
   return (
     <div className="space-y-6 pt-6 pb-28 lg:pt-10">
+      <BackLink />
       <DemoNotice />
       <div className="flex flex-wrap items-end justify-between gap-4">
         <ReportHeading

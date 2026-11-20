@@ -278,3 +278,27 @@ html:has(.landing) body {
     animation: none;
   }
 }
+
+::view-transition-group(.morph) {
+  animation-duration: 450ms;
+  animation-timing-function: var(--ease-glide);
+}
+
+::view-transition-image-pair(.morph) {
+  animation-name: morph-blur;
+}
+
+@keyframes morph-blur {
+  30% {
+    filter: blur(3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(.morph),
+  ::view-transition-image-pair(.morph),
+  ::view-transition-old(.morph),
+  ::view-transition-new(.morph) {
+    animation: none;
+  }
+}
