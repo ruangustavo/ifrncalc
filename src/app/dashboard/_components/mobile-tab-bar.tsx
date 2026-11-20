@@ -39,6 +39,7 @@ export function MobileTabBar() {
       layout
       transition={morph}
       aria-label="Principal"
+      data-tab-bar
       initial={false}
       animate={{ borderRadius: 999 }}
       className="fixed inset-x-0 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-40 mx-auto w-fit bg-foreground p-1 md:hidden"
