@@ -3,6 +3,7 @@ import Image from "next/image"
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
 
+import { ClassPhoto } from "./class-photo"
 import { RoughHighlight } from "./rough-highlight"
 import { Tape } from "./tape"
 
@@ -38,11 +39,12 @@ export function Story() {
             Nasceu de uma conta que eu fazia na mão.
           </h2>
           <div className="mt-8 space-y-5 text-lg leading-relaxed text-pretty sm:text-xl">
-            <p>
-              Quando eu fazia o ensino médio em Pau dos Ferros, sempre que saía
-              uma nota no SUAP eu fazia a mesma coisa: pegava a calculadora e
-              refazia a média, matéria por matéria. Era chato, e eu repetia tudo
-              de novo na nota seguinte.
+            <p className="relative">
+              Quando eu fazia o{" "}
+              <ClassPhoto>ensino médio em Pau dos Ferros</ClassPhoto>, sempre
+              que saía uma nota no SUAP eu fazia a mesma coisa: pegava a
+              calculadora e refazia a média, matéria por matéria. Era chato, e
+              eu repetia tudo de novo na nota seguinte.
             </p>
             <p>
               Mas eu não conseguia deixar de fazer. Quando ia mal numa prova,
