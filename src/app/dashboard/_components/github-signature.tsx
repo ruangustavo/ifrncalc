@@ -1,5 +1,6 @@
 "use client"
 
+import { cn } from "cn"
 import { motion, useInView, useReducedMotion } from "motion/react"
 import { useEffect, useRef, useState } from "react"
 
@@ -51,7 +52,10 @@ export function GithubSignature() {
         <GithubMark className="size-5 text-foreground" />
       </motion.span>
       <p
-        className={`text-balance transition-opacity duration-150 ease-out ${shown ? "opacity-100" : "opacity-0"}`}
+        className={cn(
+          "text-balance transition-opacity duration-150 ease-out",
+          shown ? "opacity-100" : "opacity-0",
+        )}
       >
         {starred ? (
           <>
