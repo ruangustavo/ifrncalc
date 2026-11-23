@@ -29,11 +29,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}${ATTENDANCE_GUIDE.path}`,
       lastModified: ATTENDANCE_GUIDE.modified,
     },
-    {
-      url: `${baseUrl}/dashboard`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.8,
-    },
   ]
 }
