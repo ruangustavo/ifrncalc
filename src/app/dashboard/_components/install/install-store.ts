@@ -5,8 +5,6 @@ import { create } from "zustand"
 import { recordInstallGuideOpened } from "@/actions/record-event"
 import type { InstallGuideSource } from "@/lib/events"
 
-import type { InstallScenario } from "./install-scenario"
-
 export interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>
@@ -24,19 +22,16 @@ interface InstallStore {
   prompt: BeforeInstallPromptEvent | null
   installed: boolean
   guide: Guide
-  scenario: InstallScenario | null
   setPrompt: (prompt: BeforeInstallPromptEvent | null) => void
   markInstalled: () => void
   openGuide: (source: InstallGuideSource) => void
   closeGuide: () => void
-  setScenario: (scenario: InstallScenario | null) => void
 }
 
 export const useInstallStore = create<InstallStore>((set) => ({
   prompt: null,
   installed: false,
   guide: { open: false },
-  scenario: null,
   setPrompt: (prompt) => set({ prompt }),
   markInstalled: () => set({ installed: true, prompt: null }),
   openGuide: (source) => {
@@ -44,5 +39,4 @@ export const useInstallStore = create<InstallStore>((set) => ({
     void recordInstallGuideOpened(source)
   },
   closeGuide: () => set({ guide: { open: false } }),
-  setScenario: (scenario) => set({ scenario }),
 }))

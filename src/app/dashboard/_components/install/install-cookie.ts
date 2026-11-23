@@ -1,7 +1,5 @@
 export const INSTALL_BANNER_DISMISSED_COOKIE = "ifrn-calc-install-dismissed"
 
-export const DEV_SHOW_INSTALL_BANNER_COOKIE = "ifrn-calc-dev-install-banner"
-
 const ONE_YEAR = 60 * 60 * 24 * 365
 
 export function dismissInstallBanner() {

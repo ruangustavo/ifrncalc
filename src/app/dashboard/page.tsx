@@ -17,10 +17,7 @@ import { StudentIdentitySchema, upsertStudent } from "@/lib/students"
 import { GradesProvider } from "@/store/grades"
 
 import { InstallBanner } from "./_components/install/install-banner"
-import {
-  DEV_SHOW_INSTALL_BANNER_COOKIE,
-  INSTALL_BANNER_DISMISSED_COOKIE,
-} from "./_components/install/install-cookie"
+import { INSTALL_BANNER_DISMISSED_COOKIE } from "./_components/install/install-cookie"
 import { IraCard } from "./_components/ira-card"
 import { MaintenanceNotice } from "./_components/maintenance-notice"
 import { ReportHeading } from "./_components/report-heading"
@@ -63,15 +60,10 @@ export default async function Dashboard() {
 
   const feedbackDismissed = cookieStore.has(FEEDBACK_DISMISSED_COOKIE)
 
-  const devShowsInstallBanner =
-    process.env.NODE_ENV === "development" &&
-    cookieStore.get(DEV_SHOW_INSTALL_BANNER_COOKIE)?.value === "1"
-
   const showInstallBanner =
-    devShowsInstallBanner ||
-    (feedbackDismissed &&
-      !cookieStore.has(INSTALL_BANNER_DISMISSED_COOKIE) &&
-      returning)
+    feedbackDismissed &&
+    !cookieStore.has(INSTALL_BANNER_DISMISSED_COOKIE) &&
+    returning
 
   after(async () => {
     const identity = StudentIdentitySchema.safeParse(session)

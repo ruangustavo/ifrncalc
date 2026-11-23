@@ -6,7 +6,6 @@ import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
 
 import { InstallGuide } from "./install/install-guide"
-import { InstallScenarioPicker } from "./install/install-scenario-picker"
 import { MobileTabBar } from "./mobile-tab-bar"
 import { NavLink } from "./nav-link"
 import { UserMenu } from "./user-menu"
@@ -55,7 +54,6 @@ export function Header({ viewer = "member" }: { viewer?: Viewer }) {
         <>
           <MobileTabBar />
           <InstallGuide />
-          {process.env.NODE_ENV === "development" && <InstallScenarioPicker />}
         </>
       )}
     </>
