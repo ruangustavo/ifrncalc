@@ -27,6 +27,17 @@ export function MobileTabBar() {
   const [collapsed, setCollapsed] = useScrollCollapsed()
   const [pending, setPending] = useState<TabHref | null>(null)
 
+  const [indicatorMotion, setIndicatorMotion] = useState<"slide" | "follow">(
+    "slide",
+  )
+
+  const [foldedAs, setFoldedAs] = useState(collapsed)
+
+  if (foldedAs !== collapsed) {
+    setFoldedAs(collapsed)
+    setIndicatorMotion("follow")
+  }
+
   const current =
     pending ?? TABS.find(({ href }) => href === pathname)?.href ?? "/dashboard"
 
@@ -51,7 +62,10 @@ export function MobileTabBar() {
             {isActive && (
               <motion.span
                 layoutId="tab-bar-indicator"
-                transition={fold}
+                transition={{
+                  ...fold,
+                  layout: indicatorMotion === "slide" ? fold : { duration: 0 },
+                }}
                 initial={false}
                 animate={{ borderRadius: 999 }}
                 className="absolute inset-0 bg-background"
@@ -102,7 +116,10 @@ export function MobileTabBar() {
                 href={href}
                 tabIndex={folded ? -1 : undefined}
                 aria-current={isActive ? "page" : undefined}
-                onClick={() => setPending(href)}
+                onClick={() => {
+                  setPending(href)
+                  setIndicatorMotion("slide")
+                }}
                 className={TAB_CLASS}
               >
                 {content}
