@@ -3,7 +3,8 @@ import type {
   BoletimSchema,
   NotaBoletimSchema,
 } from "@/lib/suap/generated/models"
-import { type Attendance, toAttendance } from "@/utils/attendance"
+
+import { type Attendance, toAttendance } from "../../utils/attendance.ts"
 
 const BIMESTER_WEIGHTS = [2, 2, 3, 3]
 
@@ -22,6 +23,7 @@ interface NormalizedDiscipline {
   nota_etapa_3: Grade
   nota_etapa_4: Grade
   quantidade_avaliacoes: number
+  first_bimester: 1 | 3
   carga_horaria: number
   media_disciplina: number | null
   nota_avaliacao_final: number | null
@@ -45,6 +47,10 @@ function normalizeDiscipline(
     nota_etapa_3: resolveGrade(boletim.nota_etapa_3),
     nota_etapa_4: resolveGrade(boletim.nota_etapa_4),
     quantidade_avaliacoes: boletim.quantidade_avaliacoes ?? 0,
+    first_bimester:
+      boletim.segundo_semestre === true && boletim.quantidade_avaliacoes === 2
+        ? 3
+        : 1,
     carga_horaria: boletim.carga_horaria ?? 0,
     media_disciplina: boletim.media_disciplina ?? null,
     nota_avaliacao_final: boletim.nota_avaliacao_final?.nota ?? null,
@@ -112,28 +118,39 @@ export function toDisciplines(results: BoletimSchema[]): Discipline[] {
   return results
     .flatMap((boletim) => normalizeDiscipline(boletim) ?? [])
     .map((discipline, position) => {
+      const suapStages = [
+        discipline.nota_etapa_1,
+        discipline.nota_etapa_2,
+        discipline.nota_etapa_3,
+        discipline.nota_etapa_4,
+      ]
+
+      const isAssessed = (bimester: number) =>
+        bimester >= discipline.first_bimester &&
+        bimester < discipline.first_bimester + discipline.quantidade_avaliacoes
+
       const gradeToPass = calculatePassingGrade(
-        [
-          discipline.nota_etapa_1,
-          discipline.nota_etapa_2,
-          discipline.nota_etapa_3,
-          discipline.nota_etapa_4,
-        ],
+        suapStages,
         discipline.quantidade_avaliacoes,
       )
 
-      const isAvailable = (grade: number | null, index: number) =>
-        grade == null && index <= discipline.quantidade_avaliacoes
+      const createStageGrade = (bimester: number): StageGrade => {
+        const suapIndex = bimester - discipline.first_bimester
 
-      const createStageGrade = (grade: Grade, index: number): StageGrade => ({
-        grade: grade.nota,
-        isAvailable: isAvailable(grade.nota, index),
-        passingGrade: isAvailable(grade.nota, index)
-          ? gradeToPass
-          : discipline.quantidade_avaliacoes >= index
-            ? 0
-            : -1,
-      })
+        const grade = suapIndex >= 0 ? suapStages[suapIndex].nota : null
+
+        const isAvailable = grade == null && isAssessed(bimester)
+
+        return {
+          grade,
+          isAvailable,
+          passingGrade: isAvailable
+            ? gradeToPass
+            : isAssessed(bimester)
+              ? 0
+              : -1,
+        }
+      }
 
       return {
         id: discipline.codigo_diario ?? `${position}:${discipline.disciplina}`,
@@ -142,10 +159,10 @@ export function toDisciplines(results: BoletimSchema[]): Discipline[] {
         partialAverage: discipline.media_disciplina,
         finalExamGrade: discipline.nota_avaliacao_final,
         attendance: discipline.attendance,
-        E1: createStageGrade(discipline.nota_etapa_1, 1),
-        E2: createStageGrade(discipline.nota_etapa_2, 2),
-        E3: createStageGrade(discipline.nota_etapa_3, 3),
-        E4: createStageGrade(discipline.nota_etapa_4, 4),
+        E1: createStageGrade(1),
+        E2: createStageGrade(2),
+        E3: createStageGrade(3),
+        E4: createStageGrade(4),
       }
     })
 }
