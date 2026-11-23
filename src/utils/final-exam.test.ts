@@ -112,3 +112,16 @@ test("a discipline with a bimester still open has no outlook", () => {
 test("a discipline whose final exam was already graded has no outlook", () => {
   assert.equal(disciplineOutlook(discipline([70, 70, 10, 70], 80)), null)
 })
+
+test("a closed second-semester discipline replaces its 3rd bimester", () => {
+  assert.deepEqual(
+    disciplineOutlook({
+      ...discipline([30, 60]),
+      E1: stage(null, false),
+      E2: stage(null, false),
+      E3: stage(30),
+      E4: stage(60),
+    }),
+    { kind: "exam", average: 48, needed: 60, replaces: 2 },
+  )
+})

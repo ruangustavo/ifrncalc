@@ -56,16 +56,24 @@ export function disciplineOutlook(
     discipline.E2,
     discipline.E3,
     discipline.E4,
-  ].filter((stage) => stage.passingGrade >= 0)
+  ].flatMap((stage, bimester) =>
+    stage.passingGrade >= 0 ? [{ stage, bimester }] : [],
+  )
 
   const weights = existing.length === 2 ? SEMESTER_WEIGHTS : ANNUAL_WEIGHTS
   const stages: Stage[] = []
 
-  for (const [index, stage] of existing.entries()) {
+  for (const [index, { stage }] of existing.entries()) {
     if (stage.grade === null) return null
 
     stages.push({ grade: stage.grade, weight: weights[index] })
   }
 
-  return stages.length === 0 ? null : finalExamOutlook(stages)
+  if (stages.length === 0) return null
+
+  const outlook = finalExamOutlook(stages)
+
+  return outlook.kind === "exam" && outlook.replaces !== null
+    ? { ...outlook, replaces: existing[outlook.replaces].bimester }
+    : outlook
 }

@@ -18,18 +18,16 @@ export function recalculateGrades(
 ) {
   const stages = ["E1", "E2", "E3", "E4"] as const
 
-  const numberOfAssessments = stages.reduce(
-    (count, stage) => (discipline[stage].passingGrade >= 0 ? count + 1 : count),
-    0,
-  )
+  const assessed = stages.filter((stage) => discipline[stage].passingGrade >= 0)
+
+  const weightOf = (stage: (typeof stages)[number]) =>
+    getWeight(assessed.indexOf(stage), assessed.length)
 
   let totalWeightNull = 0
   let sumOfGradesNotNull = 0
 
-  stages.forEach((stage, index) => {
-    if (index >= numberOfAssessments) return
-
-    const weight = getWeight(index, numberOfAssessments)
+  for (const stage of assessed) {
+    const weight = weightOf(stage)
     const editedGrade = editedGrades[stage]
     const originalGrade = discipline[stage].grade
 
@@ -40,11 +38,9 @@ export function recalculateGrades(
     } else {
       sumOfGradesNotNull += originalGrade * weight
     }
-  })
+  }
 
-  const totalWeight = stages
-    .slice(0, numberOfAssessments)
-    .reduce((sum, _, index) => sum + getWeight(index, numberOfAssessments), 0)
+  const totalWeight = assessed.reduce((sum, stage) => sum + weightOf(stage), 0)
 
   const gradeNeededToPass =
     totalWeightNull === 0
@@ -54,14 +50,13 @@ export function recalculateGrades(
           Math.round((60 * totalWeight - sumOfGradesNotNull) / totalWeightNull),
         )
 
-  return stages.map((stage, index) => ({
+  return stages.map((stage) => ({
     ...discipline[stage],
-    passingGrade:
-      index < numberOfAssessments
-        ? editedGrades[stage] === undefined && discipline[stage].grade === null
-          ? gradeNeededToPass
-          : 0
-        : -1,
+    passingGrade: assessed.includes(stage)
+      ? editedGrades[stage] === undefined && discipline[stage].grade === null
+        ? gradeNeededToPass
+        : 0
+      : -1,
   }))
 }
 
