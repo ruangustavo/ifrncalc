@@ -35,7 +35,8 @@ export function MobileTabBar() {
     : { type: "spring" as const, visualDuration: 0.26, bounce: 0.18 }
 
   return (
-    <nav
+    <motion.nav
+      layoutScroll
       aria-label="Principal"
       data-tab-bar
       className="fixed inset-x-0 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-40 mx-auto flex w-fit rounded-full bg-foreground p-1 md:hidden"
@@ -110,6 +111,6 @@ export function MobileTabBar() {
           </motion.div>
         )
       })}
-    </nav>
+    </motion.nav>
   )
 }
