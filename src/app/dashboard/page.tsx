@@ -10,12 +10,14 @@ import { FeedbackBanner } from "@/components/feedback-banner"
 import { FeedbackCard } from "@/components/feedback-card"
 import { FEEDBACK_DISMISSED_COOKIE } from "@/components/feedback-cookie"
 import { authOptions } from "@/lib/auth"
+import { isComputingCourse } from "@/lib/computing-course"
 import { db } from "@/lib/db"
 import { visitedOnEarlierDay } from "@/lib/events"
 import { notifyError } from "@/lib/notify"
 import { StudentIdentitySchema, upsertStudent } from "@/lib/students"
 import { GradesProvider } from "@/store/grades"
 
+import { GithubSignature } from "./_components/github-signature"
 import { InstallBanner } from "./_components/install/install-banner"
 import { INSTALL_BANNER_DISMISSED_COOKIE } from "./_components/install/install-cookie"
 import { IraCard } from "./_components/ira-card"
@@ -65,6 +67,10 @@ export default async function Dashboard() {
     !cookieStore.has(INSTALL_BANNER_DISMISSED_COOKIE) &&
     returning
 
+  const showGithubSignature =
+    studentData.academic !== undefined &&
+    isComputingCourse(studentData.academic.course)
+
   after(async () => {
     const identity = StudentIdentitySchema.safeParse(session)
 
@@ -102,6 +108,7 @@ export default async function Dashboard() {
         <TableGrades gradesResponse={gradesResponse} />
       </GradesProvider>
       <FeedbackCard user={session.user} />
+      {showGithubSignature && <GithubSignature />}
       <MaintenanceNotice />
       <VisitRecorder />
       <StandaloneRefresh />
