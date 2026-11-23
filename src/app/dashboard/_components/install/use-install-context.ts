@@ -4,7 +4,6 @@ import { useSyncExternalStore } from "react"
 
 import { installPlatformFromUserAgent } from "@/lib/install-platform"
 
-import { contextForScenario } from "./install-scenario"
 import { type BeforeInstallPromptEvent, useInstallStore } from "./install-store"
 import { INSTALLED_APP_QUERY, isInstalledApp } from "./is-installed-app"
 
@@ -42,11 +41,6 @@ export function useInstallContext(): InstallContext | null {
 
   const prompt = useInstallStore((state) => state.prompt)
   const installed = useInstallStore((state) => state.installed)
-  const scenario = useInstallStore((state) => state.scenario)
-
-  if (scenario) {
-    return contextForScenario(scenario)
-  }
 
   if (standalone === null || userAgent === null) {
     return null
