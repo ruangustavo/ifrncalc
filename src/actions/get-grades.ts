@@ -6,6 +6,7 @@ import { authOptions } from "@/lib/auth"
 import { notifyError } from "@/lib/notify"
 import { toDisciplines } from "@/lib/suap/boletim"
 import { meuBoletim, meusPeriodosLetivos } from "@/lib/suap/generated/client"
+import { reportSemesterStageLayouts } from "@/lib/suap/semester-probe"
 import type { Attendance } from "@/utils/attendance"
 
 interface StageGrade {
@@ -119,6 +120,8 @@ export async function getGrades(): Promise<GetGradesResponse> {
             : "Erro ao carregar suas notas. Tente novamente em alguns instantes.",
       }
     }
+
+    reportSemesterStageLayouts(gradesResponse.data.results)
 
     const grades = toDisciplines(gradesResponse.data.results)
 
