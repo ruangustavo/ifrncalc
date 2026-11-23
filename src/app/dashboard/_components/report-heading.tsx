@@ -1,4 +1,5 @@
 import type { SchoolPeriod } from "@/actions/get-grades"
+import { courseLabel } from "@/lib/course-label"
 
 interface ReportHeadingProps {
   period?: SchoolPeriod
@@ -22,7 +23,7 @@ export function ReportHeading({
   const yearly = isYearly(course)
 
   const details = [
-    course,
+    course && courseLabel(course),
     courseStage && `${courseStage}º ${yearly ? "ano" : "período"}`,
   ].filter(Boolean)
 
